@@ -18,11 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.viewscope;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ProjectStage;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * the scope has to be destroyed at the end of each request. Before the fix the beans were never
  * destroyed and piled up in the session (a memory leak), so {@code DESTROYED} stayed at 0.</p>
  */
-public class ViewScopeFormlessLeakTestCase extends AbstractMyFacesCDIRequestTestCase
+class ViewScopeFormlessLeakTestCase extends AbstractMyFacesCDIRequestTestCase
 {
 
     protected ExpressionFactory createExpressionFactory()
@@ -52,7 +53,7 @@ public class ViewScopeFormlessLeakTestCase extends AbstractMyFacesCDIRequestTest
     }
 
     @Test
-    public void testFormlessViewDoesNotLeakViewScopedBeans() throws Exception
+    void formlessViewDoesNotLeakViewScopedBeans() throws Exception
     {
         ViewScopeLeakProbeBean.reset();
 
@@ -65,9 +66,9 @@ public class ViewScopeFormlessLeakTestCase extends AbstractMyFacesCDIRequestTest
             endRequest();
         }
 
-        Assertions.assertEquals(requests, ViewScopeLeakProbeBean.CREATED.get(),
+        assertEquals(requests, ViewScopeLeakProbeBean.CREATED.get(),
                 "the @ViewScoped bean must be created once per request");
-        Assertions.assertEquals(requests, ViewScopeLeakProbeBean.DESTROYED.get(),
+        assertEquals(requests, ViewScopeLeakProbeBean.DESTROYED.get(),
                 "the @ViewScoped beans of a formless (never-saved) view must be destroyed each "
                         + "request, not leaked into the session");
     }

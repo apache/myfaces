@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.application.flow;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
@@ -27,14 +29,13 @@ import jakarta.faces.flow.Flow;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * This test is the same as FlowMyFacesRequestTestCase with the difference that
  * in this case CDI is enabled and the other alternative is used.
  */
-public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -46,9 +47,9 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/WEB-INF/flow1-flow.xml");
         servletContext.addInitParameter("jakarta.faces.CLIENT_WINDOW_MODE", "url");
     }
-    
+
     @Test
-    public void testFlow1_1() throws Exception
+    void flow11() throws Exception
     {
         startViewRequest("/flow1_1.xhtml");
         processLifecycleExecute();
@@ -57,14 +58,14 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         
         NavigationCase navCase = handler.getNavigationCase(facesContext, null, "flow1");
         
-        Assertions.assertNotNull(navCase);
+        assertNotNull(navCase);
         
         NavigationCase contentCase = handler.getNavigationCase(facesContext, null, "flow1_content");
         
-        Assertions.assertNull(contentCase);
+        assertNull(contentCase);
         
         // Check begin view node
-        Assertions.assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
+        assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
         
         renderResponse();
        
@@ -75,21 +76,21 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
+        assertNotNull(currentFlow);
         
         // Check Flow1Bean can be created
         Flow1Bean bean1 = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{flow1Bean}", Flow1Bean.class);
-        Assertions.assertNotNull(bean1);
-        Assertions.assertEquals(bean1.getPostConstructCalled(), "true");
+        assertNotNull(bean1);
+        assertEquals("true", bean1.getPostConstructCalled());
         
         contentCase = handler.getNavigationCase(facesContext, null, "flow1_content");
         
-        Assertions.assertNotNull(contentCase);
+        assertNotNull(contentCase);
     }
-    
+
     @Test
-    public void testFlow1_2() throws Exception
+    void flow12() throws Exception
     {
         startViewRequest("/flow1_2.xhtml");
         processLifecycleExecute();
@@ -98,14 +99,14 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         
         NavigationCase navCase = handler.getNavigationCase(facesContext, null, "flow1");
         
-        Assertions.assertNotNull(navCase);
+        assertNotNull(navCase);
         
         NavigationCase contentCase = handler.getNavigationCase(facesContext, null, "flow1_content");
         
-        Assertions.assertNull(contentCase);
+        assertNull(contentCase);
         
         // Check begin view node
-        Assertions.assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
+        assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
         
         renderResponse();
        
@@ -116,16 +117,16 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flow1", currentFlow.getId());
+        assertNotNull(currentFlow);
+        assertEquals("flow1", currentFlow.getId());
         
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow1","value1");
         
         // Check the bean with @FlowScoped annotation can be instantiated
         Flow1Bean bean1 = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{flow1Bean}", Flow1Bean.class);
-        Assertions.assertNotNull(bean1);
-        Assertions.assertEquals(bean1.getPostConstructCalled(), "true");        
+        assertNotNull(bean1);
+        assertEquals("true", bean1.getPostConstructCalled());        
         bean1.setName("John");
         
         renderResponse();
@@ -136,30 +137,30 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flow2", currentFlow.getId());
-        Assertions.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flow1"));
+        assertNotNull(currentFlow);
+        assertEquals("flow2", currentFlow.getId());
+        assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flow1"));
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow2","value2");
         
         Flow2Bean bean2 = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{flow2Bean}", Flow2Bean.class);
-        Assertions.assertNotNull(bean2);
-        Assertions.assertEquals(bean2.getPostConstructCalled(), "true");
+        assertNotNull(bean2);
+        assertEquals("true", bean2.getPostConstructCalled());
         
         Flow1Bean bean1_1 = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{flow1Bean}", Flow1Bean.class);
-        Assertions.assertEquals(bean1_1.getName(), "John");
+        assertEquals("John", bean1_1.getName());
         
         Flow21Bean bean2_1 = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{flow21Bean}", Flow21Bean.class);
-        Assertions.assertNotNull(bean2_1);
-        Assertions.assertEquals(bean2_1.getPostConstructCalled(), "true");
-        Assertions.assertNotNull(bean2_1.getFlow1Bean());
+        assertNotNull(bean2_1);
+        assertEquals("true", bean2_1.getPostConstructCalled());
+        assertNotNull(bean2_1.getFlow1Bean());
 
         renderResponse();
         
         //Check current view is the begin of flow2
-        Assertions.assertEquals("/flow2/begin.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flow2/begin.xhtml", facesContext.getViewRoot().getViewId());
         
         UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:content");
         client.submit(button3);
@@ -167,11 +168,11 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         renderResponse();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flow2", currentFlow.getId());
+        assertNotNull(currentFlow);
+        assertEquals("flow2", currentFlow.getId());
 
         NavigationCase endCase = handler.getNavigationCase(facesContext, null, "end");
-        Assertions.assertNotNull(endCase);
+        assertNotNull(endCase);
         
         UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
         client.submit(button4);
@@ -182,15 +183,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         // to chain all commands. The difficulty here resides in the context should be resolved properly, and
         // there are a couple of recursive calls that needs to be solved.
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNull(currentFlow);
-        Assertions.assertEquals("/flow1_end.xhtml", facesContext.getViewRoot().getViewId());
+        assertNull(currentFlow);
+        assertEquals("/flow1_end.xhtml", facesContext.getViewRoot().getViewId());
         
         try
         {
             Flow1Bean bean1_2 = facesContext.getApplication().evaluateExpressionGet(
                 facesContext, "#{flow1Bean}", Flow1Bean.class);
             bean1_2.getName();
-            Assertions.fail("Invocation show throw NullPointerException or ContextNotActiveException");
+            fail("Invocation show throw NullPointerException or ContextNotActiveException");
         }
         catch (ContextNotActiveException e)
         {
@@ -206,7 +207,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
      * @throws Exception 
      */
     @Test
-    public void testFlow1_12() throws Exception
+    void flow112() throws Exception
     {
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();
@@ -221,27 +222,27 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         
         processLifecycleExecute();
         
-        Assertions.assertEquals("/flow4/flow4.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flow4/flow4.xhtml", facesContext.getViewRoot().getViewId());
         
         Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals(currentFlow.getId(), "flow4");
+        assertNotNull(currentFlow);
+        assertEquals("flow4", currentFlow.getId());
         
         renderResponse();
         
         NavigationCase goFlowBase = handler.getNavigationCase(facesContext, null, "call_flow5_4");
-        Assertions.assertNotNull(goFlowBase);
+        assertNotNull(goFlowBase);
         
         UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow5");
         client.submit(button2);
         
         processLifecycleExecute();
         
-        Assertions.assertEquals("/flow5/flow5.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flow5/flow5.xhtml", facesContext.getViewRoot().getViewId());
 
         renderResponse();
     }
-    
+
     /**
      * This tests do the following:
      * 
@@ -254,7 +255,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
      * - Return from Flow B
      */
     @Test
-    public void testFlowA_1() throws Exception
+    void flowA1() throws Exception
     {
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();
@@ -270,11 +271,11 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_1");
-        Assertions.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
         
         Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals(currentFlow.getId(), "flowA");
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
         
         renderResponse();
         
@@ -284,15 +285,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowB", currentFlow.getId());
-        Assertions.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
+        assertNotNull(currentFlow);
+        assertEquals("flowB", currentFlow.getId());
+        assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_1");
         
         renderResponse();
         
         //Check current view is the begin of flow2
-        Assertions.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
         
         UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_A");
         client.submit(button3);
@@ -300,15 +301,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowA", currentFlow.getId());
-        Assertions.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowB"));
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
+        assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowB"));
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_2");
         
         renderResponse();
         
         //Check current view is the begin of flow2
-        Assertions.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
         
         UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_B");
         client.submit(button4);
@@ -316,15 +317,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowB", currentFlow.getId());
-        Assertions.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
+        assertNotNull(currentFlow);
+        assertEquals("flowB", currentFlow.getId());
+        assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_2");
         
         renderResponse();
         
         //Check current view is the begin of flow2
-        Assertions.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
         
         UICommand button5 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
         client.submit(button5);
@@ -332,9 +333,9 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowA", currentFlow.getId());
-        Assertions.assertEquals("valueA_2", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
+        assertEquals("valueA_2", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
         
         renderResponse();
         
@@ -344,9 +345,9 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowB", currentFlow.getId());
-        Assertions.assertEquals("valueB_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowB"));
+        assertNotNull(currentFlow);
+        assertEquals("flowB", currentFlow.getId());
+        assertEquals("valueB_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowB"));
 
         renderResponse();
         
@@ -356,15 +357,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowA", currentFlow.getId());
-        Assertions.assertEquals("valueA_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
+        assertEquals("valueA_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
         
         renderResponse();
     }
-    
+
     @Test
-    public void testFlowA_2() throws Exception
+    void flowA2() throws Exception
     {
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();
@@ -380,11 +381,11 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_1");
-        Assertions.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
         
         Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals(currentFlow.getId(), "flowA");
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
         
         renderResponse();
         
@@ -395,9 +396,9 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
+        assertNotNull(currentFlow);
         // We are still on flowA, just returned to base
-        Assertions.assertEquals("flowA", currentFlow.getId());
+        assertEquals("flowA", currentFlow.getId());
         
         renderResponse();
         
@@ -408,11 +409,11 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_1");
-        Assertions.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals(currentFlow.getId(), "flowB");
+        assertNotNull(currentFlow);
+        assertEquals("flowB", currentFlow.getId());
         
         renderResponse();
         
@@ -423,15 +424,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowA", currentFlow.getId());
-        Assertions.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowB"));
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
+        assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowB"));
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_2");
         
         renderResponse();
         
         //Check current view is the begin of flow2
-        Assertions.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
 
         // Call flow B through flow call
         UICommand button5 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_B");
@@ -440,15 +441,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowB", currentFlow.getId());
-        Assertions.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
+        assertNotNull(currentFlow);
+        assertEquals("flowB", currentFlow.getId());
+        assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
         facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_2");
         
         renderResponse();
         
         //Check current view is the begin of flow2
-        Assertions.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
         
         UICommand button6 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
         client.submit(button6);
@@ -456,9 +457,9 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowA", currentFlow.getId());
-        Assertions.assertEquals("valueA_2", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
+        assertEquals("valueA_2", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
         
         renderResponse();
         
@@ -468,9 +469,9 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowB", currentFlow.getId());
-        Assertions.assertEquals("valueB_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowB"));
+        assertNotNull(currentFlow);
+        assertEquals("flowB", currentFlow.getId());
+        assertEquals("valueB_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowB"));
 
         renderResponse();
         
@@ -480,9 +481,9 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecute();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-        Assertions.assertNotNull(currentFlow);
-        Assertions.assertEquals("flowA", currentFlow.getId());
-        Assertions.assertEquals("valueA_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        assertNotNull(currentFlow);
+        assertEquals("flowA", currentFlow.getId());
+        assertEquals("valueA_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
         
         renderResponse();
         

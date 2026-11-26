@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlDataTableClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
+class HtmlDataTableClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {
     private HtmlRenderedClientEventAttr[] attrs = null;
     

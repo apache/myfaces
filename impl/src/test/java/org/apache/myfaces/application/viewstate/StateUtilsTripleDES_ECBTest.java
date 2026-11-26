@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
  * </p>
  */
 
-public class StateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
+class StateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
 {
     @Override
     @BeforeEach

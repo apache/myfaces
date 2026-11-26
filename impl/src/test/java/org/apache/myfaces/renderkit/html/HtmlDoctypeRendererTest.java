@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.html.HtmlDoctype;
@@ -31,7 +34,6 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,9 +72,9 @@ public class HtmlDoctypeRendererTest extends AbstractFacesTestCase
         super.tearDown();
         writer = null;
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     { 
         HtmlRenderedAttr[] attrs = {
                 new HtmlRenderedAttr("rootElement","rootElement", "rootElement"),
@@ -83,10 +85,10 @@ public class HtmlDoctypeRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 doctype, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
         
-        Assertions.assertTrue(
+        assertTrue(
                 writer.getWriter().toString().contains("<!DOCTYPE rootElement PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"));
     }
     
@@ -97,7 +99,7 @@ public class HtmlDoctypeRendererTest extends AbstractFacesTestCase
         doctype.encodeAll(facesContext);
         facesContext.renderResponse();
         
-        Assertions.assertTrue(writer.getWriter().toString().contains("<!DOCTYPE html>"));
+        assertTrue(writer.getWriter().toString().contains("<!DOCTYPE html>"));
     }
 
 }

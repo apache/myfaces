@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.flow;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowCallNode;
@@ -31,50 +33,49 @@ import jakarta.faces.flow.builder.FlowBuilder;
 import jakarta.faces.flow.builder.SwitchCaseBuilder;
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author lu4242
  */
-public class FlowBuilderTest extends AbstractFacesTestCase
+class FlowBuilderTest extends AbstractFacesTestCase
 {
-    
+
     @Test
-    public void testFlowBuilderSimple()
+    void flowBuilderSimple()
     {
         FlowBuilder flowBuilder = new FlowBuilderImpl();
         flowBuilder.id("faces-flow1.xhtml", "flow1").
             initializer("#{bean.init}").finalizer("#{bean.destroy}");
         
         Flow flow = flowBuilder.getFlow();
-        Assertions.assertNotNull(flow);
-        Assertions.assertEquals("flow1", flow.getId());
-        Assertions.assertEquals("faces-flow1.xhtml", flow.getDefiningDocumentId());
-        Assertions.assertEquals("#{bean.init}", flow.getInitializer().getExpressionString());
-        Assertions.assertEquals("#{bean.destroy}", flow.getFinalizer().getExpressionString());
+        assertNotNull(flow);
+        assertEquals("flow1", flow.getId());
+        assertEquals("faces-flow1.xhtml", flow.getDefiningDocumentId());
+        assertEquals("#{bean.init}", flow.getInitializer().getExpressionString());
+        assertEquals("#{bean.destroy}", flow.getFinalizer().getExpressionString());
     }
-    
+
     @Test
-    public void testFlowBuilderReturn()
+    void flowBuilderReturn()
     {
         FlowBuilder flowBuilder = new FlowBuilderImpl();
         flowBuilder.id("faces-flow1.xhtml", "flow1");
         flowBuilder.returnNode("returnNode").markAsStartNode().fromOutcome("mynode");
         
         Flow flow = flowBuilder.getFlow();
-        Assertions.assertNotNull(flow);
-        Assertions.assertEquals("returnNode", flow.getStartNodeId());
+        assertNotNull(flow);
+        assertEquals("returnNode", flow.getStartNodeId());
         
         ReturnNode returnNode = flow.getReturns().get("returnNode");
-        Assertions.assertNotNull(returnNode);
-        Assertions.assertEquals("returnNode", returnNode.getId());
-        Assertions.assertEquals("mynode", returnNode.getFromOutcome(facesContext));
-    }    
+        assertNotNull(returnNode);
+        assertEquals("returnNode", returnNode.getId());
+        assertEquals("mynode", returnNode.getFromOutcome(facesContext));
+    }
 
     @Test
-    public void testFlowBuilderSwitch()
+    void flowBuilderSwitch()
     {
         externalContext.getRequestMap().put("bean", new SimpleBean());
         FlowBuilder flowBuilder = new FlowBuilderImpl();
@@ -91,24 +92,24 @@ public class FlowBuilderTest extends AbstractFacesTestCase
                     .fromOutcome("caseC");
         
         Flow flow = flowBuilder.getFlow();
-        Assertions.assertNotNull(flow);
-        Assertions.assertEquals("switch1", flow.getStartNodeId());
+        assertNotNull(flow);
+        assertEquals("switch1", flow.getStartNodeId());
         
         SwitchNode switchNode = flow.getSwitches().get("switch1");
-        Assertions.assertNotNull(switchNode);
-        Assertions.assertEquals("exit", switchNode.getDefaultOutcome(facesContext));
+        assertNotNull(switchNode);
+        assertEquals("exit", switchNode.getDefaultOutcome(facesContext));
         
         SwitchCase scn = switchNode.getCases().get(0);
-        Assertions.assertTrue(scn.getCondition(facesContext));
-        Assertions.assertEquals("case1", scn.getFromOutcome());
+        assertTrue(scn.getCondition(facesContext));
+        assertEquals("case1", scn.getFromOutcome());
         
         scn = switchNode.getCases().get(1);
-        Assertions.assertTrue(scn.getCondition(facesContext));
-        Assertions.assertEquals("caseB", scn.getFromOutcome());
+        assertTrue(scn.getCondition(facesContext));
+        assertEquals("caseB", scn.getFromOutcome());
 
         scn = switchNode.getCases().get(2);
-        Assertions.assertTrue(scn.getCondition(facesContext));
-        Assertions.assertEquals("caseC", scn.getFromOutcome());
+        assertTrue(scn.getCondition(facesContext));
+        assertEquals("caseC", scn.getFromOutcome());
     }
 
     public static class SimpleBean {
@@ -131,9 +132,9 @@ public class FlowBuilderTest extends AbstractFacesTestCase
         {
         }
     }
-    
+
     @Test
-    public void testFlowBuilderView()
+    void flowBuilderView()
     {
         FlowBuilder flowBuilder = new FlowBuilderImpl();
         flowBuilder.id("faces-flow1.xhtml", "flow1");
@@ -141,20 +142,20 @@ public class FlowBuilderTest extends AbstractFacesTestCase
         flowBuilder.viewNode("y", "y.xhtml").markAsStartNode();
         
         Flow flow = flowBuilder.getFlow();
-        Assertions.assertNotNull(flow);
-        Assertions.assertEquals("y", flow.getStartNodeId());
+        assertNotNull(flow);
+        assertEquals("y", flow.getStartNodeId());
         
         ViewNode viewNode = flow.getViews().get(0);
-        Assertions.assertEquals("x", viewNode.getId());
-        Assertions.assertEquals("x.xhtml", viewNode.getVdlDocumentId());
+        assertEquals("x", viewNode.getId());
+        assertEquals("x.xhtml", viewNode.getVdlDocumentId());
         
         viewNode = flow.getViews().get(1);
-        Assertions.assertEquals("y", viewNode.getId());
-        Assertions.assertEquals("y.xhtml", viewNode.getVdlDocumentId());
+        assertEquals("y", viewNode.getId());
+        assertEquals("y.xhtml", viewNode.getVdlDocumentId());
     }
-    
+
     @Test
-    public void testFlowBuilderInboundParameter()
+    void flowBuilderInboundParameter()
     {
         externalContext.getRequestMap().put("bean", new SimpleBean());
         FlowBuilder flowBuilder = new FlowBuilderImpl();
@@ -165,23 +166,23 @@ public class FlowBuilderTest extends AbstractFacesTestCase
             application.getExpressionFactory().createValueExpression("value3", String.class));
         
         Flow flow = flowBuilder.getFlow();
-        Assertions.assertNotNull(flow);
+        assertNotNull(flow);
 
         Parameter param = flow.getInboundParameters().get("name1");
-        Assertions.assertEquals("name1", param.getName());
-        Assertions.assertEquals("value1", param.getValue().getValue(facesContext.getELContext()));
+        assertEquals("name1", param.getName());
+        assertEquals("value1", param.getValue().getValue(facesContext.getELContext()));
         
         param = flow.getInboundParameters().get("name2");
-        Assertions.assertEquals("name2", param.getName());
-        Assertions.assertEquals("asdf", param.getValue().getValue(facesContext.getELContext()));        
+        assertEquals("name2", param.getName());
+        assertEquals("asdf", param.getValue().getValue(facesContext.getELContext()));        
         
         param = flow.getInboundParameters().get("name3");
-        Assertions.assertEquals("name3", param.getName());
-        Assertions.assertEquals("value3", param.getValue().getValue(facesContext.getELContext()));        
+        assertEquals("name3", param.getName());
+        assertEquals("value3", param.getValue().getValue(facesContext.getELContext()));        
     }
 
     @Test
-    public void testFlowBuilderMethodCall()
+    void flowBuilderMethodCall()
     {
         FlowBuilder flowBuilder = new FlowBuilderImpl();
         flowBuilder.id("faces-flow1.xhtml", "flow1");
@@ -190,22 +191,22 @@ public class FlowBuilderTest extends AbstractFacesTestCase
             new Class[]{FacesContext.class}).defaultOutcome("case2");
         
         Flow flow = flowBuilder.getFlow();
-        Assertions.assertNotNull(flow);
-        Assertions.assertEquals("method1", flow.getStartNodeId());
+        assertNotNull(flow);
+        assertEquals("method1", flow.getStartNodeId());
         
         MethodCallNode mcn = flow.getMethodCalls().get(0);
-        Assertions.assertEquals("method1", mcn.getId());
-        Assertions.assertEquals("case1", mcn.getOutcome().getValue(facesContext.getELContext()));
-        Assertions.assertEquals("#{bean.check}", mcn.getMethodExpression().getExpressionString());
+        assertEquals("method1", mcn.getId());
+        assertEquals("case1", mcn.getOutcome().getValue(facesContext.getELContext()));
+        assertEquals("#{bean.check}", mcn.getMethodExpression().getExpressionString());
         
         mcn = flow.getMethodCalls().get(1);
-        Assertions.assertEquals("method2", mcn.getId());
-        Assertions.assertEquals("case2", mcn.getOutcome().getValue(facesContext.getELContext()));
-        Assertions.assertEquals("#{bean.checkTo}", mcn.getMethodExpression().getExpressionString());
+        assertEquals("method2", mcn.getId());
+        assertEquals("case2", mcn.getOutcome().getValue(facesContext.getELContext()));
+        assertEquals("#{bean.checkTo}", mcn.getMethodExpression().getExpressionString());
     }
-    
+
     @Test
-    public void testFlowBuilderFlowCall()
+    void flowBuilderFlowCall()
     {
         FlowBuilder flowBuilder = new FlowBuilderImpl();
         flowBuilder.id("faces-flow1.xhtml", "flow1");
@@ -214,17 +215,17 @@ public class FlowBuilderTest extends AbstractFacesTestCase
             flowReference("faces-flow2.xhtml", "flow2").markAsStartNode();
         
         Flow flow = flowBuilder.getFlow();
-        Assertions.assertNotNull(flow);
-        Assertions.assertEquals("goToFlow2", flow.getStartNodeId());
+        assertNotNull(flow);
+        assertEquals("goToFlow2", flow.getStartNodeId());
         
         FlowCallNode flowCallNode = flow.getFlowCalls().get("goToFlow2");
-        Assertions.assertNotNull(flowCallNode);
-        Assertions.assertEquals("flow2", flowCallNode.getCalledFlowId(facesContext));
-        Assertions.assertEquals("faces-flow2.xhtml", flowCallNode.getCalledFlowDocumentId(facesContext));
+        assertNotNull(flowCallNode);
+        assertEquals("flow2", flowCallNode.getCalledFlowId(facesContext));
+        assertEquals("faces-flow2.xhtml", flowCallNode.getCalledFlowDocumentId(facesContext));
         
         Parameter param = flowCallNode.getOutboundParameters().get("name1");
-        Assertions.assertEquals("name1", param.getName());
-        Assertions.assertEquals("value1", param.getValue().getValue(facesContext.getELContext()));
+        assertEquals("name1", param.getName());
+        assertEquals("value1", param.getValue().getValue(facesContext.getELContext()));
     }
 
 }

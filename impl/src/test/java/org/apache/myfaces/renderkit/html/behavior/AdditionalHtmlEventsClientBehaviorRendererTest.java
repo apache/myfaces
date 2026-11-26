@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.AjaxBehavior;
@@ -33,7 +35,6 @@ import org.apache.myfaces.view.facelets.component.JsfElement;
 
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +46,7 @@ import org.junit.jupiter.api.Test;
  * The inherited test cases cover exactly that for a set of events which have no property on any standard component,
  * this class adds the cases which are specific to this feature.
  */
-public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
+class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {
     private HtmlRenderedClientEventAttr[] attrs = null;
 
@@ -92,14 +93,14 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * A plain on* attribute without a matching property must be rendered as a pass through attribute.
      */
     @Test
-    public void testPlainAttributeWithoutBehaviorIsRendered() throws Exception
+    void plainAttributeWithoutBehaviorIsRendered() throws Exception
     {
         HtmlInputText input = new HtmlInputText();
         input.getAttributes().put("oninput", "alert('input')");
 
         input.encodeAll(facesContext);
 
-        Assertions.assertTrue(outputWriter.toString().contains(" oninput=\"alert('input')\""),
+        assertTrue(outputWriter.toString().contains(" oninput=\"alert('input')\""),
                 outputWriter.toString());
     }
 
@@ -108,7 +109,7 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * set, so it needs the {@code EVENT_ATTRIBUTES_MARKED} marker to be found at render time.
      */
     @Test
-    public void testValueExpressionAttributeWithoutBehaviorIsRendered() throws Exception
+    void valueExpressionAttributeWithoutBehaviorIsRendered() throws Exception
     {
         ValueExpression expression = new MockValueExpression("#{requestScope.oninputScript}", String.class);
         expression.setValue(facesContext.getELContext(), "alert(1)");
@@ -118,7 +119,7 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
 
         input.encodeAll(facesContext);
 
-        Assertions.assertTrue(outputWriter.toString().contains(" oninput=\"alert(1)\""), outputWriter.toString());
+        assertTrue(outputWriter.toString().contains(" oninput=\"alert(1)\""), outputWriter.toString());
     }
 
     /**
@@ -126,21 +127,21 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * standard HTML RenderKit: the substring after "on" has to be contained in getEventNames().
      */
     @Test
-    public void testUnknownEventAttributeIsNotRendered() throws Exception
+    void unknownEventAttributeIsNotRendered() throws Exception
     {
         HtmlInputText input = new HtmlInputText();
         input.getAttributes().put("onsomethingweird", "alert('nope')");
 
         input.encodeAll(facesContext);
 
-        Assertions.assertFalse(outputWriter.toString().contains("onsomethingweird"), outputWriter.toString());
+        assertFalse(outputWriter.toString().contains("onsomethingweird"), outputWriter.toString());
     }
 
     /**
      * The very use case of the spec issue: an f:ajax on an event which no component declares as a property.
      */
     @Test
-    public void testAjaxBehaviorOnAdditionalEventIsRendered() throws Exception
+    void ajaxBehaviorOnAdditionalEventIsRendered() throws Exception
     {
         HtmlInputText input = new HtmlInputText();
         input.addClientBehavior("input", new AjaxBehavior());
@@ -148,15 +149,15 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
         input.encodeAll(facesContext);
 
         String output = outputWriter.toString();
-        Assertions.assertTrue(output.contains(" oninput=\""), output);
-        Assertions.assertTrue(output.contains("myfaces.ab("), output);
+        assertTrue(output.contains(" oninput=\""), output);
+        assertTrue(output.contains("myfaces.ab("), output);
     }
 
     /**
      * The renderer specific attributes must keep working exactly as before, next to the additional ones.
      */
     @Test
-    public void testRendererSpecificAndAdditionalEventsAreCombined() throws Exception
+    void rendererSpecificAndAdditionalEventsAreCombined() throws Exception
     {
         HtmlInputText input = new HtmlInputText();
         input.setOnclick("alert('click')");
@@ -165,8 +166,8 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
         input.encodeAll(facesContext);
 
         String output = outputWriter.toString();
-        Assertions.assertTrue(output.contains(" onclick=\"alert('click')\""), output);
-        Assertions.assertTrue(output.contains(" oninput=\"alert('input')\""), output);
+        assertTrue(output.contains(" onclick=\"alert('click')\""), output);
+        assertTrue(output.contains(" oninput=\"alert('input')\""), output);
     }
 
     /**
@@ -174,7 +175,7 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * different renderers and rendering paths.
      */
     @Test
-    public void testAdditionalEventsOnOtherComponents() throws Exception
+    void additionalEventsOnOtherComponents() throws Exception
     {
         assertAdditionalEventRendered(new HtmlCommandButton());
         assertAdditionalEventRendered(new HtmlOutputLink());
@@ -189,7 +190,7 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * hand (h:panelGroup only renders the mouse/key/click events itself) must be rendered generically as well.
      */
     @Test
-    public void testFieldEventOnNonFieldComponent() throws Exception
+    void fieldEventOnNonFieldComponent() throws Exception
     {
         HtmlPanelGroup group = new HtmlPanelGroup();
         group.setLayout("block");
@@ -199,8 +200,8 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
         group.encodeAll(facesContext);
         String output = outputWriter.toString();
 
-        Assertions.assertTrue(output.contains(" onfocus=\"doFocus()\""), output);
-        Assertions.assertTrue(output.contains(" onblur=\""), output);
+        assertTrue(output.contains(" onfocus=\"doFocus()\""), output);
+        assertTrue(output.contains(" onblur=\""), output);
     }
 
     /**
@@ -208,7 +209,7 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * the generic pass.
      */
     @Test
-    public void testRendererHandledEventIsNotRenderedTwice() throws Exception
+    void rendererHandledEventIsNotRenderedTwice() throws Exception
     {
         HtmlInputText input = new HtmlInputText();
         input.setOnclick("doClick()");
@@ -217,8 +218,8 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
         input.encodeAll(facesContext);
         String output = outputWriter.toString();
 
-        Assertions.assertEquals(output.indexOf(" onclick=\""), output.lastIndexOf(" onclick=\""), output);
-        Assertions.assertEquals(output.indexOf(" onfocus=\""), output.lastIndexOf(" onfocus=\""), output);
+        assertEquals(output.indexOf(" onclick=\""), output.lastIndexOf(" onclick=\""), output);
+        assertEquals(output.indexOf(" onfocus=\""), output.lastIndexOf(" onfocus=\""), output);
     }
 
     private void assertAdditionalEventRendered(UIComponent component) throws Exception
@@ -230,9 +231,9 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
         component.encodeAll(facesContext);
         String output = outputWriter.toString();
 
-        Assertions.assertTrue(output.contains(" oninput=\"alert('input')\""),
+        assertTrue(output.contains(" oninput=\"alert('input')\""),
                 component.getClass().getSimpleName() + ": " + output);
-        Assertions.assertTrue(output.contains(" onwheel=\""),
+        assertTrue(output.contains(" onwheel=\""),
                 component.getClass().getSimpleName() + ": " + output);
     }
 
@@ -240,49 +241,49 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * jsf:element mirrors the standard HTML components and must expose and render every HTML event as well.
      */
     @Test
-    public void testAdditionalEventsOnJsfElement() throws Exception
+    void additionalEventsOnJsfElement() throws Exception
     {
         JsfElement element = new JsfElement();
         element.getPassThroughAttributes().put(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY, "div");
         element.getAttributes().put("oninput", "doInput()");
         element.addClientBehavior("wheel", new AjaxBehavior());
 
-        Assertions.assertTrue(element.getEventNames().contains("input"));
-        Assertions.assertTrue(element.getEventNames().contains("scrollend"));
+        assertTrue(element.getEventNames().contains("input"));
+        assertTrue(element.getEventNames().contains("scrollend"));
 
         element.encodeAll(facesContext);
         String output = outputWriter.toString();
 
-        Assertions.assertTrue(output.contains(" oninput=\"doInput()\""), output);
-        Assertions.assertTrue(output.contains(" onwheel=\""), output);
+        assertTrue(output.contains(" oninput=\"doInput()\""), output);
+        assertTrue(output.contains(" onwheel=\""), output);
     }
 
     /**
      * The event names must reflect the component type, as the spec assigns a different set per component category.
      */
     @Test
-    public void testEventNamesPerComponentCategory()
+    void eventNamesPerComponentCategory()
     {
         // EditableValueHolder
-        Assertions.assertTrue(new HtmlInputText().getEventNames().contains("valueChange"));
-        Assertions.assertFalse(new HtmlInputText().getEventNames().contains("action"));
+        assertTrue(new HtmlInputText().getEventNames().contains("valueChange"));
+        assertFalse(new HtmlInputText().getEventNames().contains("action"));
 
         // ActionSource
-        Assertions.assertTrue(new HtmlCommandButton().getEventNames().contains("action"));
-        Assertions.assertFalse(new HtmlCommandButton().getEventNames().contains("valueChange"));
+        assertTrue(new HtmlCommandButton().getEventNames().contains("action"));
+        assertFalse(new HtmlCommandButton().getEventNames().contains("valueChange"));
 
         // neither of both
-        Assertions.assertFalse(new HtmlPanelGroup().getEventNames().contains("action"));
-        Assertions.assertFalse(new HtmlPanelGroup().getEventNames().contains("valueChange"));
+        assertFalse(new HtmlPanelGroup().getEventNames().contains("action"));
+        assertFalse(new HtmlPanelGroup().getEventNames().contains("valueChange"));
 
         // all of them expose the plain HTML events, including the window level ones
         for (UIComponent component : new UIComponent[]
                 { new HtmlInputText(), new HtmlCommandButton(), new HtmlPanelGroup() })
         {
             ClientBehaviorHolder holder = (ClientBehaviorHolder) component;
-            Assertions.assertTrue(holder.getEventNames().contains("input"));
-            Assertions.assertTrue(holder.getEventNames().contains("click"));
-            Assertions.assertTrue(holder.getEventNames().contains("scrollend"));
+            assertTrue(holder.getEventNames().contains("input"));
+            assertTrue(holder.getEventNames().contains("click"));
+            assertTrue(holder.getEventNames().contains("scrollend"));
         }
     }
 
@@ -290,35 +291,35 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * The default event names as mandated by the spec.
      */
     @Test
-    public void testDefaultEventNames()
+    void defaultEventNames()
     {
-        Assertions.assertEquals("valueChange", new HtmlInputText().getDefaultEventName());
-        Assertions.assertEquals("action", new HtmlCommandButton().getDefaultEventName());
-        Assertions.assertEquals("click", new HtmlOutputLink().getDefaultEventName());
-        Assertions.assertNull(new HtmlPanelGroup().getDefaultEventName());
+        assertEquals("valueChange", new HtmlInputText().getDefaultEventName());
+        assertEquals("action", new HtmlCommandButton().getDefaultEventName());
+        assertEquals("click", new HtmlOutputLink().getDefaultEventName());
+        assertNull(new HtmlPanelGroup().getDefaultEventName());
     }
 
     /**
      * Unknown event names can be added via context-param, and are then usable like any built in one.
      */
     @Test
-    public void testAdditionalEventNamesContextParam() throws Exception
+    void additionalEventNamesContextParam() throws Exception
     {
         servletContext.addInitParameter(HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME, "  foo\t bar\nfoo ");
 
-        Assertions.assertTrue(HtmlEvents.getAdditionalHtmlEventNames(facesContext).contains("foo"));
-        Assertions.assertTrue(HtmlEvents.getAdditionalHtmlEventNames(facesContext).contains("bar"));
+        assertTrue(HtmlEvents.getAdditionalHtmlEventNames(facesContext).contains("foo"));
+        assertTrue(HtmlEvents.getAdditionalHtmlEventNames(facesContext).contains("bar"));
 
         HtmlInputText input = new HtmlInputText();
-        Assertions.assertTrue(input.getEventNames().contains("foo"));
+        assertTrue(input.getEventNames().contains("foo"));
 
         input.getAttributes().put("onfoo", "alert('foo')");
         input.addClientBehavior("bar", new AjaxBehavior());
         input.encodeAll(facesContext);
 
         String output = outputWriter.toString();
-        Assertions.assertTrue(output.contains(" onfoo=\"alert('foo')\""), output);
-        Assertions.assertTrue(output.contains(" onbar=\""), output);
+        assertTrue(output.contains(" onfoo=\"alert('foo')\""), output);
+        assertTrue(output.contains(" onbar=\""), output);
     }
 
     /**
@@ -326,32 +327,32 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
      * distinct and layered as documented.
      */
     @Test
-    public void testEventNameCollections()
+    void eventNameCollections()
     {
-        Assertions.assertTrue(HtmlEvents.getAdditionalHtmlEventNames(facesContext).isEmpty());
+        assertTrue(HtmlEvents.getAdditionalHtmlEventNames(facesContext).isEmpty());
 
-        Assertions.assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext)
+        assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext)
                 .containsAll(HtmlEvents.getHtmlElementEventNames(facesContext)));
-        Assertions.assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext)
+        assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext)
                 .containsAll(HtmlEvents.getHtmlWindowEventNames(facesContext)));
-        Assertions.assertTrue(HtmlEvents.getFacesActionSourceEventNames(facesContext)
+        assertTrue(HtmlEvents.getFacesActionSourceEventNames(facesContext)
                 .containsAll(HtmlEvents.getHtmlElementEventNames(facesContext)));
-        Assertions.assertTrue(HtmlEvents.getFacesEditableValueHolderEventNames(facesContext)
+        assertTrue(HtmlEvents.getFacesEditableValueHolderEventNames(facesContext)
                 .containsAll(HtmlEvents.getHtmlElementEventNames(facesContext)));
 
         // the events which are forwarded to the Window object on the body element are still element level events
-        Assertions.assertTrue(HtmlEvents.getHtmlElementEventNames(facesContext).contains("load"));
-        Assertions.assertFalse(HtmlEvents.getHtmlWindowEventNames(facesContext).contains("load"));
+        assertTrue(HtmlEvents.getHtmlElementEventNames(facesContext).contains("load"));
+        assertFalse(HtmlEvents.getHtmlWindowEventNames(facesContext).contains("load"));
 
         // the window level events are exclusive to the body element event names
-        Assertions.assertFalse(HtmlEvents.getHtmlElementEventNames(facesContext).contains("unload"));
-        Assertions.assertTrue(HtmlEvents.getHtmlWindowEventNames(facesContext).contains("unload"));
-        Assertions.assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext).contains("unload"));
+        assertFalse(HtmlEvents.getHtmlElementEventNames(facesContext).contains("unload"));
+        assertTrue(HtmlEvents.getHtmlWindowEventNames(facesContext).contains("unload"));
+        assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext).contains("unload"));
 
         String previous = null;
         for (String eventName : HtmlEvents.getFacesEditableValueHolderEventNames(facesContext))
         {
-            Assertions.assertTrue(previous == null || previous.compareTo(eventName) < 0,
+            assertTrue(previous == null || previous.compareTo(eventName) < 0,
                     "not sorted and distinct at " + eventName);
             previous = eventName;
         }

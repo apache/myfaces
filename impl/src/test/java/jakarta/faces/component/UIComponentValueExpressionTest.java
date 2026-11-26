@@ -18,6 +18,7 @@
  */
 package jakarta.faces.component;
 import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * Test for {@link UIComponent#getValueExpression(String)}. and
  * {@link UIComponent#setValueExpression(String, jakarta.el.ValueExpression)}.
  */
-public class UIComponentValueExpressionTest extends UIComponentTestBase
+class UIComponentValueExpressionTest extends UIComponentTestBase
 {
     private UIComponent _testimpl;
     private ValueExpression _expression;
@@ -62,60 +62,56 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
     }
 
     @Test
-    public void testValueExpressionArgumentNPE() throws Exception
+    void valueExpressionArgumentNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testimpl.setValueExpression(null, _expression);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testimpl.setValueExpression(null, _expression));
     }
 
     @Test
-    public void testValueExpressionArgumentId() throws Exception
+    void valueExpressionArgumentId() throws Exception
     {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            _testimpl.setValueExpression("id", _expression);
-        });
+        assertThrows(IllegalArgumentException.class, () ->
+            _testimpl.setValueExpression("id", _expression));
     }
 
     @Test
-    public void testValueExpressionArgumentsParent() throws Exception
+    void valueExpressionArgumentsParent() throws Exception
     {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            _testimpl.setValueExpression("parent", _expression);
-        });
+        assertThrows(IllegalArgumentException.class, () ->
+            _testimpl.setValueExpression("parent", _expression));
     }
 
     @Test
-    public void testValueExpression() throws Exception
+    void valueExpression() throws Exception
     {
         expect(_expression.isLiteralText()).andReturn(false);
         _mocksControl.replay();
         _testimpl.setValueExpression("xxx", _expression);
         _mocksControl.verify();
-        Assertions.assertEquals(_expression, _testimpl.getValueExpression("xxx"));
+        assertEquals(_expression, _testimpl.getValueExpression("xxx"));
         _testimpl.setValueExpression("xxx", null);
         _mocksControl.verify();
 
-        Assertions.assertNull(_testimpl.getValueExpression("xxx"));
+        assertNull(_testimpl.getValueExpression("xxx"));
     }
 
     @Test
-    public void testValueExpressionWithExceptionOnGetValue() throws Exception
+    void valueExpressionWithExceptionOnGetValue() throws Exception
     {
-        Assertions.assertThrows(FacesException.class, () -> {
-            expect(_expression.isLiteralText()).andReturn(true);
-            expect(_testimpl.getFacesContext()).andReturn(_facesContext);
-            expect(_facesContext.getELContext()).andReturn(_elContext);
-            expect(_expression.getValue(EasyMock.eq(_elContext))).andThrow(new ELException());
-            Map<String, Object> map = new HashMap<String, Object>();
-            expect(_testimpl.getAttributes()).andReturn(map);
-            _mocksControl.replay();
-            _testimpl.setValueExpression("xxx", _expression);
-        });
+        expect(_expression.isLiteralText()).andReturn(true);
+        expect(_testimpl.getFacesContext()).andReturn(_facesContext);
+        expect(_facesContext.getELContext()).andReturn(_elContext);
+        expect(_expression.getValue(EasyMock.eq(_elContext))).andThrow(new ELException());
+        Map<String, Object> map = new HashMap<String, Object>();
+        expect(_testimpl.getAttributes()).andReturn(map);
+        _mocksControl.replay();
+        assertThrows(FacesException.class, () ->
+            _testimpl.setValueExpression("xxx", _expression));
     }
 
     @Test
-    public void testValueExpressionWithLiteralText() throws Exception
+    void valueExpressionWithLiteralText() throws Exception
     {
         expect(_expression.isLiteralText()).andReturn(true);
         expect(_testimpl.getFacesContext()).andReturn(_facesContext);
@@ -125,9 +121,9 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         expect(_testimpl.getAttributes()).andReturn(map);
         _mocksControl.replay();
         _testimpl.setValueExpression("xxx", _expression);
-        Assertions.assertEquals("abc", map.get("xxx"));
+        assertEquals("abc", map.get("xxx"));
         _mocksControl.verify();
-        Assertions.assertNull(_testimpl.getValueExpression("xxx"));
+        assertNull(_testimpl.getValueExpression("xxx"));
     }
 
 }

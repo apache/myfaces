@@ -15,13 +15,15 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import jakarta.faces.FacesException;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SecretKeyConfigurationTest extends AbstractFacesTestCase
+class SecretKeyConfigurationTest extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach
@@ -34,49 +36,48 @@ public class SecretKeyConfigurationTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testMissingSecretKeyEncrypt(){
+    void missingSecretKeyEncrypt(){
         
         try{
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
-            Assertions.fail("An exception should be thrown if there" +
+            fail("An exception should be thrown if there" +
                     " is no SecretKey in application scope and caching is enabled ");
         }catch(Exception e){
         }
         
     }
-    
+
     @Test
-    public void testNonSecretKeyEncrypt(){
+    void nonSecretKeyEncrypt(){
         
         servletContext.setAttribute(StateUtils.INIT_SECRET_KEY_CACHE, new Integer(8));
         
         try{
             
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
-            Assertions.fail("An exception should be thrown if there" +
+            fail("An exception should be thrown if there" +
                     " is no SecretKey in application scope and caching is enabled ");
         }catch(Exception cce){
         }
         
     }
-    
+
     @Test
-    public void testMissingSecretKeyDecrypt(){
+    void missingSecretKeyDecrypt(){
         
-        Assertions.assertThrows(FacesException.class, () -> {
-            StateUtils.decrypt("serialized objects".getBytes(), externalContext);
-        });
+        assertThrows(FacesException.class, () ->
+            StateUtils.decrypt("serialized objects".getBytes(), externalContext));
     }
-    
+
     @Test
-    public void testNonSecretKeyDecrypt(){
+    void nonSecretKeyDecrypt(){
         
         servletContext.setAttribute(StateUtils.INIT_SECRET_KEY_CACHE, new Integer(8));
         
         try{
             
             StateUtils.decrypt("serialized objects".getBytes(), externalContext);
-            Assertions.fail("An exception should be thrown if there" +
+            fail("An exception should be thrown if there" +
                     " is no SecretKey in application scope and caching is enabled ");
         }catch(Exception cce){
         }

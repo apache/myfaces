@@ -42,15 +42,15 @@ public class StateManagerWithFaceletsClientSideTest extends StateManagerWithFace
     }
 
     @Override
-    public void testWriteAndRestoreState() throws Exception
+    void writeAndRestoreState() throws Exception
     {
-        super.testWriteAndRestoreState();
+        super.writeAndRestoreState();
     }
 
     @Override
-    public void testWriteAndRestoreStateWithMyFacesRSM() throws Exception
+    void writeAndRestoreStateWithMyFacesRSM() throws Exception
     {
-        super.testWriteAndRestoreStateWithMyFacesRSM();
+        super.writeAndRestoreStateWithMyFacesRSM();
     }
 
 

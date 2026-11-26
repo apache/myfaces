@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIParameter;
@@ -40,7 +42,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlButtonRendererTest extends AbstractFacesTestCase {
+class HtmlButtonRendererTest extends AbstractFacesTestCase {
 
     private MockResponseWriter writer;
     private HtmlCommandButton commandButton;
@@ -81,7 +83,7 @@ public class HtmlButtonRendererTest extends AbstractFacesTestCase {
     }
 
     @Test
-    public void testJSNotAllowedHtmlPropertyPassTru() throws Exception {
+    void jSNotAllowedHtmlPropertyPassTru() throws Exception {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
             new HtmlRenderedAttr("accesskey"),
@@ -127,12 +129,12 @@ public class HtmlButtonRendererTest extends AbstractFacesTestCase {
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 commandButton, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testAllowedHtmlPropertyPassTru() throws Exception {
+    void allowedHtmlPropertyPassTru() throws Exception {
            HtmlRenderedAttr[] attrs = {
                //_AccesskeyProperty
                new HtmlRenderedAttr("accesskey"),
@@ -175,32 +177,27 @@ public class HtmlButtonRendererTest extends AbstractFacesTestCase {
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 commandButton, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
 
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         commandButton.addClientBehavior("focus", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             commandButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * If a h:commandButton has any UIParameter children, he should
      * render them with a renderer of family jakarta.faces.Input and
@@ -210,7 +207,7 @@ public class HtmlButtonRendererTest extends AbstractFacesTestCase {
      * @throws Exception
      */
     @Test
-    public void testCommandButtonRendersNotDisabledUIParameters() throws Exception
+    void commandButtonRendersNotDisabledUIParameters() throws Exception
     {
         UIParameter param1 = new UIParameter();
         param1.setName("param1");
@@ -226,10 +223,10 @@ public class HtmlButtonRendererTest extends AbstractFacesTestCase {
         
         commandButton.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        Assertions.assertFalse(output.contains("param1"));
-        Assertions.assertFalse(output.contains("value1"));
-        Assertions.assertTrue(output.contains("param2"));
-        Assertions.assertTrue(output.contains("value2"));
+        assertFalse(output.contains("param1"));
+        assertFalse(output.contains("value1"));
+        assertTrue(output.contains("param2"));
+        assertTrue(output.contains("value2"));
     }
     
 }

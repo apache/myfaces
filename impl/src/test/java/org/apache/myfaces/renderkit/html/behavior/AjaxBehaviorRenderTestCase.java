@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 import jakarta.faces.application.ViewHandler;
 
@@ -25,7 +27,6 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
@@ -38,7 +39,7 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
     }
 
     @Test
-    public void testAjax1() throws Exception {
+    void ajax1() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajax_1.xhtml");
         
@@ -49,12 +50,12 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("faces.util.chain"));
-        Assertions.assertFalse(response.contains("myfaces.ab"));
+        assertFalse(response.contains("faces.util.chain"));
+        assertFalse(response.contains("myfaces.ab"));
     }
- 
+
     @Test
-    public void testAjax2() throws Exception {
+    void ajax2() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajax_2.xhtml");
         
@@ -65,12 +66,12 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("myfaces.ab"));
-        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 1);
+        assertTrue(response.contains("myfaces.ab"));
+        assertEquals(1, countMatches(response, "myfaces.ab"));
     }
-    
+
     @Test
-    public void testAjax3() throws Exception {
+    void ajax3() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajax_3.xhtml");
         
@@ -81,12 +82,12 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("myfaces.ab"));
-        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 1);
+        assertTrue(response.contains("myfaces.ab"));
+        assertEquals(1, countMatches(response, "myfaces.ab"));
     }
-    
+
     @Test
-    public void testAjax4() throws Exception {
+    void ajax4() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajax_4.xhtml");
         
@@ -97,13 +98,13 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("myfaces.ab"));
-        Assertions.assertEquals(countMatches(response, "faces.util.chain"), 1);
-        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 2);
+        assertTrue(response.contains("myfaces.ab"));
+        assertEquals(1, countMatches(response, "faces.util.chain"));
+        assertEquals(2, countMatches(response, "myfaces.ab"));
     }
-    
+
     @Test
-    public void testAjax5() throws Exception {
+    void ajax5() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajax_5.xhtml");
         
@@ -114,12 +115,12 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("myfaces.ab"));
-        Assertions.assertFalse(response.contains("faces.util.chain"));
+        assertFalse(response.contains("myfaces.ab"));
+        assertFalse(response.contains("faces.util.chain"));
     }
-    
+
     @Test
-    public void testAjax6() throws Exception {
+    void ajax6() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajax_6.xhtml");
         
@@ -130,11 +131,11 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("myfaces.ab"));
+        assertTrue(response.contains("myfaces.ab"));
     }
-    
+
     @Test
-    public void testAjax7() throws Exception {
+    void ajax7() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajax_7.xhtml");
         
@@ -145,10 +146,10 @@ public class AjaxBehaviorRenderTestCase extends AbstractFaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("myfaces.ab"));
-        Assertions.assertTrue(response.contains("faces.util.chain"));
-        Assertions.assertEquals(countMatches(response, "faces.util.chain"), 1);
-        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 2);
+        assertTrue(response.contains("myfaces.ab"));
+        assertTrue(response.contains("faces.util.chain"));
+        assertEquals(1, countMatches(response, "faces.util.chain"));
+        assertEquals(2, countMatches(response, "myfaces.ab"));
     }
     
     public int countMatches(String all, String search)

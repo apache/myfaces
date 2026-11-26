@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.behavior.AjaxBehavior;
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlSecretRendererTest extends AbstractFacesTestCase
+class HtmlSecretRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlInputSecret inputText;
@@ -72,46 +74,41 @@ public class HtmlSecretRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testInputTextDefault() throws Exception
+    void inputTextDefault() throws Exception
     {
         inputText.encodeBegin(facesContext);
         inputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<input type=\"password\" name=\"j_id__v_0\"/>", output);
+        assertEquals("<input type=\"password\" name=\"j_id__v_0\"/>", output);
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 inputText, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         inputText.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

@@ -22,7 +22,7 @@ package org.apache.myfaces.application.viewstate;
 
 import org.junit.jupiter.api.BeforeEach;
 
-public class CachedStateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
+class CachedStateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
 {
     @Override
     @BeforeEach

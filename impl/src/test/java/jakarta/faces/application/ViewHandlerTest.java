@@ -19,6 +19,7 @@
 package jakarta.faces.application;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,11 +36,10 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewHandlerTest
+class ViewHandlerTest
 {
     private MockFacesContext _facesContext;
     private IMocksControl _mocksControl;
@@ -47,7 +47,7 @@ public class ViewHandlerTest
     private TestViewHandler _testimpl;
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
@@ -61,13 +61,13 @@ public class ViewHandlerTest
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testCalculateCharacterEncodingWithRequestHeaderContentType()
+    void calculateCharacterEncodingWithRequestHeaderContentType()
     {
         Map<String, String> map = _mocksControl.createMock(Map.class);
         expect(_externalContext.getRequestHeaderMap()).andReturn(map);
         expect(map.get(eq("Content-Type"))).andReturn("text/html;charset=UTF-8");
         _mocksControl.replay();
-        Assertions.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -76,14 +76,14 @@ public class ViewHandlerTest
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
     @Test
-    public void testCalculateCharacterEncodingWithNoRequestContentTypeAndNoSession()
+    void calculateCharacterEncodingWithNoRequestContentTypeAndNoSession()
     {
         Map<String, String> emptyMap = Collections.emptyMap();
 
         expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(null);
         _mocksControl.replay();
-        Assertions.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -93,7 +93,7 @@ public class ViewHandlerTest
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionButNoSessionValue()
+    void calculateCharacterEncodingWithNoRequestContentTypeAndWithSessionButNoSessionValue()
     {
         Map<String, String> emptyMap = Collections.emptyMap();
 
@@ -103,7 +103,7 @@ public class ViewHandlerTest
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn(null);
         _mocksControl.replay();
-        Assertions.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -113,7 +113,7 @@ public class ViewHandlerTest
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionAndNoSessionValue()
+    void calculateCharacterEncodingWithNoRequestContentTypeAndWithSessionAndNoSessionValue()
     {
         Map<String, String> emptyMap = Collections.emptyMap();
 
@@ -123,7 +123,7 @@ public class ViewHandlerTest
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn("UTF-8");
         _mocksControl.replay();
-        Assertions.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -133,7 +133,7 @@ public class ViewHandlerTest
      * @throws Exception
      */
     @Test
-    public void testInitView() throws Exception
+    void initView() throws Exception
     {
         ViewHandler handler = _mocksControl
                                            .createMock(
@@ -155,7 +155,7 @@ public class ViewHandlerTest
      * @throws Exception
      */
     @Test
-    public void testInitViewWithUnsupportedEncodingException() throws Exception
+    void initViewWithUnsupportedEncodingException() throws Exception
     {
         final ViewHandler handler = _mocksControl
                                                  .createMock(
@@ -168,7 +168,7 @@ public class ViewHandlerTest
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         expectLastCall().andThrow(new UnsupportedEncodingException());
         _mocksControl.replay();
-        Assertions.assertThrows(FacesException.class,
+        assertThrows(FacesException.class,
                 () -> handler.initView(_facesContext));
         _mocksControl.verify();
     }

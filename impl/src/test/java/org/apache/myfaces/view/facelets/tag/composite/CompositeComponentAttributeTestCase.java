@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.beans.BeanDescriptor;
 import java.beans.FeatureDescriptor;
 import java.beans.PropertyDescriptor;
@@ -46,10 +48,9 @@ import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.DummyBean;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
+class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -66,7 +67,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testSimpleCompositeAttribute() throws Exception
+    void simpleCompositeAttribute() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -77,35 +78,35 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleAttributeVE.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         CompositeTestComponent compositeComponent1 = (CompositeTestComponent) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet1);
+        assertNotNull(facet1);
         HtmlOutputText text1 = (HtmlOutputText) facet1.findComponent("text");
-        Assertions.assertNotNull(text1);
+        assertNotNull(text1);
         HtmlCommandButton button1 = (HtmlCommandButton) facet1.findComponent("button");
-        Assertions.assertNotNull(button1);
+        assertNotNull(button1);
         HtmlInputText input1 = (HtmlInputText) facet1.findComponent("input");
-        Assertions.assertNotNull(input1);
+        assertNotNull(input1);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
         text1.pushComponentToEL(facesContext, text1);
         //set on tag
-        Assertions.assertEquals(bean.getStyleClass(), text1.getStyleClass());
+        assertEquals(bean.getStyleClass(), text1.getStyleClass());
         //set as default
-        Assertions.assertEquals(bean.getStyle(), text1.getStyle());
+        assertEquals(bean.getStyle(), text1.getStyle());
         
-        Assertions.assertEquals(bean.getJavaProperty(), text1.getValue());
+        assertEquals(bean.getJavaProperty(), text1.getValue());
         
-        Assertions.assertEquals(bean.getValue(), input1.getValue());
-        Assertions.assertEquals(true, input1.isRequired());
+        assertEquals(bean.getValue(), input1.getValue());
+        assertTrue(input1.isRequired());
         
         text1.popComponentFromEL(facesContext);
         button1.pushComponentToEL(facesContext,  button1);
         MethodExpression method = button1.getActionExpression();
-        Assertions.assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
+        assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
         button1.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
@@ -123,14 +124,14 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
             
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
     }
-    
+
     /**
      * Test simple attribute resolution (not set, default, normal use case).
      * 
      * @throws Exception
      */
     @Test
-    public void testSimpleCompositeAttributeInsertChildren() throws Exception
+    void simpleCompositeAttributeInsertChildren() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -141,34 +142,34 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleAttributeVEInsertChildren.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         CompositeTestComponent compositeComponent1 = (CompositeTestComponent) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet1);
+        assertNotNull(facet1);
         UIComponent compositeComponent2 = facet1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet2);
+        assertNotNull(facet2);
         HtmlOutputText text1 = (HtmlOutputText) facet2.findComponent("text");
-        Assertions.assertNotNull(text1);
+        assertNotNull(text1);
         HtmlCommandButton button1 = (HtmlCommandButton) facet2.findComponent("button");
-        Assertions.assertNotNull(button1);
+        assertNotNull(button1);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
         text1.pushComponentToEL(facesContext, text1);
         //set on tag
-        Assertions.assertEquals(bean.getStyleClass(), text1.getStyleClass());
+        assertEquals(bean.getStyleClass(), text1.getStyleClass());
         //set as default
-        Assertions.assertEquals(bean.getStyle(), text1.getStyle());
+        assertEquals(bean.getStyle(), text1.getStyle());
         
-        Assertions.assertEquals(bean.getJavaProperty(), text1.getValue());
+        assertEquals(bean.getJavaProperty(), text1.getValue());
         
         text1.popComponentFromEL(facesContext);
         button1.pushComponentToEL(facesContext,  button1);
         MethodExpression method = button1.getActionExpression();
-        Assertions.assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
+        assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
         button1.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
@@ -186,10 +187,10 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
             
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
     }
-    
-    
+
+
     @Test
-    public void testSimpleMethodInvocation() throws Exception
+    void simpleMethodInvocation() throws Exception
     {
         DummyBean dummyBean = new DummyBean(); 
         
@@ -200,27 +201,27 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleMethodInvocation.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet1);
+        assertNotNull(facet1);
         UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet2);
+        assertNotNull(facet2);
         UIForm form = (UIForm) facet2.findComponent("mainForm");
-        Assertions.assertNotNull(form);
+        assertNotNull(form);
         UICommand button1 = (UICommand) form.findComponent("button1");
-        Assertions.assertNotNull(button1);
+        assertNotNull(button1);
         UICommand button2 = (UICommand) form.findComponent("button2");
-        Assertions.assertNotNull(button2);
+        assertNotNull(button2);
         UICommand button3 = (UICommand) form.findComponent("button3");
-        Assertions.assertNotNull(button3);
+        assertNotNull(button3);
         UIInput text1 = (UIInput) form.findComponent("text1");
-        Assertions.assertNotNull(text1);
+        assertNotNull(text1);
         UIInput text2 = (UIInput) form.findComponent("text2");
-        Assertions.assertNotNull(text2);
+        assertNotNull(text2);
 
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
@@ -265,9 +266,9 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         
         String resp = sw.toString();
     }
-    
+
     @Test
-    public void testCompositeActionMethodInvocation() throws Exception
+    void compositeActionMethodInvocation() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
         
@@ -278,19 +279,19 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeActionMethodInvocation.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        Assertions.assertNotNull(form);
+        assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent);
+        assertNotNull(compositeComponent);
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("button1");
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         UICommand button = (UICommand) compositeComponent2.findComponent("button2");
-        Assertions.assertNotNull(button);
+        assertNotNull(button);
         
-        Assertions.assertNotNull(button.getActionExpression());
+        assertNotNull(button.getActionExpression());
         
-        Assertions.assertEquals("success", button.getActionExpression().invoke(facesContext.getELContext(), null));
+        assertEquals("success", button.getActionExpression().invoke(facesContext.getELContext(), null));
         
-        Assertions.assertEquals(1, button.getActionListeners().length);
+        assertEquals(1, button.getActionListeners().length);
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -299,8 +300,8 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         //root.encodeAll(facesContext);
         //sw.flush();
         //System.out.print(sw.toString());
-    }    
-    
+    }
+
     /**
      * Tests if unspecified attributes on <composite:interface>, <composite:attribute>
      * and <composite:facet> are handled correctly.
@@ -308,7 +309,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testUnspecifiedAttributes() throws Exception
+    void unspecifiedAttributes() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testInterfaceDescriptorAttributes.xhtml");
@@ -318,7 +319,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         CompositeComponentBeanInfo beanInfo = 
             (CompositeComponentBeanInfo) composite.getAttributes()
             .get(UIComponent.BEANINFO_KEY);
-        Assertions.assertNotNull(beanInfo);
+        assertNotNull(beanInfo);
         
         // get the <composite:interface> descriptor and check the unspecified attribute
         BeanDescriptor interfaceDescriptor = beanInfo.getBeanDescriptor();
@@ -326,7 +327,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
                 "unspecifiedInterfaceAttribute", "unspecifiedInterfaceValue");
         
         // check <composite:attribute>
-        Assertions.assertEquals(1, beanInfo.getPropertyDescriptors().length,
+        assertEquals(1, beanInfo.getPropertyDescriptors().length,
                 "Expecting one <composite:attribute>");
         PropertyDescriptor attributeDescriptor = beanInfo.getPropertyDescriptors()[0];
         _checkUnspecifiedAttribute(attributeDescriptor, 
@@ -335,7 +336,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         // check <composite:facet>
         Map<String, PropertyDescriptor> facetPropertyDescriptorMap = 
             (Map<String, PropertyDescriptor>) interfaceDescriptor.getValue(UIComponent.FACETS_KEY);
-        Assertions.assertNotNull(facetPropertyDescriptorMap);
+        assertNotNull(facetPropertyDescriptorMap);
         PropertyDescriptor facetDescriptor = facetPropertyDescriptorMap.get("facet");
         _checkUnspecifiedAttribute(facetDescriptor, 
                 "unspecifiedFacetAttribute", "unspecifiedFacetValue");
@@ -351,12 +352,11 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
             final String attributeName, final String attributeValue)
     {
         Object value = descriptor.getValue(attributeName);
-        Assertions.assertTrue(value instanceof ValueExpression,
-                "Unspecified attributes must be stored as a ValueExpression");
-        Assertions.assertEquals(attributeValue, 
+        assertInstanceOf(ValueExpression.class, value, "Unspecified attributes must be stored as a ValueExpression");
+        assertEquals(attributeValue, 
                 ((ValueExpression) value).getValue(facesContext.getELContext()));
     }
-    
+
     /**
      * The "displayName", "shortDescription", "expert", "hidden", and "preferred"
      * attributes are only exposed, if ProjectStage equals Development. This test
@@ -364,11 +364,11 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testDevelopmentValuesDevelopmentStage() throws Exception
+    void developmentValuesDevelopmentStage() throws Exception
     {
         _testDevelopmentValues(ProjectStage.Development);
     }
-    
+
     /**
      * The "displayName", "shortDescription", "expert", "hidden", and "preferred"
      * attributes are only exposed, if ProjectStage equals Development. This test
@@ -377,7 +377,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testDevelopmentValuesProductionStage() throws Exception
+    void developmentValuesProductionStage() throws Exception
     {
         _testDevelopmentValues(ProjectStage.Production);
     }
@@ -404,7 +404,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         CompositeComponentBeanInfo beanInfo = 
             (CompositeComponentBeanInfo) composite.getAttributes()
             .get(UIComponent.BEANINFO_KEY);
-        Assertions.assertNotNull(beanInfo);
+        assertNotNull(beanInfo);
         
         // check <composite:interface>
         BeanDescriptor interfaceDescriptor = beanInfo.getBeanDescriptor();
@@ -412,7 +412,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
                 "interfaceShortDescription", development);
         
         // check <composite:attribute>
-        Assertions.assertEquals(1, beanInfo.getPropertyDescriptors().length,
+        assertEquals(1, beanInfo.getPropertyDescriptors().length,
                 "Expecting one <composite:attribute>");
         PropertyDescriptor attributeDescriptor = beanInfo.getPropertyDescriptors()[0];
         _checkDevelopmentValues(attributeDescriptor, "attributeDisplayName",
@@ -421,7 +421,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         // check <composite:facet>
         Map<String, PropertyDescriptor> facetPropertyDescriptorMap = 
             (Map<String, PropertyDescriptor>) interfaceDescriptor.getValue(UIComponent.FACETS_KEY);
-        Assertions.assertNotNull(facetPropertyDescriptorMap);
+        assertNotNull(facetPropertyDescriptorMap);
         PropertyDescriptor facetDescriptor = facetPropertyDescriptorMap.get("facet");
         _checkDevelopmentValues(facetDescriptor, "facetDisplayName",
                 "facetShortDescription", development);
@@ -462,15 +462,15 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         }
         
         // Assertions
-        Assertions.assertEquals(displayName, descriptor.getDisplayName());
-        Assertions.assertEquals(shortDescription, descriptor.getShortDescription());
-        Assertions.assertEquals(booleanPropertiesValue, descriptor.isExpert());
-        Assertions.assertEquals(booleanPropertiesValue, descriptor.isHidden());
-        Assertions.assertEquals(booleanPropertiesValue, descriptor.isPreferred());
+        assertEquals(displayName, descriptor.getDisplayName());
+        assertEquals(shortDescription, descriptor.getShortDescription());
+        assertEquals(booleanPropertiesValue, descriptor.isExpert());
+        assertEquals(booleanPropertiesValue, descriptor.isHidden());
+        assertEquals(booleanPropertiesValue, descriptor.isPreferred());
     }
-    
+
     @Test
-    public void testSimpleActionTargetAttributeName() throws Exception
+    void simpleActionTargetAttributeName() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -481,36 +481,36 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testActionTargetAttributeName.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("mainForm:testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.findComponent("cc1");
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet1);
+        assertNotNull(facet1);
         HtmlCommandButton button1 = (HtmlCommandButton) facet1.findComponent("submitButton");
-        Assertions.assertNotNull(button1);
+        assertNotNull(button1);
         HtmlCommandButton button2 = (HtmlCommandButton) facet1.findComponent("cancelAction");
-        Assertions.assertNotNull(button2);
+        assertNotNull(button2);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
         button1.pushComponentToEL(facesContext,  button1);
 
         MethodExpression method = button1.getActionExpression();
-        Assertions.assertEquals("testActionMethodTypeSubmit", method.invoke(facesContext.getELContext(), null));
+        assertEquals("testActionMethodTypeSubmit", method.invoke(facesContext.getELContext(), null));
         
-        Assertions.assertEquals(1, button1.getActionListeners().length);
+        assertEquals(1, button1.getActionListeners().length);
         button1.getActionListeners()[0].processAction(new ActionEvent(button1));
-        Assertions.assertTrue(bean.isSubmitActionListenerCalled());
+        assertTrue(bean.isSubmitActionListenerCalled());
         
         button1.popComponentFromEL(facesContext);
         button2.pushComponentToEL(facesContext,  button2);
         
         method = button2.getActionExpression();
-        Assertions.assertEquals(bean.cancelAction(), method.invoke(facesContext.getELContext(), null));
+        assertEquals(bean.cancelAction(), method.invoke(facesContext.getELContext(), null));
         
-        Assertions.assertEquals(1, button2.getActionListeners().length);
+        assertEquals(1, button2.getActionListeners().length);
         button2.getActionListeners()[0].processAction(new ActionEvent(button2));
-        Assertions.assertTrue(bean.isCancelActionListenerCalled());
+        assertTrue(bean.isCancelActionListenerCalled());
         
         button2.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
@@ -533,7 +533,7 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testCompositeActionTargetAttributeName() throws Exception
+    void compositeActionTargetAttributeName() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -544,21 +544,21 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeActionTargetAttributeName.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("mainForm:testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.findComponent("cc1");
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet1);
+        assertNotNull(facet1);
         UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assertions.assertNotNull(facet2);
+        assertNotNull(facet2);
         
         
         HtmlCommandButton button1 = (HtmlCommandButton) facet2.findComponent("submitButton");
-        Assertions.assertNotNull(button1);
+        assertNotNull(button1);
         HtmlCommandButton button2 = (HtmlCommandButton) facet2.findComponent("cancelAction");
-        Assertions.assertNotNull(button2);
+        assertNotNull(button2);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
@@ -567,21 +567,21 @@ public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
         button1.pushComponentToEL(facesContext,  button1);
 
         MethodExpression method = button1.getActionExpression();
-        Assertions.assertEquals("testActionMethodTypeSubmit", method.invoke(facesContext.getELContext(), null));
+        assertEquals("testActionMethodTypeSubmit", method.invoke(facesContext.getELContext(), null));
         
-        Assertions.assertEquals(1, button1.getActionListeners().length);
+        assertEquals(1, button1.getActionListeners().length);
         button1.getActionListeners()[0].processAction(new ActionEvent(button1));
-        Assertions.assertTrue(bean.isSubmitActionListenerCalled());
+        assertTrue(bean.isSubmitActionListenerCalled());
         
         button1.popComponentFromEL(facesContext);
         button2.pushComponentToEL(facesContext,  button2);
         
         method = button2.getActionExpression();
-        Assertions.assertEquals(bean.cancelAction(), method.invoke(facesContext.getELContext(), null));
+        assertEquals(bean.cancelAction(), method.invoke(facesContext.getELContext(), null));
         
-        Assertions.assertEquals(1, button2.getActionListeners().length);
+        assertEquals(1, button2.getActionListeners().length);
         button2.getActionListeners()[0].processAction(new ActionEvent(button2));
-        Assertions.assertTrue(bean.isCancelActionListenerCalled());
+        assertTrue(bean.isCancelActionListenerCalled());
         
         button2.popComponentFromEL(facesContext);
         facet2.popComponentFromEL(facesContext);

@@ -16,21 +16,22 @@
 
 package org.apache.myfaces.application.viewstate;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
+class SerializedViewCollectionTestCase extends AbstractFacesTestCase
 {
-    
+
     @Test
-    public void testSerializedViewCollection1()
+    void serializedViewCollection1()
     {
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "1");
         
@@ -42,16 +43,16 @@ public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
         AtomicInteger destroyed = new AtomicInteger();
         
         collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key1));
         collection.put(facesContext, new Object[]{null,null,2}, key2, null, "2", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertEquals(destroyed.get(), 1);
+        assertNotNull(collection.get(key2));
+        assertNull(collection.get(key1));
+        assertEquals(1, destroyed.get());
         
     }
-    
+
     @Test
-    public void testSerializedViewCollection2()
+    void serializedViewCollection2()
     {
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "2");
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "1");
@@ -65,20 +66,20 @@ public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
         AtomicInteger destroyed = new AtomicInteger();
         
         collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key1));
         collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key3));
         collection.put(facesContext, new Object[]{null,null,2}, key2, key1, "2", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertEquals(destroyed.get(), 1);
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
+        assertNull(collection.get(key1));
+        assertEquals(1, destroyed.get());
         
-    }    
-    
+    }
+
     @Test
-    public void testSerializedViewCollection3()
+    void serializedViewCollection3()
     {
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "1");
         
@@ -91,21 +92,21 @@ public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
         AtomicInteger destroyed = new AtomicInteger();
         
         collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key1));
         collection.put(facesContext, new Object[]{null,null,2}, key2, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNull(collection.get(key1));
         // Destroy should not happen, because there is still one view holding the viewScopeId.
-        Assertions.assertEquals(destroyed.get(), 0);
+        assertEquals(0, destroyed.get());
         collection.put(facesContext, new Object[]{null,null,2}, key3, null, "2", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key3));
-        Assertions.assertNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
+        assertNull(collection.get(key2));
         // Now it should be destroyed the view 1
-        Assertions.assertEquals(destroyed.get(), 1);
+        assertEquals(1, destroyed.get());
     }
-    
+
     @Test
-    public void testSerializedViewCollection4()
+    void serializedViewCollection4()
     {
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "2");
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "1");
@@ -119,20 +120,20 @@ public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
         AtomicInteger destroyed = new AtomicInteger();
         
         collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key1));
         collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key3));
         collection.put(facesContext, new Object[]{null,null,2}, key2, key1, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertEquals(destroyed.get(), 0);
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
+        assertNull(collection.get(key1));
+        assertEquals(0, destroyed.get());
         
-    }   
-    
+    }
+
     @Test
-    public void testSerializedViewCollection5()
+    void serializedViewCollection5()
     {
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "3");
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "1");
@@ -147,33 +148,33 @@ public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
         AtomicInteger destroyed = new AtomicInteger();
         
         collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key1));
         collection.put(facesContext, new Object[]{null,null,2}, key2, null, "2", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
         collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
         collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
         
         // The are 3 slots, and when enters key4 the algorithm should not discard the most
         // recently used, so key1 and key3 should be preserved and key2 discarded.
         collection.put(facesContext, new Object[]{null,null,2}, key4, null, "4", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
-        Assertions.assertNotNull(collection.get(key4));
-        
+        assertNotNull(collection.get(key1));
+        assertNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key4));
 
-        Assertions.assertEquals(destroyed.get(), 1);
+
+        assertEquals(1, destroyed.get());
     }
-    
+
     @Test
-    public void testSerializedViewCollection6()
+    void serializedViewCollection6()
     {
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "4");
         servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "2");
@@ -193,77 +194,77 @@ public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
         AtomicInteger destroyed = new AtomicInteger();
         
         collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key1));
         collection.put(facesContext, new Object[]{null,null,2}, key2, key1, "2", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
         collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
         collection.put(facesContext, new Object[]{null,null,2}, key4, key3, "4", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
-        Assertions.assertNotNull(collection.get(key4));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key4));
         collection.put(facesContext, new Object[]{null,null,2}, key2, null, "2", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNotNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
-        Assertions.assertNotNull(collection.get(key4));
+        assertNotNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key4));
         
         // The collection is full, but under a new key should remove key1
         collection.put(facesContext, new Object[]{null,null,2}, key5, null, "5", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNotNull(collection.get(key3));
-        Assertions.assertNotNull(collection.get(key4));
-        Assertions.assertNotNull(collection.get(key5));
+        assertNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNotNull(collection.get(key3));
+        assertNotNull(collection.get(key4));
+        assertNotNull(collection.get(key5));
         
         // The next oldest is key2, but it was refreshed, so the next one in age is key3
         collection.put(facesContext, new Object[]{null,null,2}, key6, null, "6", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNull(collection.get(key3));
-        Assertions.assertNotNull(collection.get(key4));
-        Assertions.assertNotNull(collection.get(key5));
-        Assertions.assertNotNull(collection.get(key6));
+        assertNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNull(collection.get(key3));
+        assertNotNull(collection.get(key4));
+        assertNotNull(collection.get(key5));
+        assertNotNull(collection.get(key6));
         
         // There is a sequential view for key6, destroy the oldest one, which is key4
         collection.put(facesContext, new Object[]{null,null,2}, key7, key6, "7", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNull(collection.get(key3));
-        Assertions.assertNull(collection.get(key4));
-        Assertions.assertNotNull(collection.get(key5));
-        Assertions.assertNotNull(collection.get(key6));
-        Assertions.assertNotNull(collection.get(key7));
+        assertNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNull(collection.get(key3));
+        assertNull(collection.get(key4));
+        assertNotNull(collection.get(key5));
+        assertNotNull(collection.get(key6));
+        assertNotNull(collection.get(key7));
         
         // Since org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION is 2, and we have
         // the sequence [key6, key7, key8] , the one to destroy is key6. 
         collection.put(facesContext, new Object[]{null,null,2}, key8, key7, "8", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertNotNull(collection.get(key2));
-        Assertions.assertNull(collection.get(key3));
-        Assertions.assertNull(collection.get(key4));
-        Assertions.assertNotNull(collection.get(key5));
-        Assertions.assertNull(collection.get(key6));
-        Assertions.assertNotNull(collection.get(key7));
-        Assertions.assertNotNull(collection.get(key8));
+        assertNull(collection.get(key1));
+        assertNotNull(collection.get(key2));
+        assertNull(collection.get(key3));
+        assertNull(collection.get(key4));
+        assertNotNull(collection.get(key5));
+        assertNull(collection.get(key6));
+        assertNotNull(collection.get(key7));
+        assertNotNull(collection.get(key8));
         
         // This is a sequence [key2, key9], but the oldest one is key2, so in this case
         // key2 should be removed.
         collection.put(facesContext, new Object[]{null,null,2}, key9, key2, "9", (id) -> destroyed.incrementAndGet());
-        Assertions.assertNull(collection.get(key1));
-        Assertions.assertNull(collection.get(key2));
-        Assertions.assertNull(collection.get(key3));
-        Assertions.assertNull(collection.get(key4));
-        Assertions.assertNotNull(collection.get(key5));
-        Assertions.assertNull(collection.get(key6));
-        Assertions.assertNotNull(collection.get(key7));
-        Assertions.assertNotNull(collection.get(key8));
-        Assertions.assertNotNull(collection.get(key9));
-        
-        Assertions.assertEquals(destroyed.get(), 5);
+        assertNull(collection.get(key1));
+        assertNull(collection.get(key2));
+        assertNull(collection.get(key3));
+        assertNull(collection.get(key4));
+        assertNotNull(collection.get(key5));
+        assertNull(collection.get(key6));
+        assertNotNull(collection.get(key7));
+        assertNotNull(collection.get(key8));
+        assertNotNull(collection.get(key9));
+
+        assertEquals(5, destroyed.get());
     }
 }

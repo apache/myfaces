@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +28,9 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UITestCase extends AbstractFaceletTestCase
+class UITestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -52,7 +53,7 @@ public class UITestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testRelativePaths() throws Exception
+    void relativePaths() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "parent.xml");
@@ -62,8 +63,8 @@ public class UITestCase extends AbstractFaceletTestCase
         facesContext.setResponseWriter(mrw);
         root.encodeAll(facesContext);
         sw.flush();
-        
-        Assertions.assertTrue(sw.toString().equals("Hello World!"));
+
+        assertEquals("Hello World!", sw.toString());
         
         //System.out.println("************************");
         //System.out.println(sw.toString());
@@ -71,7 +72,7 @@ public class UITestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testCompositionTemplate() throws Exception
+    void compositionTemplate() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition-template.xml");
@@ -84,12 +85,12 @@ public class UITestCase extends AbstractFaceletTestCase
 
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("New Title"));
-        Assertions.assertTrue(response.contains("New Body"));
+        assertTrue(response.contains("New Title"));
+        assertTrue(response.contains("New Body"));
     }
 
     @Test
-    public void testCompositionTemplateSimple() throws Exception
+    void compositionTemplateSimple() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition-template-simple.xml");
@@ -102,11 +103,11 @@ public class UITestCase extends AbstractFaceletTestCase
 
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("New Body"));
+        assertTrue(response.contains("New Body"));
     }
 
     @Test
-    public void testComponent() throws Exception
+    void component() throws Exception
     {
         Map map = new HashMap();
         facesContext.getExternalContext().getRequestMap().put("map", map);
@@ -114,8 +115,8 @@ public class UITestCase extends AbstractFaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "component.xml");
 
-        Assertions.assertEquals(1, root.getChildCount());
-        Assertions.assertNotNull(map.get("c"));
+        assertEquals(1, root.getChildCount());
+        assertNotNull(map.get("c"));
     }
 
     /*

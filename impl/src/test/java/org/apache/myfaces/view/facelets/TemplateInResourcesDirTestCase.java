@@ -18,11 +18,12 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.el.ExpressionFactory;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,7 +32,7 @@ import org.junit.jupiter.api.Test;
  * @author Jay Sartoris
  */
 
-public class TemplateInResourcesDirTestCase extends AbstractMyFacesCDIRequestTestCase
+class TemplateInResourcesDirTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -43,16 +44,16 @@ public class TemplateInResourcesDirTestCase extends AbstractMyFacesCDIRequestTes
     protected ExpressionFactory createExpressionFactory()
     {
         return new org.apache.el.ExpressionFactoryImpl();
-    }    
-    
+    }
+
     @Test
-    public void testFaceletWithTemplateInResourcesDir() throws Exception
+    void faceletWithTemplateInResourcesDir() throws Exception
     {
         startViewRequest("/templateInResourcesDir.xhtml");
         processLifecycleExecuteAndRender();
         
         String text = getRenderedContent(facesContext);
-        Assertions.assertTrue(text.contains("This template is working as expected!"));
+        assertTrue(text.contains("This template is working as expected!"));
         
         endRequest();
     }

@@ -15,6 +15,9 @@
 */
 package org.apache.myfaces.context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +27,6 @@ import jakarta.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
+class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
 
     @Override
     @BeforeEach
@@ -47,13 +49,13 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
         FactoryFinder.setFactory (FactoryFinder.EXCEPTION_HANDLER_FACTORY,
         "org.apache.myfaces.context.ExceptionHandlerFactoryImpl");
     }
-    
+
     /**
      * Empty String as request param
      * has to result in an empty list
      */
     @Test
-    public void testRequestParams1() {
+    void requestParams1() {
         String empty = "    \n \t  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, empty);
@@ -63,14 +65,14 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getRenderIds().isEmpty());
+        assertTrue(pprContext.getRenderIds().isEmpty());
     }
 
     /**
      * no request param, has to result in an empty list
      */
     @Test
-    public void testRequestParams2() {
+    void requestParams2() {
         Map<String, String> requestParamMap = new HashMap<String, String>();
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
@@ -78,7 +80,7 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getRenderIds().isEmpty());
+        assertTrue(pprContext.getRenderIds().isEmpty());
     }
 
     /**
@@ -102,7 +104,7 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
      * list with one element has to result in a list with one element
      */
     @Test
-    public void testRequestParams5() {
+    void requestParams5() {
         String params = " view1:panel1:_component1  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params);
@@ -112,8 +114,8 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getRenderIds().size() == 1);
-        Assertions.assertTrue(pprContext.getRenderIds().iterator().next().equals("view1:panel1:_component1"));
+        assertEquals(1, pprContext.getRenderIds().size());
+        assertEquals("view1:panel1:_component1", pprContext.getRenderIds().iterator().next());
     }
 
     /**
@@ -121,7 +123,7 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
      * blank chars
      */
     @Test
-    public void testRequestParams6() {
+    void requestParams6() {
         String params = " view1:panel1:_component1 view1:panel1:_component2 \n  component3 component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params);
@@ -131,7 +133,7 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getRenderIds().size() == 4);
+        assertEquals(4, pprContext.getRenderIds().size());
 
         // FIXME: Latest spec uses a Collection so order is not guaranteed
 //        Assertions.assertTrue("Value match",pprContext.getRenderIds().get(0).equals("view1:panel1:_component1"));
@@ -146,7 +148,7 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
      * cannot be inflated with repeated ids.
      */
     @Test
-    public void testDuplicateClientIdsAreCollapsed() {
+    void duplicateClientIdsAreCollapsed() {
         String params = "form:input form:input form:input";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params);
@@ -156,8 +158,8 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
 
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertEquals(1, pprContext.getRenderIds().size());
-        Assertions.assertTrue(pprContext.getRenderIds().contains("form:input"));
+        assertEquals(1, pprContext.getRenderIds().size());
+        assertTrue(pprContext.getRenderIds().contains("form:input"));
     }
 
     /**
@@ -165,7 +167,7 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
      * of NamingContainer separators) must not be expanded into a PartialVisitContext.
      */
     @Test
-    public void testOverlongClientIdIsRejected() {
+    void overlongClientIdIsRejected() {
         StringBuilder colons = new StringBuilder();
         for (int i = 0; i < 100000; i++) {
             colons.append(':');
@@ -178,14 +180,14 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
 
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getRenderIds().isEmpty());
+        assertTrue(pprContext.getRenderIds().isEmpty());
     }
 
     /**
      * the number of client ids read from the request is capped.
      */
     @Test
-    public void testClientIdCountIsCapped() {
+    void clientIdCountIsCapped() {
         StringBuilder params = new StringBuilder();
         for (int i = 0; i < 5000; i++) {
             params.append("id").append(i).append(' ');
@@ -198,6 +200,6 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
 
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertEquals(256, pprContext.getRenderIds().size());
+        assertEquals(256, pprContext.getRenderIds().size());
     }
 }

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.pss.dynamicchild;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.util.List;
 
 import jakarta.el.ExpressionFactory;
@@ -27,7 +30,6 @@ import jakarta.faces.component.UIInput;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.view.facelets.PartialStateManagementStrategy;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,7 +37,7 @@ import org.junit.jupiter.api.Test;
  * reproduces it. It must therefore not be tracked as a dynamically added component in the saved state, and the
  * postback must neither lose it nor duplicate it.
  */
-public class DynamicChildInPostAddToViewTestCase extends AbstractMyFacesCDIRequestTestCase
+class DynamicChildInPostAddToViewTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     private static final String SUBMITTED_VALUE = "submitted into a dynamically added input";
 
@@ -58,13 +60,13 @@ public class DynamicChildInPostAddToViewTestCase extends AbstractMyFacesCDIReque
     }
 
     @Test
-    public void testListenerOnViewRoot() throws Exception
+    void listenerOnViewRoot() throws Exception
     {
         assertBuildTimeAddIsNotSaved("/dynamicChildInViewRoot.xhtml");
     }
 
     @Test
-    public void testListenerOnContainer() throws Exception
+    void listenerOnContainer() throws Exception
     {
         assertBuildTimeAddIsNotSaved("/dynamicChildInContainer.xhtml");
     }
@@ -74,22 +76,22 @@ public class DynamicChildInPostAddToViewTestCase extends AbstractMyFacesCDIReque
         startViewRequest(viewId);
         processLifecycleExecuteAndRender();
 
-        Assertions.assertEquals(1, countDynamicChildren(), "one added child on initial render");
-        Assertions.assertFalse(isMarkedAsAddedAfterBuild(), "added child marked as added after build on initial render");
-        Assertions.assertEquals(0, countClientIdsAdded(), "dynamically added components on initial render");
+        assertEquals(1, countDynamicChildren(), "one added child on initial render");
+        assertFalse(isMarkedAsAddedAfterBuild(), "added child marked as added after build on initial render");
+        assertEquals(0, countClientIdsAdded(), "dynamically added components on initial render");
 
         client.inputText(CHILD_CLIENT_ID, SUBMITTED_VALUE);
         client.submit("form:submit");
         processLifecycleExecuteAndRender();
 
-        Assertions.assertEquals(1, countDynamicChildren(), "one added child after postback");
-        Assertions.assertEquals(SUBMITTED_VALUE, facesContext.getApplication().evaluateExpressionGet(facesContext,
+        assertEquals(1, countDynamicChildren(), "one added child after postback");
+        assertEquals(SUBMITTED_VALUE, facesContext.getApplication().evaluateExpressionGet(facesContext,
                 "#{dynamicChildInPostAddToViewBean.value}", String.class), "value decoded from the added child");
-        Assertions.assertEquals(SUBMITTED_VALUE,
+        assertEquals(SUBMITTED_VALUE,
                 ((UIInput) facesContext.getViewRoot().findComponent(CHILD_CLIENT_ID)).getValue(),
                 "value of the added child after postback");
-        Assertions.assertFalse(isMarkedAsAddedAfterBuild(), "added child marked as added after build after postback");
-        Assertions.assertEquals(0, countClientIdsAdded(), "dynamically added components after postback");
+        assertFalse(isMarkedAsAddedAfterBuild(), "added child marked as added after build after postback");
+        assertEquals(0, countClientIdsAdded(), "dynamically added components after postback");
 
         endRequest();
     }

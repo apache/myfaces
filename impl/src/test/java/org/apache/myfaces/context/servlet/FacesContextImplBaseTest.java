@@ -18,10 +18,11 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jakarta.faces.component.UIViewRoot;
 
@@ -34,14 +35,14 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  * @author Bill Lucy (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesContextImplBaseTest extends AbstractFaceletTestCase {
+class FacesContextImplBaseTest extends AbstractFaceletTestCase {
 
     /**
      * Verify that the Map returned by UIViewRoot.getViewMap() is cleared when a new view root is set,
      * as required in 4.1.19.2
      */
     @Test
-    public void testViewMapCleared() throws Exception
+    void viewMapCleared() throws Exception
     {
         // don't use MockFacesServletContext here
         FacesContextImpl fci = new  FacesContextImpl(facesContext.getExternalContext(), null, null);
@@ -53,7 +54,7 @@ public class FacesContextImplBaseTest extends AbstractFaceletTestCase {
 
         // set a new view root, which will cause the old view root's ViewMap to be cleared if BUILDING_VIEW_METADATA is not set
         fci.setViewRoot(secondRoot);
-        Assertions.assertEquals(0, viewMap.size(), "The ViewMap was not cleared as expected");
+        assertEquals(0, viewMap.size(), "The ViewMap was not cleared as expected");
     }
 
     /**
@@ -61,7 +62,7 @@ public class FacesContextImplBaseTest extends AbstractFaceletTestCase {
      * BUILDING_VIEW_METADATA attribute is set.  See MYFACES-4282.
      */
     @Test
-    public void testViewMapNotClearedWhileBuildingViewMetadata() throws Exception
+    void viewMapNotClearedWhileBuildingViewMetadata() throws Exception
     {
         FacesContextImpl fci = new  FacesContextImpl(facesContext.getExternalContext(), null, null);
         UIViewRoot firstRoot = new UIViewRoot();
@@ -73,6 +74,6 @@ public class FacesContextImplBaseTest extends AbstractFaceletTestCase {
 
         // set a new view root - the old view root's ViewMap should NOT be cleared
         fci.setViewRoot(secondRoot);
-        Assertions.assertEquals(1, viewMap.size(), "The ViewMap was incorrectly cleared while the BUILDING_VIEW_METADATA attribute was set");
+        assertEquals(1, viewMap.size(), "The ViewMap was incorrectly cleared while the BUILDING_VIEW_METADATA attribute was set");
     }
 }

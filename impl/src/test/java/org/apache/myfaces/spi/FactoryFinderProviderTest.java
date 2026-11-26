@@ -18,10 +18,11 @@
  */
 package org.apache.myfaces.spi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.faces.FactoryFinder;
 
 import  org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,18 +35,18 @@ public class FactoryFinderProviderTest
     }
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
     }
 
     @AfterEach
-    public void tearDown() throws Exception
+    void tearDown() throws Exception
     {
         
     }
-    
+
     @Test
-    public void testGetFactory() throws Exception
+    void getFactory() throws Exception
     {
         FactoryFinderProviderFactory ffp = new CustomFactoryFinderProviderFactoryImpl();
      
@@ -53,7 +54,7 @@ public class FactoryFinderProviderTest
         
         Object uno = FactoryFinder.getFactory("anything");
         
-        Assertions.assertEquals(1, uno);
+        assertEquals(1, uno);
         
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, "sfdsfdsf");
         

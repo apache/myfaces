@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.faces.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,11 +39,10 @@ import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewMetadataTestCase extends AbstractFaceletTestCase
+class ViewMetadataTestCase extends AbstractFaceletTestCase
 {
     
     protected NavigationHandler navigationHandler;
@@ -107,9 +108,9 @@ public class ViewMetadataTestCase extends AbstractFaceletTestCase
         super.tearDown();
         navigationHandler = null;
     }
-    
+
     @Test
-    public void testSimpleViewMetadata() throws Exception
+    void simpleViewMetadata() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
         
@@ -128,7 +129,7 @@ public class ViewMetadataTestCase extends AbstractFaceletTestCase
         
         Collection<UIViewParameter> viewParameters = metadata.getViewParameters(root);
         
-        Assertions.assertEquals(1, viewParameters.size());
+        assertEquals(1, viewParameters.size());
         
         //root.setViewId("viewMetadata.xhtml");
         vdl.buildView(facesContext, root, "viewMetadata.xhtml");

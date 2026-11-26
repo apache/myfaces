@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIForm;
@@ -42,7 +44,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlLinkRendererTest extends AbstractFacesTestCase
+class HtmlLinkRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer;
@@ -99,9 +101,9 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
         super.tearDown();
         writer = null;
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
@@ -135,12 +137,12 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 commandLink, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testOutputLink() throws Exception 
+    void outputLink() throws Exception 
     {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
@@ -173,74 +175,59 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 outputLink, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameOutputLink() 
+    void clientBehaviorHolderRendersIdAndNameOutputLink() 
     {
         outputLink.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             outputLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameCommandLink() 
+    void clientBehaviorHolderRendersIdAndNameCommandLink() 
     {
         commandLink.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             commandLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             //System.out.println("----OUTPUT----"+output);
-            Assertions.assertTrue(output.matches("(?s).+id=\".+\".+"));
-            Assertions.assertTrue(output.matches("(?s).+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameOutcomeTargetLink() 
+    void clientBehaviorHolderRendersIdAndNameOutcomeTargetLink() 
     {
         outcomeTargetLink.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             outcomeTargetLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Tests if h:link correctly includes all parameters of the implicit
      * navigation case created from the outcome.
@@ -248,7 +235,7 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
      * @throws Exception
      */
     @Test
-    public void testOutcomeTargetRendersNavigationCaseParameters() throws Exception
+    void outcomeTargetRendersNavigationCaseParameters() throws Exception
     {
         // configure the link
         outcomeTargetLink.getAttributes().put("includeViewParams", false);
@@ -260,16 +247,16 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the parameters are rendered
-        Assertions.assertTrue(output.contains("param1=value1"));
-        Assertions.assertTrue(output.contains("param2=value2"));
+        assertTrue(output.contains("param1=value1"));
+        assertTrue(output.contains("param2=value2"));
     }
-    
+
     /**
      * Tests if the fragment attribute is correctly rendered.
      * @throws Exception
      */
     @Test
-    public void testOutcomeTargetLinkFragment() throws Exception
+    void outcomeTargetLinkFragment() throws Exception
     {
         // configure the link
         final String fragment = "end";
@@ -282,31 +269,31 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the fragment is rendered
-        Assertions.assertTrue(output.contains("param1=value1#" + fragment));
+        assertTrue(output.contains("param1=value1#" + fragment));
     }
-    
+
     /**
      * Test for the right use of the fragment attribute.
      * The value of the fragment attribute is appended to the end of target URL following a hash (#) mark.
      * @throws Exception
      */
     @Test
-    public void testOutputLinkFragment() throws Exception
+    void outputLinkFragment() throws Exception
     {
         outputLink.setFragment("fragment");
         outputLink.setValue("http://www.irian.at");
         outputLink.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<a href=\"http://www.irian.at#fragment\"></a>", output);
+        assertEquals("<a href=\"http://www.irian.at#fragment\"></a>", output);
     }
-    
+
     /**
      * If the disable attribute of a child UIParameter is true,
      * he should be ignored.
      * @throws Exception
      */
     @Test
-    public void testDisabledUIParameterNotRenderedCommandLink() throws Exception
+    void disabledUIParameterNotRenderedCommandLink() throws Exception
     {
         UIParameter param1 = new UIParameter();
         param1.setName("param1");
@@ -320,19 +307,19 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
         
         commandLink.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        Assertions.assertFalse(output.contains("param1"));
-        Assertions.assertFalse(output.contains("value1"));
-        Assertions.assertTrue(output.contains("param2"));
-        Assertions.assertTrue(output.contains("value2"));
+        assertFalse(output.contains("param1"));
+        assertFalse(output.contains("value1"));
+        assertTrue(output.contains("param2"));
+        assertTrue(output.contains("value2"));
     }
-    
+
     /**
      * If the disable attribute of a child UIParameter is true,
      * he should be ignored.
      * @throws Exception
      */
     @Test
-    public void testDisabledUIParameterNotRenderedOutputLink() throws Exception
+    void disabledUIParameterNotRenderedOutputLink() throws Exception
     {
         UIParameter param1 = new UIParameter();
         param1.setName("param1");
@@ -346,60 +333,50 @@ public class HtmlLinkRendererTest extends AbstractFacesTestCase
         
         outputLink.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        Assertions.assertFalse(output.contains("param1"));
-        Assertions.assertFalse(output.contains("value1"));
-        Assertions.assertTrue(output.contains("param2"));
-        Assertions.assertTrue(output.contains("value2"));
+        assertFalse(output.contains("param1"));
+        assertFalse(output.contains("value1"));
+        assertTrue(output.contains("param2"));
+        assertTrue(output.contains("value2"));
     }
-    
+
     /**
      * Tests if the h:link correctly includes an UIParameter
      * with a non-null-name when creating the URL.
      */
     @Test
-    public void testOutcomeTargetLinkIncludesUIParameterInURL()
+    void outcomeTargetLinkIncludesUIParameterInURL()
     {
         // create the UIParameter and attach it
         UIParameter param = new UIParameter();
         param.setName("myParameter");
         param.setValue("myValue");
         outcomeTargetLink.getChildren().add(param);
-        
-        try
-        {
+
+        Assertions.assertDoesNotThrow(() -> {
             outcomeTargetLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.contains("myParameter=myValue"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.contains("myParameter=myValue"));
+        });
     }
-    
+
     /**
      * Tests if the h:link correctly skips an UIParameter
      * with a null-name when creating the URL.
      */
     @Test
-    public void testOutcomeTargetLinkSkipsNullValueOfUIParameterInURL()
+    void outcomeTargetLinkSkipsNullValueOfUIParameterInURL()
     {
         // create the UIParameter with value = null and attach it
         UIParameter param = new UIParameter();
         param.setName("myNullParameter");
         param.setValue(null);
         outcomeTargetLink.getChildren().add(param);
-        
-        try
-        {
+
+        Assertions.assertDoesNotThrow(() -> {
             outcomeTargetLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertFalse(output.contains("myNullParameter"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertFalse(output.contains("myNullParameter"));
+        });
     }
     
 }

@@ -21,6 +21,7 @@ package jakarta.faces.component;
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -52,12 +53,11 @@ import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import  org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-public class UIViewRootTest extends AbstractFacesTestCase
+class UIViewRootTest extends AbstractFacesTestCase
 {
     private Map<PhaseId, Class<? extends PhaseListener>> phaseListenerClasses;
     private IMocksControl _mocksControl;
@@ -110,28 +110,28 @@ public class UIViewRootTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testSuperClass() throws Exception
+    void superClass() throws Exception
     {
-        Assertions.assertEquals(UIComponentBase.class, UIViewRoot.class.getSuperclass());
+        assertEquals(UIComponentBase.class, UIViewRoot.class.getSuperclass());
     }
 
     @Test
-    public void testComponentType() throws Exception
+    void componentType() throws Exception
     {
-        Assertions.assertEquals("jakarta.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
+        assertEquals("jakarta.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
     }
 
     @Test
-    public void testLocale() throws Exception
+    void locale() throws Exception
     {
         expect(_application.getViewHandler()).andReturn(_viewHandler).anyTimes();
         expect(_viewHandler.calculateLocale(_facesContext)).andReturn(null).anyTimes();
         _mocksControl.replay();
 
         _facesContext.setApplication(_application);
-        Assertions.assertNull(_testimpl.getLocale());
+        assertNull(_testimpl.getLocale());
         _testimpl.setLocale(Locale.JAPANESE);
-        Assertions.assertEquals(Locale.JAPANESE, _testimpl.getLocale());
+        assertEquals(Locale.JAPANESE, _testimpl.getLocale());
         _mocksControl.verify();
     }
 
@@ -139,7 +139,7 @@ public class UIViewRootTest extends AbstractFacesTestCase
      * Test method for {@link jakarta.faces.component.UIViewRoot#createUniqueId()}.
      */
     @Test
-    public void testCreateUniqueId()
+    void createUniqueId()
     {
         /*
         expect(_externalContext.encodeNamespace((String) anyObject())).andAnswer(new IAnswer<String>()
@@ -155,7 +155,7 @@ public class UIViewRootTest extends AbstractFacesTestCase
         {
             if (!createdIds.add(_testimpl.createUniqueId()))
             {
-                Assertions.fail("duplicate id created");
+                fail("duplicate id created");
             }
         }
         _mocksControl.verify();
@@ -564,7 +564,7 @@ public class UIViewRootTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testBroadcastEvents()
+    void broadcastEvents()
     {
         
         UICommand uiCommand = new UICommand();
@@ -596,7 +596,7 @@ public class UIViewRootTest extends AbstractFacesTestCase
         // listener itself queues new event
         facesContext.getViewRoot().broadcastEvents(facesContext, PhaseId.INVOKE_APPLICATION);
         
-        Assertions.assertEquals(15, actionListener.invocationCount);
+        assertEquals(15, actionListener.invocationCount);
         org.easymock.EasyMock.verify(differentActionListener);
     }
 

@@ -30,8 +30,8 @@
     <name>Apache MyFaces Core 5.0 - Extensions - Quarkus - Showcase</name>
 
     <properties>
-        <failsafe.version>3.2.5</failsafe.version>
-        <surefire.version>3.2.5</surefire.version>
+        <failsafe.version>3.6.1</failsafe.version>
+        <surefire.version>3.6.1</surefire.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>

@@ -15,44 +15,45 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.StringWriter;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class UnicodeEncoderTest extends AbstractFacesTestCase
+class UnicodeEncoderTest extends AbstractFacesTestCase
 {
 
     @Test
-    public void testUnicodeEncoder1() throws Exception
+    void unicodeEncoder1() throws Exception
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, ""+(char)0xE1);
-        Assertions.assertEquals(UnicodeEncoder.encode(""+(char)0xE1), sw.toString());
+        assertEquals(UnicodeEncoder.encode(""+(char)0xE1), sw.toString());
     }
-    
+
     @Test
-    public void testUnicodeEncoder2() throws Exception
+    void unicodeEncoder2() throws Exception
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, "h"+(char)0xE1);
-        Assertions.assertEquals(UnicodeEncoder.encode("h"+(char)0xE1), sw.toString());
+        assertEquals(UnicodeEncoder.encode("h"+(char)0xE1), sw.toString());
     }
-    
+
     @Test
-    public void testUnicodeEncoder3() throws Exception
+    void unicodeEncoder3() throws Exception
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, ""+(char)0xE1+"a");
-        Assertions.assertEquals(UnicodeEncoder.encode(""+(char)0xE1)+"a", sw.toString());
+        assertEquals(UnicodeEncoder.encode(""+(char)0xE1)+"a", sw.toString());
     }
-    
+
     @Test
-    public void testUnicodeEncoder4() throws Exception
+    void unicodeEncoder4() throws Exception
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, "hello h"+(char)0xE1+"aaa <p></p>");
-        Assertions.assertEquals("hello h&#225;aaa <p></p>", sw.toString());
+        assertEquals("hello h&#225;aaa <p></p>", sw.toString());
     }
 
 }

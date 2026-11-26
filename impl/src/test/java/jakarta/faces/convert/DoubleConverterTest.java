@@ -23,15 +23,18 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
+
 import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test the {@link DoubleConverter}.
  */
-public class DoubleConverterTest extends AbstractFacesTestCase {
+class DoubleConverterTest extends AbstractFacesTestCase {
 
     private DoubleConverter mock;
 
@@ -57,28 +60,28 @@ public class DoubleConverterTest extends AbstractFacesTestCase {
      * the focus here is on the comma separator ',' in germany.
      */
     @Test
-    public void testDoubleParsingGermany()
+    void doubleParsingGermany()
     {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.GERMANY);
         UIInput input = new UIInput();
 
         {
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "47,3443");
-            Assertions.assertNotNull(d);
-            Assertions.assertEquals(47.3443d, d.doubleValue(), 0);
+            assertNotNull(d);
+            assertEquals(47.3443d, d.doubleValue(), 0);
         }
 
         {
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "0,3443e3");
-            Assertions.assertNotNull(d);
-            Assertions.assertEquals(344.3d, d.doubleValue(), 0);
+            assertNotNull(d);
+            assertEquals(344.3d, d.doubleValue(), 0);
         }
 
         {
             // values with a dot as decimal separator should still work...
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "0.3443e3");
-            Assertions.assertNotNull(d);
-            Assertions.assertEquals(344.3d, d.doubleValue(), 0);
+            assertNotNull(d);
+            assertEquals(344.3d, d.doubleValue(), 0);
         }
 
     }
@@ -87,15 +90,15 @@ public class DoubleConverterTest extends AbstractFacesTestCase {
      * the focus here is on the comma separator '.' in the US.
      */
     @Test
-    public void testDoubleParsingUS()
+    void doubleParsingUS()
     {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.US);
         UIInput input = new UIInput();
 
         {
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "47.3443");
-            Assertions.assertNotNull(d);
-            Assertions.assertEquals(47.3443d, d.doubleValue(), 0);
+            assertNotNull(d);
+            assertEquals(47.3443d, d.doubleValue(), 0);
         }
 
         {
@@ -103,7 +106,7 @@ public class DoubleConverterTest extends AbstractFacesTestCase {
             try
             {
                 Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "47,3443");
-                Assertions.fail();
+                fail();
             }
             catch (ConverterException cev)
             {

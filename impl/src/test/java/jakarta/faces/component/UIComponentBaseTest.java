@@ -23,6 +23,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.same;
 import static org.easymock.classextension.EasyMock.createControl;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ import jakarta.faces.render.Renderer;
 
 import org.easymock.classextension.IMocksControl;
 import  org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,16 +52,16 @@ public class UIComponentBaseTest
     private Renderer _renderer;
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
         _mocksControl = createControl();
         _facesContext = _mocksControl.createMock(FacesContext.class);
         _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethodsArray());
         _renderer = _mocksControl.createMock(Renderer.class);
     }
-    
+
     @AfterEach
-    public void tearDown() throws Exception
+    void tearDown() throws Exception
     {
         _mocksControl = null;
         _facesContext = null;
@@ -100,14 +100,14 @@ public class UIComponentBaseTest
      * Test method for 'jakarta.faces.component.UIComponentBase.getAttributes()'
      */
     @Test
-    public void testGetAttributes()
+    void getAttributes()
     {
         // TODO implement tests for _ComponentAttributesMap
-        Assertions.assertTrue(_testImpl.getAttributes() instanceof _ComponentAttributesMap);
+        assertInstanceOf(_ComponentAttributesMap.class, _testImpl.getAttributes());
     }
 
     @Test
-    public void testGetRendersChildren()
+    void getRendersChildren()
     {
         assertGetRendersChildren(false, null);
         assertGetRendersChildren(true, _renderer);
@@ -123,7 +123,7 @@ public class UIComponentBaseTest
             expect(renderer.getRendersChildren()).andReturn(expectedValue);
         }
         _mocksControl.replay();
-        Assertions.assertEquals(expectedValue, _testImpl.getRendersChildren());
+        assertEquals(expectedValue, _testImpl.getRendersChildren());
         _mocksControl.verify();
         _mocksControl.reset();
     }
@@ -149,15 +149,14 @@ public class UIComponentBaseTest
 //    }
 
     @Test
-    public void testBroadcastArgNPE() throws Exception
+    void broadcastArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.broadcast(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.broadcast(null));
     }
 
     @Test
-    public void testBroadcast() throws Exception
+    void broadcast() throws Exception
     {
         FacesEvent event = _mocksControl.createMock(FacesEvent.class);
         _testImpl.broadcast(event);
@@ -177,15 +176,14 @@ public class UIComponentBaseTest
     }
 
     @Test
-    public void testDecodeArgNPE() throws Exception
+    void decodeArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.decode(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.decode(null));
     }
 
     @Test
-    public void testDecode() throws Exception
+    void decode() throws Exception
     {
         expect(_testImpl.getRenderer(same(_facesContext))).andReturn(_renderer);
         _renderer.decode(same(_facesContext), same(_testImpl));
@@ -195,11 +193,10 @@ public class UIComponentBaseTest
     }
 
     @Test
-    public void testEncodeBeginArgNPE() throws Exception
+    void encodeBeginArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.encodeBegin(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.encodeBegin(null));
     }
 
 // FIXME: Need to add some expectation for FacesContext.getAttributes. I'll have to read a bit more about 
@@ -221,15 +218,14 @@ public class UIComponentBaseTest
 //    }
 
     @Test
-    public void testEncodeChildrenArgNPE() throws Exception
+    void encodeChildrenArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.encodeChildren(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.encodeChildren(null));
     }
 
     @Test
-    public void testEncodeChildren() throws Exception
+    void encodeChildren() throws Exception
     {
         _testImpl.setRendered(false);
         _mocksControl.replay();
@@ -245,11 +241,10 @@ public class UIComponentBaseTest
     }
 
     @Test
-    public void testEncodeEndArgNPE() throws Exception
+    void encodeEndArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.encodeEnd(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.encodeEnd(null));
     }
 
 // FIXME: Need to add some expectation for FacesContext.getAttributes. I'll have to read a bit more about 
@@ -271,26 +266,24 @@ public class UIComponentBaseTest
 //    }
 
     @Test
-    public void testQueueEventArgNPE() throws Exception
+    void queueEventArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.queueEvent(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.queueEvent(null));
     }
 
     @Test
-    public void testQueueEventWithoutParent() throws Exception
+    void queueEventWithoutParent() throws Exception
     {
-        Assertions.assertThrows(IllegalStateException.class, () -> {
-            FacesEvent event = _mocksControl.createMock(FacesEvent.class);
-            expect(_testImpl.getParent()).andReturn(null);
-            _mocksControl.replay();
-            _testImpl.queueEvent(event);
-        });
+        FacesEvent event = _mocksControl.createMock(FacesEvent.class);
+        expect(_testImpl.getParent()).andReturn(null);
+        _mocksControl.replay();
+        assertThrows(IllegalStateException.class, () ->
+            _testImpl.queueEvent(event));
     }
 
     @Test
-    public void testQueueEvent() throws Exception
+    void queueEvent() throws Exception
     {
         FacesEvent event = _mocksControl.createMock(FacesEvent.class);
         UIComponent parent = _mocksControl.createMock(UIComponent.class);
@@ -302,17 +295,16 @@ public class UIComponentBaseTest
     }
 
     @Test
-    public void testProcessDecodesArgNPE() throws Exception
+    void processDecodesArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.processDecodes(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.processDecodes(null));
     }
 
     @Test
-    public void testProcessDecodesCallsRenderResoponseIfDecodeThrowsException()
+    void processDecodesCallsRenderResoponseIfDecodeThrowsException()
     {
-        Assertions.assertThrows(RuntimeException.class, () -> {
+        assertThrows(RuntimeException.class, () -> {
             List<UIComponent> emptyList = Collections.emptyList();
 
             expect(_testImpl.getFacetsAndChildren()).andReturn(emptyList.iterator());
@@ -358,11 +350,10 @@ public class UIComponentBaseTest
 //    }
 
     @Test
-    public void testProcessValidatorsArgNPE() throws Exception
+    void processValidatorsArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.processValidators(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.processValidators(null));
     }
 
     //@Test
@@ -396,11 +387,10 @@ public class UIComponentBaseTest
     }
 
     @Test
-    public void testProcessUpdatesArgNPE() throws Exception
+    void processUpdatesArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.processUpdates(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.processUpdates(null));
     }
 
     //@Test

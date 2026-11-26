@@ -26,7 +26,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Test;
 
-public class MockNbsp extends AbstractFaceletTestCase
+class MockNbsp extends AbstractFaceletTestCase
 {
 
     @Override
@@ -45,9 +45,9 @@ public class MockNbsp extends AbstractFaceletTestCase
     protected void setupRenderers() throws Exception
     {
     }
-    
+
     @Test
-    public void testNbsp() throws Exception
+    void nbsp() throws Exception
     {
         UIViewRoot root = new UIViewRoot();
         vdl.buildView(facesContext, root,"nbsp.xml");

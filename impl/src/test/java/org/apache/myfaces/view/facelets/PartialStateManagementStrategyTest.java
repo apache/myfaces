@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.Iterator;
@@ -50,7 +53,6 @@ import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -143,7 +145,7 @@ public class PartialStateManagementStrategyTest extends
     }
 
     @Test
-    public void testSimpleSaveRestore() throws Exception
+    void simpleSaveRestore() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
@@ -163,15 +165,15 @@ public class PartialStateManagementStrategyTest extends
         
         viewRoot = facesContext.getViewRoot();
         
-        Assertions.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:foo1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:var1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:button1"));
+        assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        assertNotNull(viewRoot.findComponent("form1"));
+        assertNotNull(viewRoot.findComponent("form1:foo1"));
+        assertNotNull(viewRoot.findComponent("form1:var1"));
+        assertNotNull(viewRoot.findComponent("form1:button1"));
     }
-    
+
     @Test
-    public void testSaveRestoreAddComponent() throws Exception
+    void saveRestoreAddComponent() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
@@ -198,19 +200,19 @@ public class PartialStateManagementStrategyTest extends
         
         viewRoot = facesContext.getViewRoot();
         
-        Assertions.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:foo1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:var1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:button1"));
+        assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        assertNotNull(viewRoot.findComponent("form1"));
+        assertNotNull(viewRoot.findComponent("form1:foo1"));
+        assertNotNull(viewRoot.findComponent("form1:var1"));
+        assertNotNull(viewRoot.findComponent("form1:button1"));
         
         a = (HtmlOutputText) viewRoot.findComponent("output1");
-        Assertions.assertNotNull(a);
-        Assertions.assertEquals("testOutput1",a.getValue());
+        assertNotNull(a);
+        assertEquals("testOutput1",a.getValue());
     }
-    
+
     @Test
-    public void testSaveRestoreAddComponentMultiplePostback() throws Exception
+    void saveRestoreAddComponentMultiplePostback() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
@@ -257,28 +259,28 @@ public class PartialStateManagementStrategyTest extends
         
         viewRoot = saveAndRestore(stateManagement, viewRoot);
         
-        Assertions.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:foo1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:var1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:button1"));
+        assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        assertNotNull(viewRoot.findComponent("form1"));
+        assertNotNull(viewRoot.findComponent("form1:foo1"));
+        assertNotNull(viewRoot.findComponent("form1:var1"));
+        assertNotNull(viewRoot.findComponent("form1:button1"));
         
         a = (HtmlOutputText) viewRoot.findComponent("output1");
-        Assertions.assertNotNull(a);
-        Assertions.assertEquals("testOutput1",a.getValue());
+        assertNotNull(a);
+        assertEquals("testOutput1",a.getValue());
         b = (HtmlOutputText) viewRoot.findComponent("output2");
-        Assertions.assertNotNull(b);
-        Assertions.assertEquals("testOutput2",b.getValue());
+        assertNotNull(b);
+        assertEquals("testOutput2",b.getValue());
         c = (HtmlOutputText) viewRoot.findComponent("output3");
-        Assertions.assertNotNull(c);
-        Assertions.assertEquals("testOutput3",c.getValue());
+        assertNotNull(c);
+        assertEquals("testOutput3",c.getValue());
         d = (HtmlOutputText) viewRoot.findComponent("output4");
-        Assertions.assertNotNull(d);
-        Assertions.assertEquals("testOutput4",d.getValue());
+        assertNotNull(d);
+        assertEquals("testOutput4",d.getValue());
     }
-    
+
     @Test
-    public void testSaveRestoreToogleComponent() throws Exception
+    void saveRestoreToogleComponent() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
@@ -299,54 +301,54 @@ public class PartialStateManagementStrategyTest extends
         
         viewRoot = saveAndRestore(stateManagement, viewRoot);
         
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        assertEquals("output1",viewRoot.getChildren().get(1).getId());
         
         UIComponent component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(1).getId());
+        assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        assertEquals("form1",viewRoot.getChildren().get(1).getId());
         
         component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        assertEquals("output1",viewRoot.getChildren().get(1).getId());
         
         component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(1).getId());
+        assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        assertEquals("form1",viewRoot.getChildren().get(1).getId());
         
         component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        assertEquals("output1",viewRoot.getChildren().get(1).getId());
         
-        Assertions.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:foo1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:var1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:button1"));
+        assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        assertNotNull(viewRoot.findComponent("form1"));
+        assertNotNull(viewRoot.findComponent("form1:foo1"));
+        assertNotNull(viewRoot.findComponent("form1:var1"));
+        assertNotNull(viewRoot.findComponent("form1:button1"));
         
         a = (HtmlOutputText) viewRoot.findComponent("output1");
-        Assertions.assertNotNull(a);
-        Assertions.assertEquals("testOutput1",a.getValue());
+        assertNotNull(a);
+        assertEquals("testOutput1",a.getValue());
     }
-    
+
     @Test
-    public void testSaveRestoreToogleComponent2() throws Exception
+    void saveRestoreToogleComponent2() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
@@ -371,55 +373,55 @@ public class PartialStateManagementStrategyTest extends
         
         viewRoot = saveAndRestore(stateManagement, viewRoot);
         
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(1).getId());
-        Assertions.assertEquals("output2",viewRoot.getChildren().get(2).getId());
+        assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        assertEquals("output2",viewRoot.getChildren().get(2).getId());
         
         UIComponent component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("output2",viewRoot.getChildren().get(1).getId());
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(2).getId());
+        assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        assertEquals("output2",viewRoot.getChildren().get(1).getId());
+        assertEquals("form1",viewRoot.getChildren().get(2).getId());
         
         component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("output2",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(1).getId());
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(2).getId());
+        assertEquals("output2",viewRoot.getChildren().get(0).getId());
+        assertEquals("form1",viewRoot.getChildren().get(1).getId());
+        assertEquals("output1",viewRoot.getChildren().get(2).getId());
 
         component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(1).getId());
-        Assertions.assertEquals("output2",viewRoot.getChildren().get(2).getId());
+        assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        assertEquals("output2",viewRoot.getChildren().get(2).getId());
         
         component = viewRoot.getChildren().remove( 0 );
         viewRoot.getChildren().add( component );
 
         viewRoot = saveAndRestore(stateManagement, viewRoot);
 
-        Assertions.assertEquals("output1",viewRoot.getChildren().get(0).getId());
-        Assertions.assertEquals("output2",viewRoot.getChildren().get(1).getId());
-        Assertions.assertEquals("form1",viewRoot.getChildren().get(2).getId());
+        assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        assertEquals("output2",viewRoot.getChildren().get(1).getId());
+        assertEquals("form1",viewRoot.getChildren().get(2).getId());
 
-        Assertions.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:foo1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:var1"));
-        Assertions.assertNotNull(viewRoot.findComponent("form1:button1"));
+        assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        assertNotNull(viewRoot.findComponent("form1"));
+        assertNotNull(viewRoot.findComponent("form1:foo1"));
+        assertNotNull(viewRoot.findComponent("form1:var1"));
+        assertNotNull(viewRoot.findComponent("form1:button1"));
         
         a = (HtmlOutputText) viewRoot.findComponent("output1");
-        Assertions.assertNotNull(a);
-        Assertions.assertEquals("testOutput1",a.getValue());
+        assertNotNull(a);
+        assertEquals("testOutput1",a.getValue());
     }
     
     public UIViewRoot saveAndRestore(StateManagementStrategy stateManagement, UIViewRoot viewRoot)

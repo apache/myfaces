@@ -15,6 +15,8 @@
 */
 package org.apache.myfaces.context;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,7 +44,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResponseWrapperSwitchTest extends AbstractFacesTestCase {
+class ResponseWrapperSwitchTest extends AbstractFacesTestCase {
 
     @Override
     @BeforeEach
@@ -155,7 +157,7 @@ public class ResponseWrapperSwitchTest extends AbstractFacesTestCase {
      * response
      */
     @Test
-    public void testSwitchOnWriter() {
+    void switchOnWriter() {
 
         ByteArrayOutputStream ostr = new ByteArrayOutputStream();
         ByteArrayOutputStream ostrWriter = new ByteArrayOutputStream();
@@ -166,30 +168,23 @@ public class ResponseWrapperSwitchTest extends AbstractFacesTestCase {
         FacesContext context = new FacesContextImpl(servletContext, request, resp);
 
 
-        ResponseWriter responseWriter = context.getResponseWriter();
-        if (responseWriter == null) {
-            try {
-                responseWriter = new MockResponseWriter(((ServletResponse) context.getExternalContext().getResponse()).getWriter(), null, null);
-            } catch (IOException ex) {
-                Assertions.fail(ex.getMessage());
-            }
-            context.setResponseWriter(responseWriter);
+        if (context.getResponseWriter() == null) {
+            ResponseWriter newResponseWriter = Assertions.assertDoesNotThrow(() ->
+                new MockResponseWriter(((ServletResponse) context.getExternalContext().getResponse()).getWriter(), null, null));
+            context.setResponseWriter(newResponseWriter);
         }
+        ResponseWriter responseWriter = context.getResponseWriter();
 
+        assertTrue(responseWriter != null);
 
-
-        Assertions.assertTrue(responseWriter != null);
-
-        try {
+        Assertions.assertDoesNotThrow(() -> {
             responseWriter.append("hello world");
             responseWriter.flush();
             responseWriter.close();
 
-        } catch (IOException ex) {
-            Assertions.fail(ex.getMessage());
-        }
+        });
 
-        Assertions.assertTrue(ostrWriter.toString().trim().equals("hello world"));
+        assertEquals("hello world", ostrWriter.toString().trim());
 
     }
 

@@ -18,12 +18,12 @@
  */
 package org.apache.myfaces.test.mock;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.el.ELContext;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
-
-import org.junit.jupiter.api.Assertions;
 
 /**
  * Verifies the current component on stack in method getValue. Created for MYFACES-3157
@@ -48,7 +48,7 @@ public class MockRenderedValueExpression extends org.apache.myfaces.test.el.Mock
     public Object getValue(ELContext elContext) {
       FacesContext facesContext = (FacesContext) elContext.getContext(FacesContext.class);
       UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
-      Assertions.assertEquals(currentComponent , toVerify,
+      assertEquals(currentComponent , toVerify,
               "If this ValueExpression is evaluated, component on stack must be actual");
       return value;
     }

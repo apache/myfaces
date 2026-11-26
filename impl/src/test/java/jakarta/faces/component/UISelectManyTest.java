@@ -18,13 +18,15 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class UISelectManyTest extends AbstractFacesTestCase
@@ -35,7 +37,7 @@ public class UISelectManyTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testValidateRequiredNull()
+    void validateRequiredNull()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -60,11 +62,11 @@ public class UISelectManyTest extends AbstractFacesTestCase
 
         selectMany.validateValue(facesContext, null);
 
-        Assertions.assertFalse(selectMany.isValid());
+        assertFalse(selectMany.isValid());
     }
 
     @Test
-    public void testValidateRequiredEmptyList()
+    void validateRequiredEmptyList()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -89,11 +91,11 @@ public class UISelectManyTest extends AbstractFacesTestCase
 
         selectMany.validateValue(facesContext, Collections.EMPTY_LIST);
 
-        Assertions.assertFalse(selectMany.isValid());
+        assertFalse(selectMany.isValid());
     }
 
     @Test
-    public void testValidateIntArray()
+    void validateIntArray()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -117,11 +119,11 @@ public class UISelectManyTest extends AbstractFacesTestCase
 
         selectMany.validateValue(facesContext, new int[] { 2, 3 });
 
-        Assertions.assertTrue(selectMany.isValid());
+        assertTrue(selectMany.isValid());
     }
 
     @Test
-    public void testValidateStringArray()
+    void validateStringArray()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -145,11 +147,11 @@ public class UISelectManyTest extends AbstractFacesTestCase
 
         selectMany.validateValue(facesContext, new String[] { "2", "3" });
 
-        Assertions.assertTrue(selectMany.isValid());
+        assertTrue(selectMany.isValid());
     }
 
     @Test
-    public void testValidateStringList()
+    void validateStringList()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -173,7 +175,7 @@ public class UISelectManyTest extends AbstractFacesTestCase
 
         selectMany.validateValue(facesContext, Arrays.asList("2", "3"));
 
-        Assertions.assertTrue(selectMany.isValid());
+        assertTrue(selectMany.isValid());
     }
 
     static private final Locale _TEST_LOCALE = new Locale("xx", "TEST");

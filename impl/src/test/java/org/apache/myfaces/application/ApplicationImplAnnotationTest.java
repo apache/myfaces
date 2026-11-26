@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.application;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -48,7 +50,6 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMockTestCase
@@ -215,7 +216,7 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
 
 
     @Test
-    public void testCreateComponentRenderer() throws Exception
+    void createComponentRenderer() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
                 MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
@@ -231,12 +232,12 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
-        Assertions.assertEquals("testLib",attrMap.get("library"));
+        assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testLib",attrMap.get("library"));
     }
-    
+
     /**
      * This test has a RendererWrapper that implement ComponentSystemEventListener, but it does not
      * have a @ListenerFor annotation, in this case the listener that receive the event is the 
@@ -245,7 +246,7 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
      * @throws Exception 
      */
     @Test
-    public void testCreateComponentRendererWrapper1() throws Exception
+    void createComponentRendererWrapper1() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
                 MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
@@ -261,16 +262,16 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
-        Assertions.assertEquals("testLib",attrMap.get("library"));
+        assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
         facesContext.getAttributes().remove("oam.test.TestRendererA");
@@ -294,10 +295,10 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
-    
+
     /**
      * This test has a RendererWrapper that does not implement ComponentSystemEventListener, in this case
      * the listener is the wrapped Renderer (TestRendererA).
@@ -305,7 +306,7 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
      * @throws Exception 
      */
     @Test
-    public void testCreateComponentRendererWrapper2() throws Exception
+    void createComponentRendererWrapper2() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
                 MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
@@ -321,15 +322,15 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
-        Assertions.assertEquals("testLib",attrMap.get("library"));
+        assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererA");
         
@@ -352,15 +353,15 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
-    
+
     /**
      * 
      * @throws Exception 
      */
     @Test
-    public void testCreateComponentRendererWrapper3() throws Exception
+    void createComponentRendererWrapper3() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
                 MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
@@ -377,16 +378,16 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
-        Assertions.assertEquals("testLib",attrMap.get("library"));
+        assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
         facesContext.getAttributes().remove("oam.test.TestRendererA");
@@ -410,16 +411,16 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
-    
+
     /**
      * 
      * @throws Exception 
      */
     @Test
-    public void testCreateComponentRendererWrapper4() throws Exception
+    void createComponentRendererWrapper4() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
                 MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
@@ -437,17 +438,17 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
-        Assertions.assertEquals("testLib",attrMap.get("library"));
+        assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
         facesContext.getAttributes().remove("oam.test.TestRendererA");
@@ -471,9 +472,9 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
-        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
+        assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
 
     @ResourceDependency(name = "testResource.js")
@@ -496,7 +497,7 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
     }
 
     @Test
-    public void testCreateComponentAnnotation() throws Exception
+    void createComponentAnnotation() throws Exception
     {
         application.addComponent(UITestComponentB.COMPONENT_TYPE,
                 UITestComponentB.class.getName());
@@ -504,13 +505,13 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
         UITestComponentB comp = (UITestComponentB) application.createComponent(UITestComponentB.COMPONENT_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testResource.js",attrMap.get("name"));
     }
-    
+
     @Test
-    public void testCreateComponentRendererAnnotation() throws Exception
+    void createComponentRendererAnnotation() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
                 MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
@@ -526,7 +527,7 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(2,componentResources.size());
+        assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -535,13 +536,13 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
             }
             else
             {
-                Assertions.fail("Not expected resource found"+component.getAttributes().get("name"));
+                fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
-    
+
     @Test
-    public void testCreateComponentValueExpression1() throws Exception
+    void createComponentValueExpression1() throws Exception
     {
         
         ValueExpression expr = application.getExpressionFactory().createValueExpression(
@@ -555,13 +556,13 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
         
         List<UIComponent> componentResources = 
             facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testResource.js",attrMap.get("name"));
     }
-    
+
     @Test
-    public void testCreateComponentValueExpression2() throws Exception
+    void createComponentValueExpression2() throws Exception
     {
         
         ValueExpression expr = application.getExpressionFactory().createValueExpression(
@@ -576,13 +577,13 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
         
         List<UIComponent> componentResources = 
             facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1,componentResources.size());
+        assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        assertEquals("testResource.js",attrMap.get("name"));
     }
 
     @Test
-    public void testCreateComponentValueExpression3() throws Exception
+    void createComponentValueExpression3() throws Exception
     {
         
         ValueExpression expr = application.getExpressionFactory().createValueExpression(
@@ -602,7 +603,7 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(2,componentResources.size());
+        assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -611,13 +612,13 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
             }
             else
             {
-                Assertions.fail("Not expected resource found"+component.getAttributes().get("name"));
+                fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
-    
+
     @Test
-    public void testCreateComponentValueExpression4() throws Exception
+    void createComponentValueExpression4() throws Exception
     {
         
         ValueExpression expr = application.getExpressionFactory().createValueExpression(
@@ -639,7 +640,7 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(2,componentResources.size());
+        assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -648,17 +649,17 @@ public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMock
             }
             else
             {
-                Assertions.fail("Not expected resource found"+component.getAttributes().get("name"));
+                fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
-    
+
     @Test
-    public void testDatetimeconverterDefaultTimezoneIsSystemTimezoneInitParameter()
+    void datetimeconverterDefaultTimezoneIsSystemTimezoneInitParameter()
     {
         application.addConverter(java.util.Date.class, "jakarta.faces.convert.DateTimeConverter");
         Converter converter = application.createConverter(java.util.Date.class);
-        Assertions.assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
+        assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
     }
 
 }

@@ -15,7 +15,9 @@
 */
 package org.apache.myfaces.context;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -24,29 +26,26 @@ import org.junit.jupiter.api.Test;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ContextRegexpTest {
+class ContextRegexpTest {
 
     static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
 
 
- 
-
-   
     /**
      * condition valid string
      */
     @Test
-    public void testCondition1() {
+    void condition1() {
         String[] splitted = " hello ,world          \n ,bla ".split(RE_SPLITTER);
         splitted[0] = splitted[0].trim();
         int len = splitted.length-1;
         if(len > 0) {//all others trimmed by the re
             splitted[len] =  splitted[len].trim();
         }
-        Assertions.assertTrue(splitted.length == 3);
-        Assertions.assertTrue(splitted[0].trim().equals("hello"));
-        Assertions.assertTrue(splitted[1].trim().equals("world"));
-        Assertions.assertTrue(splitted[2].trim().equals("bla"));
+        assertEquals(3, splitted.length);
+        assertEquals("hello", splitted[0].trim());
+        assertEquals("world", splitted[1].trim());
+        assertEquals("bla", splitted[2].trim());
     }
 
     /**
@@ -54,10 +53,10 @@ public class ContextRegexpTest {
      * empty string
      */
     @Test
-    public void testCondition2() {
+    void condition2() {
         String[] splitted = " ".split(RE_SPLITTER);
-        Assertions.assertTrue(splitted.length == 1);
-        Assertions.assertTrue(splitted[0] != null);
+        assertEquals(1, splitted.length);
+        assertTrue(splitted[0] != null);
     }
 
     /**
@@ -65,9 +64,9 @@ public class ContextRegexpTest {
      * empty string no blanks
      */
     @Test
-    public void testCondition3() {
+    void condition3() {
         String[] splitted = "".split(RE_SPLITTER);
-        Assertions.assertTrue(splitted.length == 1);
-        Assertions.assertTrue(splitted[0] != null);
+        assertEquals(1, splitted.length);
+        assertTrue(splitted[0] != null);
     }
 }

@@ -18,19 +18,19 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
+class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
 {
     @Test
-    public void test_only_ajs_is_included() throws IOException
+    void only_ajs_is_included() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
 
@@ -40,12 +40,12 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
 
         List<UIComponent> resources = root.getComponentResources(facesContext, "head");
 
-        Assertions.assertEquals(1, resources.size());
-        Assertions.assertTrue(resources.get(0).getAttributes().get("name").equals("a.js"));
+        assertEquals(1, resources.size());
+        assertEquals("a.js", resources.get(0).getAttributes().get("name"));
     }
 
     @Test
-    public void test_ajs_and_xjs_are_included() throws IOException
+    void ajs_and_xjs_are_included() throws Exception
     {
         facesContext.getAttributes().put("includeResource", Boolean.TRUE);
         UIViewRoot root = facesContext.getViewRoot();
@@ -56,11 +56,11 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
 
         List<UIComponent> resources = root.getComponentResources(facesContext, "head");
 
-        Assertions.assertEquals(2, resources.size());
+        assertEquals(2, resources.size());
     }
 
     @Test
-    public void test_only_ajs_after_refresh_view_is_included() throws IOException
+    void only_ajs_after_refresh_view_is_included() throws Exception
     {
     	UIViewRoot view = facesContext.getViewRoot();
 
@@ -71,7 +71,7 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assertions.assertEquals(1, resources.size());
+            assertEquals(1, resources.size());
         }
 
         // reset 'isFilledView'
@@ -89,7 +89,7 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assertions.assertEquals(2, resources.size());
+            assertEquals(2, resources.size());
         }
 
         // reset 'isFilledView'
@@ -103,7 +103,7 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assertions.assertEquals(1, resources.size());
+            assertEquals(1, resources.size());
         }
     }
 }

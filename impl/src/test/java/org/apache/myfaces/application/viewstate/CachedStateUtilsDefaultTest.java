@@ -22,7 +22,7 @@ package org.apache.myfaces.application.viewstate;
 
 import org.junit.jupiter.api.BeforeEach;
 
-public class CachedStateUtilsDefaultTest extends AbstractStateUtilsTest
+class CachedStateUtilsDefaultTest extends AbstractStateUtilsTest
 {
     @Override
     @BeforeEach

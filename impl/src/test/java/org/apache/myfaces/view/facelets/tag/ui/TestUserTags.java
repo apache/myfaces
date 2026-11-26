@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIOutput;
@@ -29,10 +32,9 @@ import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TestUserTags extends AbstractFaceletTestCase {
+class TestUserTags extends AbstractFaceletTestCase {
 
     @Override
     protected void setUpServletObjects() throws Exception
@@ -70,9 +72,9 @@ public class TestUserTags extends AbstractFaceletTestCase {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
                 "jakarta.faces.Text", new HtmlTextRenderer());
     }
-    
+
     @Test
-    public void testClientClient() throws Exception {
+    void clientClient() throws Exception {
         request.setAttribute("test", "foo");
         
         UIViewRoot root = facesContext.getViewRoot();
@@ -91,7 +93,7 @@ public class TestUserTags extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testUserTag1() throws Exception 
+    void userTag1() throws Exception 
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "usertagtest1.xhtml");
@@ -104,18 +106,18 @@ public class TestUserTags extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("value1"));
-        Assertions.assertFalse(result.contains("value2"));
-        Assertions.assertFalse(result.contains("value3"));
+        assertTrue(result.contains("value1"));
+        assertFalse(result.contains("value2"));
+        assertFalse(result.contains("value3"));
     }
-    
+
     /**
      * Attributes should not pass to other user tags if they are not declared explicitly.
      * 
      * @throws Exception
      */
     @Test
-    public void testUserTag2() throws Exception 
+    void userTag2() throws Exception 
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "usertagtest2.xhtml");
@@ -128,8 +130,8 @@ public class TestUserTags extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("value2"));
-        Assertions.assertFalse(result.contains("value3"));
-        Assertions.assertFalse(result.contains("value1"));
+        assertTrue(result.contains("value2"));
+        assertFalse(result.contains("value3"));
+        assertFalse(result.contains("value1"));
     } 
 }

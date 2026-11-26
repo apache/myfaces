@@ -18,19 +18,21 @@
  */
 package org.apache.myfaces.core.api.shared;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
 import jakarta.faces.application.FacesMessage;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ParametrizableFacesMessageTest
+class ParametrizableFacesMessageTest
 {
     @Test
-    public void testMessagesWithDifferentParametersAreNotEqual()
+    void messagesWithDifferentParametersAreNotEqual()
     {
         FacesMessage firstMessage = new ParametrizableFacesMessage(
                 FacesMessage.Severity.ERROR,
@@ -49,12 +51,12 @@ public class ParametrizableFacesMessageTest
         messages.add(firstMessage);
         messages.add(secondMessage);
 
-        Assertions.assertNotEquals(firstMessage, secondMessage);
-        Assertions.assertEquals(2, messages.size());
+        assertNotEquals(firstMessage, secondMessage);
+        assertEquals(2, messages.size());
     }
 
     @Test
-    public void testMessagesWithSameParametersAreEqual()
+    void messagesWithSameParametersAreEqual()
     {
         FacesMessage firstMessage = new ParametrizableFacesMessage(
                 FacesMessage.Severity.ERROR,
@@ -69,12 +71,12 @@ public class ParametrizableFacesMessageTest
                 new Object[] { "input", "should be uppercase" },
                 Locale.ENGLISH);
 
-        Assertions.assertEquals(firstMessage, secondMessage);
-        Assertions.assertEquals(firstMessage.hashCode(), secondMessage.hashCode());
+        assertEquals(firstMessage, secondMessage);
+        assertEquals(firstMessage.hashCode(), secondMessage.hashCode());
     }
 
     @Test
-    public void testMessageParametersAreUsedForFormatting()
+    void messageParametersAreUsedForFormatting()
     {
         FacesMessage message = new ParametrizableFacesMessage(
                 FacesMessage.Severity.ERROR,
@@ -83,7 +85,7 @@ public class ParametrizableFacesMessageTest
                 new Object[] { "input", "should be uppercase" },
                 Locale.ENGLISH);
 
-        Assertions.assertEquals("input: should be uppercase", message.getSummary());
-        Assertions.assertEquals("Detail for input: should be uppercase", message.getDetail());
+        assertEquals("input: should be uppercase", message.getSummary());
+        assertEquals("Detail for input: should be uppercase", message.getDetail());
     }
 }

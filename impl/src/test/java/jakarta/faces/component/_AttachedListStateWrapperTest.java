@@ -19,6 +19,8 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -26,25 +28,24 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class _AttachedListStateWrapperTest
+class _AttachedListStateWrapperTest
 {
     /*
      * Test method for 'jakarta.faces.component._AttachedListStateWrapper._AttachedListStateWrapper(List)'
      */
     @Test
-    public void test_AttachedListStateWrapper()
+    void attached_list_state_wrapper()
     {
         List<Object> foo = new ArrayList<Object>();
         _AttachedListStateWrapper subject = new _AttachedListStateWrapper(foo);
-        Assertions.assertNotNull(subject.getWrappedStateList());
-        Assertions.assertTrue(subject.getWrappedStateList() == foo);
+        assertNotNull(subject.getWrappedStateList());
+        assertSame(subject.getWrappedStateList(), foo);
     }
 
     @Test
-    public void testSerialize() throws Exception
+    void serialize() throws Exception
     {
         String foo = "foo";
         List<Object> list = new ArrayList<Object>();
@@ -58,7 +59,7 @@ public class _AttachedListStateWrapperTest
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         _AttachedListStateWrapper blorg = (_AttachedListStateWrapper) ois.readObject();
-        Assertions.assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
+        assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
         oos.close();
         ois.close();
     }

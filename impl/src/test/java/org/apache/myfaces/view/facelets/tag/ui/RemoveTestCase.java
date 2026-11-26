@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.StringWriter;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIOutput;
@@ -34,14 +37,13 @@ import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author lu4242
  */
-public class RemoveTestCase extends AbstractFaceletTestCase
+class RemoveTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected void setupComponents() throws Exception
@@ -76,16 +78,16 @@ public class RemoveTestCase extends AbstractFaceletTestCase
                 "jakarta.faces.Button", new HtmlButtonRenderer());
         renderKit.addRenderer(HtmlPanelGrid.COMPONENT_FAMILY,
                 "jakarta.faces.Grid", new HtmlGridRenderer());
-    }        
-    
+    }
+
     @Test
-    public void testRemoveMetadata() throws Exception {
+    void removeMetadata() throws Exception {
         
         request.setAttribute("beanValue", "hello");
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testRemoveMetadata.xhtml");
 
-        Assertions.assertNull(root.getFacet(UIViewRoot.METADATA_FACET_NAME));
+        assertNull(root.getFacet(UIViewRoot.METADATA_FACET_NAME));
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -95,9 +97,9 @@ public class RemoveTestCase extends AbstractFaceletTestCase
         sw.flush();
         
         //System.out.println(sw.toString());
-        Assertions.assertFalse(sw.toString().contains("ui:remove"));
-        Assertions.assertFalse(sw.toString().contains("f:metadata"));
-        Assertions.assertFalse(sw.toString().contains("Should not be here"));
+        assertFalse(sw.toString().contains("ui:remove"));
+        assertFalse(sw.toString().contains("f:metadata"));
+        assertFalse(sw.toString().contains("Should not be here"));
     }    
     
 

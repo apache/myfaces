@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 
 import jakarta.el.ExpressionFactory;
@@ -29,10 +32,9 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
+class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -46,15 +48,15 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
     {
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
-    public void testCompositeNestedCC1() throws Exception
+    void compositeNestedCC1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC1.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -62,11 +64,11 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
     }
-    
+
     /**
      * The same tests, but with caching enabled. In this case, ccLevel changes
      * all the time, so the caching logic must take that into account.
@@ -74,7 +76,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC1Cache() throws Exception
+    void compositeNestedCC1Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
@@ -82,7 +84,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC1.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -90,24 +92,24 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
     }
-    
+
     /**
      * Try a nested reference inside the same composite component
      * 
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC2() throws Exception
+    void compositeNestedCC2() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC2.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -115,10 +117,10 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
 
     /**
@@ -127,7 +129,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC2Cache() throws Exception
+    void compositeNestedCC2Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
@@ -135,7 +137,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC2.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -143,12 +145,12 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try what happen when a dynamic ui:include is used inside a composite
      * component and that include contains a reference to the same composite
@@ -157,13 +159,13 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC3() throws Exception
+    void compositeNestedCC3() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC3.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -171,12 +173,12 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try what happen when a dynamic ui:include is used inside a composite
      * component and that include contains a reference to the same composite
@@ -185,7 +187,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC3Cache() throws Exception
+    void compositeNestedCC3Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString()); //allowCset
@@ -194,7 +196,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC3.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -202,25 +204,25 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try a nested insertChildren with some conditional inclusions.
      * 
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC4() throws Exception
+    void compositeNestedCC4() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC4.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -228,19 +230,19 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try a nested insertChildren with some conditional inclusions.
      * 
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC4Cache() throws Exception
+    void compositeNestedCC4Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
@@ -249,7 +251,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC4.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -257,20 +259,20 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
 
     @Test
-    public void testCompositeNestedCC5() throws Exception
+    void compositeNestedCC5() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC5.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -278,11 +280,11 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
     }
-    
+
     /**
      * The same tests, but with caching enabled. In this case, ccLevel changes
      * all the time, so the caching logic must take that into account.
@@ -290,7 +292,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC5Cache() throws Exception
+    void compositeNestedCC5Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
@@ -298,7 +300,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC5.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -306,24 +308,24 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
     }
-    
+
     /**
      * Try a nested reference inside the same composite component
      * 
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC6() throws Exception
+    void compositeNestedCC6() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC6.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -331,10 +333,10 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
 
     /**
@@ -343,7 +345,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC6Cache() throws Exception
+    void compositeNestedCC6Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
@@ -351,7 +353,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC6.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -359,12 +361,12 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try what happen when a dynamic ui:include is used inside a composite
      * component and that include contains a reference to the same composite
@@ -373,13 +375,13 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC7() throws Exception
+    void compositeNestedCC7() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC7.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -387,12 +389,12 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try what happen when a dynamic ui:include is used inside a composite
      * component and that include contains a reference to the same composite
@@ -401,7 +403,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC7Cache() throws Exception
+    void compositeNestedCC7Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString()); //allowCset
@@ -410,7 +412,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC7.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -418,25 +420,25 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try a nested insertChildren with some conditional inclusions.
      * 
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC8() throws Exception
+    void compositeNestedCC8() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC8.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -444,19 +446,19 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     /**
      * Try a nested insertChildren with some conditional inclusions.
      * 
      * @throws Exception 
      */
     @Test
-    public void testCompositeNestedCC8Cache() throws Exception
+    void compositeNestedCC8Cache() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
@@ -465,7 +467,7 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC8.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -473,9 +475,9 @@ public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
 }

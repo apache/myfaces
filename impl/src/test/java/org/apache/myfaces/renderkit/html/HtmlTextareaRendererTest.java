@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.behavior.AjaxBehavior;
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlTextareaRendererTest extends AbstractFacesTestCase
+class HtmlTextareaRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlInputTextarea inputTextarea;
@@ -71,18 +73,18 @@ public class HtmlTextareaRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testRenderDefault() throws Exception
+    void renderDefault() throws Exception
     {
         inputTextarea.encodeBegin(facesContext);
         inputTextarea.encodeEnd(facesContext);
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<textarea name=\"j_id__v_0\"></textarea>", output);
+        assertEquals("<textarea name=\"j_id__v_0\"></textarea>", output);
     }
 
     @Test
-    public void testRenderColsRows() throws Exception
+    void renderColsRows() throws Exception
     {
         inputTextarea.setCols(5);
         inputTextarea.setRows(10);
@@ -91,39 +93,34 @@ public class HtmlTextareaRendererTest extends AbstractFacesTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<textarea name=\"j_id__v_0\" cols=\"5\" rows=\"10\"></textarea>", output);
+        assertEquals("<textarea name=\"j_id__v_0\" cols=\"5\" rows=\"10\"></textarea>", output);
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 inputTextarea, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         inputTextarea.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             inputTextarea.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches("(?s).+id=\".+\".+"));
-            Assertions.assertTrue(output.matches("(?s).+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        });
         
     }
 }

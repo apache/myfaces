@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,7 +41,6 @@ import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.config.MetaInfResourceCache;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -46,12 +48,12 @@ import org.junit.jupiter.api.Test;
  * META-INF/ URL is neither a JarURLConnection nor a directory on disk, so its entries are read as a zip
  * stream whose entry names are relative to the URL it was opened on - not to a classpath root.
  */
-public class ClasspathTest
+class ClasspathTest
 {
     private static final String JAR = "vfstest:/content/app.war/WEB-INF/lib/custom.jar/";
 
     @Test
-    public void testStreamEntriesRelativeToMetaInf() throws Exception
+    void streamEntriesRelativeToMetaInf() throws Exception
     {
         // opening META-INF/ itself yields its children (like VFS does for a directory)
         Map<String, byte[]> streams = new HashMap<>();
@@ -65,7 +67,7 @@ public class ClasspathTest
     }
 
     @Test
-    public void testStreamEntriesRelativeToJarRoot() throws Exception
+    void streamEntriesRelativeToJarRoot() throws Exception
     {
         // META-INF/ cannot be read as a zip, the scan falls back to the enclosing jar
         Map<String, byte[]> streams = new HashMap<>();
@@ -75,11 +77,11 @@ public class ClasspathTest
                 new VfsClassLoader(streams, JAR + "META-INF/"), "META-INF/");
 
         assertContains(entries, JAR + "META-INF/custom.taglib.xml");
-        Assertions.assertEquals(1, entries.getUrls().size(), entries.getUrls().toString());
+        assertEquals(1, entries.getUrls().size(), entries.getUrls().toString());
     }
 
     @Test
-    public void testFindResourcesViaMetaInfResourceCache() throws Exception
+    void findResourcesViaMetaInfResourceCache() throws Exception
     {
         // the path the taglib / faces-config providers take: filter the cached scan by suffix
         Map<String, byte[]> streams = new HashMap<>();
@@ -92,12 +94,12 @@ public class ClasspathTest
             ExternalContext context = new MockExternalContext(new MockServletContext(), null, null);
 
             Collection<URL> taglibs = MetaInfResourceCache.findResources(context, ".taglib.xml");
-            Assertions.assertEquals(1, taglibs.size(), taglibs.toString());
-            Assertions.assertEquals(JAR + "META-INF/custom.taglib.xml", taglibs.iterator().next().toExternalForm());
+            assertEquals(1, taglibs.size(), taglibs.toString());
+            assertEquals(JAR + "META-INF/custom.taglib.xml", taglibs.iterator().next().toExternalForm());
 
             Collection<URL> configs = MetaInfResourceCache.findResources(context, ".faces-config.xml");
-            Assertions.assertEquals(1, configs.size(), configs.toString());
-            Assertions.assertEquals(JAR + "META-INF/custom.faces-config.xml",
+            assertEquals(1, configs.size(), configs.toString());
+            assertEquals(JAR + "META-INF/custom.faces-config.xml",
                     configs.iterator().next().toExternalForm());
         }
         finally
@@ -108,7 +110,7 @@ public class ClasspathTest
 
     private static void assertContains(Classpath.ResourceEntries entries, String url)
     {
-        Assertions.assertTrue(entries.getUrls().stream().anyMatch(u -> u.toExternalForm().equals(url)),
+        assertTrue(entries.getUrls().stream().anyMatch(u -> u.toExternalForm().equals(url)),
                 url + " not found in " + entries.getUrls() + " / " + entries.getNames());
     }
 

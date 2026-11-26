@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 import jakarta.faces.component.behavior.AjaxBehavior;
 
@@ -31,7 +34,6 @@ import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +41,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlGroupRendererTest extends AbstractFacesTestCase
+class HtmlGroupRendererTest extends AbstractFacesTestCase
 {
     private static String PANEL_CHILD_TEXT = "PANEL";
 
@@ -85,9 +87,9 @@ public class HtmlGroupRendererTest extends AbstractFacesTestCase
         super.tearDown();
         writer = null;
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     { 
         HtmlRenderedAttr[] attrs = {
                 //_EventProperties
@@ -110,37 +112,37 @@ public class HtmlGroupRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGroup, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTruNotRendered() throws Exception
+    void htmlPropertyPassTruNotRendered() throws Exception
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();        
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGroup, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameOutputLink() 
+    void clientBehaviorHolderRendersIdAndNameOutputLink() 
     {
         panelGroup.addClientBehavior("keypress", new AjaxBehavior());
         try 
         {
             panelGroup.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.contains("myfaces.ab"));
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.contains("myfaces.ab"));
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            Assertions.fail(e.getMessage());
+            fail(e.getMessage());
         }
     }
 }

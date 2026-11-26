@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.view.facelets.viewscope;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * {@code @ViewScoped} bean must not let the number of view scopes in the session grow without limit:
  * only the most recent {@code org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION} are kept.
  */
-public class ViewScopeClientSideStateLimitTestCase extends AbstractMyFacesCDIRequestTestCase
+class ViewScopeClientSideStateLimitTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     private static final int LIMIT = 3;
 
@@ -56,7 +57,7 @@ public class ViewScopeClientSideStateLimitTestCase extends AbstractMyFacesCDIReq
     }
 
     @Test
-    public void testViewScopesAreLimitedWithClientSideStateSaving() throws Exception
+    void viewScopesAreLimitedWithClientSideStateSaving() throws Exception
     {
         ViewScopeLimitProbeBean.reset();
 
@@ -69,9 +70,9 @@ public class ViewScopeClientSideStateLimitTestCase extends AbstractMyFacesCDIReq
             endRequest();
         }
 
-        Assertions.assertEquals(requests, ViewScopeLimitProbeBean.CREATED.get(),
+        assertEquals(requests, ViewScopeLimitProbeBean.CREATED.get(),
                 "the @ViewScoped bean must be created once per request");
-        Assertions.assertEquals(requests - LIMIT, ViewScopeLimitProbeBean.DESTROYED.get(),
+        assertEquals(requests - LIMIT, ViewScopeLimitProbeBean.DESTROYED.get(),
                 "only the most recent " + LIMIT + " view scopes must be kept in the session");
     }
 }

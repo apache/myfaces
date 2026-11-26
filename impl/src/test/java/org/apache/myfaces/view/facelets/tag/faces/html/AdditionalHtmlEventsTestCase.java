@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.faces.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIComponent;
@@ -32,14 +34,13 @@ import org.apache.myfaces.renderkit.html.HtmlAjaxBehaviorRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Spec issue 1507, end to end: an on* attribute without a matching component property has to survive the facelet
  * tag handling and end up in the rendered markup, on its own as well as chained with an f:ajax on the same event.
  */
-public class AdditionalHtmlEventsTestCase extends AbstractFaceletTestCase
+class AdditionalHtmlEventsTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -65,7 +66,7 @@ public class AdditionalHtmlEventsTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testAdditionalHtmlEvents() throws Exception
+    void additionalHtmlEvents() throws Exception
     {
         externalContext.getRequestMap().put("inputScript", "doEl()");
 
@@ -74,30 +75,30 @@ public class AdditionalHtmlEventsTestCase extends AbstractFaceletTestCase
 
         // a literal on* attribute without matching property
         String plain = encode(root, "plain");
-        Assertions.assertTrue(plain.contains("oninput=\"doPlain()\""), plain);
+        assertTrue(plain.contains("oninput=\"doPlain()\""), plain);
 
         // the same, but bound to a ValueExpression
         String el = encode(root, "el");
-        Assertions.assertTrue(el.contains("oninput=\"doEl()\""), el);
+        assertTrue(el.contains("oninput=\"doEl()\""), el);
 
         // <f:ajax event="input"> on a component which has no oninput property
-        Assertions.assertEquals("[input]",
+        assertEquals("[input]",
                 ((ClientBehaviorHolder) root.findComponent("ajax")).getClientBehaviors().keySet().toString());
         String ajax = encode(root, "ajax");
-        Assertions.assertTrue(ajax.contains("oninput=\""), ajax);
-        Assertions.assertTrue(ajax.contains("myfaces.ab("), ajax);
+        assertTrue(ajax.contains("oninput=\""), ajax);
+        assertTrue(ajax.contains("myfaces.ab("), ajax);
 
         // both of them on the same component must be chained
         String both = encode(root, "both");
-        Assertions.assertTrue(both.contains("faces.util.chain("), both);
-        Assertions.assertTrue(both.contains("doBoth()"), both);
-        Assertions.assertTrue(both.contains("myfaces.ab("), both);
+        assertTrue(both.contains("faces.util.chain("), both);
+        assertTrue(both.contains("doBoth()"), both);
+        assertTrue(both.contains("myfaces.ab("), both);
     }
 
     private String encode(UIViewRoot root, String id) throws Exception
     {
         UIComponent component = root.findComponent(id);
-        Assertions.assertNotNull(component, "component " + id + " not found");
+        assertNotNull(component, "component " + id + " not found");
 
         StringWriter sw = new StringWriter();
         facesContext.setResponseWriter(new MockResponseWriter(sw));

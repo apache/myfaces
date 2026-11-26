@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -22,13 +24,12 @@ import java.util.ResourceBundle;
 import jakarta.faces.application.FacesMessage;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * TestCase for MessageUtils
  */
-public class MessageUtilsTest extends AbstractFacesTestCase
+class MessageUtilsTest extends AbstractFacesTestCase
 {
     private static final String DEFAULT_BUNDLE = "jakarta.faces.Messages";
 
@@ -36,76 +37,76 @@ public class MessageUtilsTest extends AbstractFacesTestCase
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Severity, String, Object)'
      */
     @Test
-    public void testGetMessageSeverityStringObject()
+    void getMessageSeverityStringObject()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
         FacesMessage msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION",
                 "blubb");
-        Assertions.assertEquals("blubb: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
+        assertEquals("blubb: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Severity, String, Object[])'
      */
     @Test
-    public void testGetMessageSeverityStringObjectArray()
+    void getMessageSeverityStringObjectArray()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
         FacesMessage msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
-        Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Severity, String, Object[], FacesContext)'
      */
     @Test
-    public void testGetMessageSeverityStringObjectArrayFacesContext()
+    void getMessageSeverityStringObjectArrayFacesContext()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
         FacesMessage msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null, facesContext);
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null,
                 facesContext);
-        Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Locale, String, Object[])'
      */
     @Test
-    public void testGetMessageLocaleStringObjectArray()
+    void getMessageLocaleStringObjectArray()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
         FacesMessage msg = org.apache.myfaces.util.MessageUtils.getMessage(Locale.ENGLISH,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         msg = MessageUtils.getMessage(Locale.GERMAN,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
-        Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
 
     }
 
@@ -113,45 +114,45 @@ public class MessageUtilsTest extends AbstractFacesTestCase
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(FacesContext, String)'
      */
     @Test
-    public void testGetMessageFacesContextString()
+    void getMessageFacesContextString()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
         FacesMessage msg = MessageUtils.getMessage(facesContext,
                 "jakarta.faces.component.UIInput.CONVERSION");
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(facesContext,
                 "jakarta.faces.component.UIInput.CONVERSION");
-        Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(FacesContext, String, Object[])'
      */
     @Test
-    public void testGetMessageFacesContextStringObjectArray()
+    void getMessageFacesContextStringObjectArray()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
         FacesMessage msg = MessageUtils.getMessage(facesContext,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(facesContext,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
-        Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
      * testGetMessageWithBundle
      */
     @Test
-    public void testGetMessageWithBundle()
+    void getMessageWithBundle()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
@@ -160,55 +161,55 @@ public class MessageUtilsTest extends AbstractFacesTestCase
         FacesMessage msg = MessageUtils.getMessage(bundle,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
 
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
     }
 
     /**
      * testGetMessageWithBundleName
      */
     @Test
-    public void testGetMessageWithBundleName()
+    void getMessageWithBundleName()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
         FacesMessage msg = MessageUtils.getMessage(DEFAULT_BUNDLE,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
 
-        Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
     }
 
     /**
      * testGetMessageWithBundleNameLocale
      */
     @Test
-    public void testGetMessageWithBundleNameLocale()
+    void getMessageWithBundleNameLocale()
     {
         FacesMessage msg = MessageUtils.getMessage(DEFAULT_BUNDLE,
                 Locale.GERMAN, "jakarta.faces.component.UIInput.CONVERSION", null);
 
-        Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
      * testSubstituteParamsWithDELocale(
      */
     @Test
-    public void testSubstituteParamsWithDELocale() {
+    void substituteParamsWithDELocale() {
         String paramString = MessageUtils.substituteParams(Locale.GERMANY, "currency {0,number,currency}", new Object[]{100});
 
         String expected = "currency " + NumberFormat.getCurrencyInstance(Locale.GERMANY).format(100);
-        Assertions.assertEquals(expected, paramString);
+        assertEquals(expected, paramString);
     }
 
     /**
      * testSubstituteParamsWithGBLocale(
      */
     @Test
-    public void testSubstituteParamsWithGBLocale() {
+    void substituteParamsWithGBLocale() {
         String paramString = MessageUtils.substituteParams(Locale.UK, "currency {0,number,currency}", new Object[]{100});
 
         //System.out.println(paramString);
-        Assertions.assertEquals("currency \u00a3100.00",paramString);
+        assertEquals("currency \u00a3100.00",paramString);
     }
 
 }

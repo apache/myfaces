@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIParameter;
@@ -30,9 +32,9 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +44,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
+class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer;
@@ -83,28 +85,23 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
         form = null;
         outcomeTargetButton = null;
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         outcomeTargetButton.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Tests if h:button correctly includes all parameters of the implicit
      * navigation case created from the outcome.
@@ -112,7 +109,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
      * @throws Exception
      */
     @Test
-    public void testOutcomeTargetRendersNavigationCaseParameters() throws Exception
+    void outcomeTargetRendersNavigationCaseParameters() throws Exception
     {
         // configure the button
         outcomeTargetButton.getAttributes().put("includeViewParams", false);
@@ -124,16 +121,16 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the parameters are rendered
-        Assertions.assertTrue(output.contains("param1=value1"));
-        Assertions.assertTrue(output.contains("param2=value2"));
+        assertTrue(output.contains("param1=value1"));
+        assertTrue(output.contains("param2=value2"));
     }
-    
+
     /**
      * Tests if the fragment attribute is correctly rendered.
      * @throws Exception
      */
     @Test
-    public void testFragment() throws Exception
+    void fragment() throws Exception
     {
         // configure the button
         final String fragment = "end";
@@ -146,79 +143,64 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the fragment is rendered
-        Assertions.assertTrue(output.contains("param1=value1#" + fragment));
+        assertTrue(output.contains("param1=value1#" + fragment));
     }
-    
+
     /**
      * Tests if the h:button correctly includes an UIParameter
      * with a non-null-name when creating the URL.
      */
     @Test
-    public void testIncludesUIParameterInURL()
+    void includesUIParameterInURL()
     {
         // create the UIParameter and attach it
         UIParameter param = new UIParameter();
         param.setName("myParameter");
         param.setValue("myValue");
         outcomeTargetButton.getChildren().add(param);
-        
-        try
-        {
+
+        Assertions.assertDoesNotThrow(() -> {
             outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.contains("myParameter=myValue"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.contains("myParameter=myValue"));
+        });
     }
-    
+
     /**
      * Tests if the h:button correctly skips an UIParameter
      * with a null-name when creating the URL.
      */
     @Test
-    public void testSkipsNullValueOfUIParameterInURL()
+    void skipsNullValueOfUIParameterInURL()
     {
         // create the UIParameter with value = null and attach it
         UIParameter param = new UIParameter();
         param.setName("myNullParameter");
         param.setValue(null);
         outcomeTargetButton.getChildren().add(param);
-        
-        try
-        {
+
+        Assertions.assertDoesNotThrow(() -> {
             outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertFalse(output.contains("myNullParameter"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertFalse(output.contains("myNullParameter"));
+        });
     }
-    
+
     /**
      * Tests if the h:button is rendered accordingly if disabled is true.
      */
     @Test
-    public void testDisabledAttribute() 
+    void disabledAttribute() 
     {
         outcomeTargetButton.getAttributes().put(ComponentAttrs.DISABLED_ATTR, Boolean.TRUE);
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            
+
             // Assertions
-            Assertions.assertFalse(output.contains(HTML.ONCLICK_ATTR)); // the output must not contain onclick 
-            Assertions.assertTrue(output.contains(HTML.DISABLED_ATTR)); // the output must contain disabled
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertFalse(output.contains(HTML.ONCLICK_ATTR)); // the output must not contain onclick 
+            assertTrue(output.contains(HTML.DISABLED_ATTR)); // the output must contain disabled
+        });
         
     }
     

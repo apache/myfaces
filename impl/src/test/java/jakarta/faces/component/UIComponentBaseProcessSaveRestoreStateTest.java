@@ -29,8 +29,9 @@ import jakarta.faces.context.FacesContext;
 
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * Time: 01:14:31
  * To change this template use File | Settings | File Templates.
  */
-public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUIComponentBaseTest
+class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUIComponentBaseTest
 {
     private static final String CHILD_STATE = "childState";
     private static final String TESTIMPL_STATE = "testimplState";
@@ -82,19 +83,17 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
     }
 
     @Test
-    public void testSaveStateExceptions() throws Exception
+    void saveStateExceptions() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.processSaveState(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.processSaveState(null));
     }
 
     @Test
-    public void testRestoreStateExceptions() throws Exception
+    void restoreStateExceptions() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.processRestoreState(null, null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.processRestoreState(null, null));
     }
 
 // FIXME: Need to add some expectation for FacesContext.getAttributes. I'll have to read a bit more about 

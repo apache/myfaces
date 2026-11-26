@@ -18,10 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.component.rowstate;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * {@code rowStatePreserved="true"}, the saved state of a row must not keep the local value of its inputs after Update
  * Model Values cleared it, otherwise that stale local value hides every later change of the model in that row.
  */
-public class RowStatePreservedUpdateModelTest extends AbstractMyFacesCDIRequestTestCase
+class RowStatePreservedUpdateModelTest extends AbstractMyFacesCDIRequestTestCase
 {
     private static final List<String> INPUTS = List.of(
             "form:preserved:0:in", "form:preserved:1:in",
@@ -45,7 +47,7 @@ public class RowStatePreservedUpdateModelTest extends AbstractMyFacesCDIRequestT
     }
 
     @Test
-    public void testRowStatePreservedDoesNotKeepLocalValueAfterUpdateModel() throws Exception
+    void rowStatePreservedDoesNotKeepLocalValueAfterUpdateModel() throws Exception
     {
         startViewRequest("/rowStatePreservedUpdateModel.xhtml");
         processLifecycleExecuteAndRender();
@@ -57,7 +59,7 @@ public class RowStatePreservedUpdateModelTest extends AbstractMyFacesCDIRequestT
         client.submit("form:submit");
         processLifecycleExecuteAndRender();
 
-        Assertions.assertFalse(facesContext.isValidationFailed());
+        assertFalse(facesContext.isValidationFailed());
         String content = content();
         for (String input : INPUTS)
         {
@@ -83,9 +85,9 @@ public class RowStatePreservedUpdateModelTest extends AbstractMyFacesCDIRequestT
     private static void assertRenderedValue(String content, String clientId, String expected)
     {
         int start = content.indexOf("id=\"" + clientId + "\"");
-        Assertions.assertTrue(start >= 0, clientId + " not rendered in: " + content);
+        assertTrue(start >= 0, clientId + " not rendered in: " + content);
         String input = content.substring(start, content.indexOf('>', start));
-        Assertions.assertTrue(input.contains("value=\"" + expected + "\""),
+        assertTrue(input.contains("value=\"" + expected + "\""),
                 clientId + " should render " + expected + " but was: " + input);
     }
 }

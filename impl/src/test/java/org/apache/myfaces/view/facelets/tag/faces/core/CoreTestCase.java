@@ -20,7 +20,11 @@
 package org.apache.myfaces.view.facelets.tag.faces.core;
 
 import org.apache.myfaces.view.facelets.tag.faces.core.reset.ResetValuesBean;
+
 import java.text.DateFormat;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -59,10 +63,9 @@ import org.apache.myfaces.renderkit.html.HtmlLinkRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTableRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CoreTestCase extends AbstractFaceletTestCase
+class CoreTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -124,7 +127,7 @@ public class CoreTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testActionListenerHandler() throws Exception
+    void actionListenerHandler() throws Exception
     {
         ActionListener listener = new ActionListenerImpl();
 
@@ -137,15 +140,15 @@ public class CoreTestCase extends AbstractFaceletTestCase
         UICommand action1 = (UICommand) root.findComponent("action1");
         UICommand action2 = (UICommand) root.findComponent("action2");
 
-        Assertions.assertNotNull(action1);
-        Assertions.assertNotNull(action2);
+        assertNotNull(action1);
+        assertNotNull(action2);
 
-        Assertions.assertEquals(1,action1.getActionListeners().length);
-        Assertions.assertEquals(2,action2.getActionListeners().length);
+        assertEquals(1,action1.getActionListeners().length);
+        assertEquals(2,action2.getActionListeners().length);
     }
 
     @Test
-    public void testAttributeHandler() throws Exception
+    void attributeHandler() throws Exception
     {
         String title = "Dog in a Funny Hat";
         facesContext.getExternalContext().getRequestMap().put("title", title);
@@ -158,15 +161,15 @@ public class CoreTestCase extends AbstractFaceletTestCase
         HtmlGraphicImage graphic2 = (HtmlGraphicImage) root
                 .findComponent("graphic2");
 
-        Assertions.assertNotNull(graphic1);
-        Assertions.assertNotNull(graphic2);
+        assertNotNull(graphic1);
+        assertNotNull(graphic2);
 
-        Assertions.assertEquals("literal", graphic1.getTitle());
-        Assertions.assertEquals(title, graphic2.getTitle());
+        assertEquals("literal", graphic1.getTitle());
+        assertEquals(title, graphic2.getTitle());
     }
 
     @Test
-    public void testConvertDateTimeHandler() throws Exception
+    void convertDateTimeHandler() throws Exception
     {
         Date now = new Date(1000 * 360 * 60 * 24 * 7);
         facesContext.getExternalContext().getRequestMap().put("now", now);
@@ -181,18 +184,18 @@ public class CoreTestCase extends AbstractFaceletTestCase
         UIOutput out5 = (UIOutput) root.findComponent("form:out5");
         UIOutput out6 = (UIOutput) root.findComponent("form:out6");
 
-        Assertions.assertNotNull(out1);
-        Assertions.assertNotNull(out2);
-        Assertions.assertNotNull(out3);
-        Assertions.assertNotNull(out4);
-        Assertions.assertNotNull(out5);
-        Assertions.assertNotNull(out6);
+        assertNotNull(out1);
+        assertNotNull(out2);
+        assertNotNull(out3);
+        assertNotNull(out4);
+        assertNotNull(out5);
+        assertNotNull(out6);
 
-        Assertions.assertNotNull(out1.getConverter());
-        Assertions.assertNotNull(out2.getConverter());
-        Assertions.assertNotNull(out3.getConverter());
-        Assertions.assertNotNull(out4.getConverter());
-        Assertions.assertNotNull(out5.getConverter());
+        assertNotNull(out1.getConverter());
+        assertNotNull(out2.getConverter());
+        assertNotNull(out3.getConverter());
+        assertNotNull(out4.getConverter());
+        assertNotNull(out5.getConverter());
         DateTimeConverter converter6 = (DateTimeConverter) out6.getConverter();
 
         TimeZone gmt = TimeZone.getTimeZone("GMT");
@@ -200,38 +203,38 @@ public class CoreTestCase extends AbstractFaceletTestCase
         DateFormat shortDate = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
         shortDate.setLenient(false);
         shortDate.setTimeZone(gmt);
-        Assertions.assertEquals(shortDate.format(now), out1.getConverter().getAsString(
+        assertEquals(shortDate.format(now), out1.getConverter().getAsString(
                 facesContext, out1, now));
 
         DateFormat shortDateMediumTime = DateFormat.getDateTimeInstance(
                 DateFormat.SHORT, DateFormat.MEDIUM, Locale.US);
         shortDateMediumTime.setLenient(false);
         shortDateMediumTime.setTimeZone(gmt);
-        Assertions.assertEquals(shortDateMediumTime.format(now), out2.getConverter()
+        assertEquals(shortDateMediumTime.format(now), out2.getConverter()
                 .getAsString(facesContext, out2, now));
 
         DateFormat mediumDate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
         mediumDate.setTimeZone(TimeZone.getTimeZone("CST"));
         mediumDate.setLenient(false);
-        Assertions.assertEquals(mediumDate.format(now), out3.getConverter()
+        assertEquals(mediumDate.format(now), out3.getConverter()
                 .getAsString(facesContext, out3, now));
 
         DateFormat mediumTime = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.US);
         mediumTime.setLenient(false);
         mediumTime.setTimeZone(gmt);
-        Assertions.assertEquals(mediumTime.format(now), out4.getConverter()
+        assertEquals(mediumTime.format(now), out4.getConverter()
                 .getAsString(facesContext, out4, now));
 
         SimpleDateFormat patternCst = new SimpleDateFormat("K:mm a, z", Locale.US);
         patternCst.setTimeZone(TimeZone.getTimeZone("CST"));
         patternCst.setLenient(false);
-        Assertions.assertEquals(patternCst.format(now), out5.getConverter()
+        assertEquals(patternCst.format(now), out5.getConverter()
                 .getAsString(facesContext, out5, now));
-        Assertions.assertEquals(TimeZone.getTimeZone("GMT"), converter6.getTimeZone());
+        assertEquals(TimeZone.getTimeZone("GMT"), converter6.getTimeZone());
     }
 
     @Test
-    public void testConvertDelegateHandler() throws Exception
+    void convertDelegateHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         root.setLocale(Locale.US);
@@ -239,16 +242,16 @@ public class CoreTestCase extends AbstractFaceletTestCase
 
         UIOutput out1 = (UIOutput) root.findComponent("out1");
 
-        Assertions.assertNotNull( out1);
+        assertNotNull( out1);
 
-        Assertions.assertNotNull(out1.getConverter());
+        assertNotNull(out1.getConverter());
 
-        Assertions.assertEquals(new Double(42.5), out1.getConverter()
+        assertEquals(new Double(42.5), out1.getConverter()
                 .getAsObject(facesContext, out1, out1.getLocalValue().toString()));
     }
 
     @Test
-    public void testConvertNumberHandler() throws Exception
+    void convertNumberHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         root.setLocale(Locale.US);
@@ -260,57 +263,57 @@ public class CoreTestCase extends AbstractFaceletTestCase
         UIOutput out4 = (UIOutput) root.findComponent("out4");
         UIOutput out5 = (UIOutput) root.findComponent("out5");
 
-        Assertions.assertNotNull(out1);
-        Assertions.assertNotNull(out2);
-        Assertions.assertNotNull(out3);
-        Assertions.assertNotNull(out4);
-        Assertions.assertNotNull(out5);
+        assertNotNull(out1);
+        assertNotNull(out2);
+        assertNotNull(out3);
+        assertNotNull(out4);
+        assertNotNull(out5);
 
-        Assertions.assertNotNull(out1.getConverter());
-        Assertions.assertNotNull(out2.getConverter());
-        Assertions.assertNotNull(out3.getConverter());
-        Assertions.assertNotNull(out4.getConverter());
-        Assertions.assertNotNull(out5.getConverter());
+        assertNotNull(out1.getConverter());
+        assertNotNull(out2.getConverter());
+        assertNotNull(out3.getConverter());
+        assertNotNull(out4.getConverter());
+        assertNotNull(out5.getConverter());
 
-        Assertions.assertEquals("12", out1.getConverter().getAsString(facesContext,
+        assertEquals("12", out1.getConverter().getAsString(facesContext,
                 out1, new Double(12.001)));
-        Assertions.assertEquals("$12.00", out2.getConverter().getAsString(
+        assertEquals("$12.00", out2.getConverter().getAsString(
                 facesContext, out2, new Double(12.00)));
-        Assertions.assertEquals("00,032", out3.getConverter().getAsString(
+        assertEquals("00,032", out3.getConverter().getAsString(
                 facesContext, out3, new Double(32)));
-        Assertions.assertEquals("0.67", out4.getConverter().getAsString(
+        assertEquals("0.67", out4.getConverter().getAsString(
                 facesContext, out4, new Double(2.0 / 3.0)));
-        Assertions.assertEquals("67%", out5.getConverter().getAsString(
+        assertEquals("67%", out5.getConverter().getAsString(
                 facesContext, out5, new Double(0.67)));
     }
 
     @Test
-    public void testFacetHandler() throws Exception
+    void facetHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "facet.xml");
 
         UIData data = (UIData) root.findComponent("table");
 
-        Assertions.assertNotNull(data);
+        assertNotNull(data);
 
         UIComponent footer = data.getFooter();
 
-        Assertions.assertNotNull(footer);
+        assertNotNull(footer);
     }
 
     @Test
-    public void testLoadBundleHandler() throws Exception
+    void loadBundleHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "loadBundle.xml");
 
         Object value = facesContext.getExternalContext().getRequestMap().get("foo");
 
-        Assertions.assertNotNull(value);
-        Assertions.assertTrue(value instanceof Map);
+        assertNotNull(value);
+        assertInstanceOf(Map.class, value);
         String result = (String) ((Map) value).get("some.not.found.key");
-        Assertions.assertTrue(result.contains("???"));
+        assertTrue(result.contains("???"));
     }
 
     /**
@@ -320,35 +323,35 @@ public class CoreTestCase extends AbstractFaceletTestCase
      * buildView time; changing the locale afterwards had no effect.
      */
     @Test
-    public void testLoadBundleHandlerRefreshesOnLocaleChange() throws Exception
+    void loadBundleHandlerRefreshesOnLocaleChange() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         root.setLocale(Locale.ENGLISH);
         vdl.buildView(facesContext, root, "loadBundle.xml");
 
         Map<?, ?> bundle = (Map<?, ?>) facesContext.getExternalContext().getRequestMap().get("foo");
-        Assertions.assertNotNull(bundle);
-        Assertions.assertEquals("bar_en", bundle.get("foo"),
+        assertNotNull(bundle);
+        assertEquals("bar_en", bundle.get("foo"),
                 "English locale should return 'bar_en' (from bundle_en.properties)");
 
         // Simulate locale change during invoke-application (MYFACES-4426).
         root.setLocale(Locale.GERMAN);
 
-        Assertions.assertEquals("baz_de", bundle.get("foo"),
+        assertEquals("baz_de", bundle.get("foo"),
                 "After setLocale(GERMAN) the bundle map must return the German value without rebuildView");
     }
 
     @Test
-    public void testValidateDelegateHandler() throws Exception
+    void validateDelegateHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "validator.xml");
 
         UIInput input = (UIInput) root.findComponent("form:input");
 
-        Assertions.assertNotNull(input);
+        assertNotNull(input);
 
-        Assertions.assertEquals(1, input.getValidators().length);
+        assertEquals(1, input.getValidators().length);
 
         Validator v = input.getValidators()[0];
 
@@ -356,16 +359,16 @@ public class CoreTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testValidateDoubleRangeHandler() throws Exception
+    void validateDoubleRangeHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "validateDoubleRange.xml");
 
         UIInput input = (UIInput) root.findComponent("form:input");
 
-        Assertions.assertNotNull(input);
+        assertNotNull(input);
 
-        Assertions.assertEquals(1, input.getValidators().length);
+        assertEquals(1, input.getValidators().length);
 
         Validator v = input.getValidators()[0];
 
@@ -373,16 +376,16 @@ public class CoreTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testValidateLengthHandler() throws Exception
+    void validateLengthHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "validateLength.xml");
 
         UIInput input = (UIInput) root.findComponent("form:input");
 
-        Assertions.assertNotNull(input);
+        assertNotNull(input);
 
-        Assertions.assertEquals(1, input.getValidators().length);
+        assertEquals(1, input.getValidators().length);
 
         Validator v = input.getValidators()[0];
 
@@ -390,16 +393,16 @@ public class CoreTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testValidateLongRangeHandler() throws Exception
+    void validateLongRangeHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "validateLongRange.xml");
 
         UIInput input = (UIInput) root.findComponent("form:input");
 
-        Assertions.assertNotNull(input);
+        assertNotNull(input);
 
-        Assertions.assertEquals(1, input.getValidators().length);
+        assertEquals(1, input.getValidators().length);
 
         Validator v = input.getValidators()[0];
 
@@ -407,30 +410,30 @@ public class CoreTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testValueChangeListenerHandler() throws Exception
+    void valueChangeListenerHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "valueChangeListener.xml");
 
         UIInput input = (UIInput) root.findComponent("form:input");
 
-        Assertions.assertNotNull(input);
+        assertNotNull(input);
 
-        Assertions.assertEquals(1,
+        assertEquals(1,
                 input.getValueChangeListeners().length);
     }
 
     @Test
-    public void testViewHandler() throws Exception
+    void viewHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "view.xml");
 
-        Assertions.assertEquals(Locale.GERMAN, root.getLocale());
+        assertEquals(Locale.GERMAN, root.getLocale());
     }
-    
+
     @Test
-    public void testResetValuesActionListenerHandler() throws Exception
+    void resetValuesActionListenerHandler() throws Exception
     {
         ResetValuesBean bean = new ResetValuesBean();
 
@@ -443,14 +446,14 @@ public class CoreTestCase extends AbstractFaceletTestCase
 
         UICommand action1 = (UICommand) root.findComponent("mainForm:submit");
 
-        Assertions.assertNotNull(action1);
+        assertNotNull(action1);
 
-        Assertions.assertEquals(1, action1.getActionListeners().length);
+        assertEquals(1, action1.getActionListeners().length);
 
         UIInput field1 = (UIInput) root.findComponent("mainForm:field1");
         field1.setValue("xxx");
-        Assertions.assertEquals("xxx", field1.getValue());
-        Assertions.assertTrue(field1.isLocalValueSet());
+        assertEquals("xxx", field1.getValue());
+        assertTrue(field1.isLocalValueSet());
         
         UIInput field2 = (UIInput) root.findComponent("mainForm:field2");
         field2.setSubmittedValue("1");
@@ -459,10 +462,10 @@ public class CoreTestCase extends AbstractFaceletTestCase
         action1.getActionListeners()[0].processAction(new ActionEvent(action1));
         
         // If resetValues() was activated, 
-        Assertions.assertEquals("Hello",field1.getValue());
-        Assertions.assertFalse(field1.isLocalValueSet());
-        Assertions.assertNull(field2.getSubmittedValue());
-        Assertions.assertTrue(field2.isValid());
+        assertEquals("Hello",field1.getValue());
+        assertFalse(field1.isLocalValueSet());
+        assertNull(field2.getSubmittedValue());
+        assertTrue(field2.isValid());
     }
 
 

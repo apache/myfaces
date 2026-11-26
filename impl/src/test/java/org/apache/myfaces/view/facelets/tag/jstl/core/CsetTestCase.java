@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
@@ -25,10 +28,9 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CsetTestCase extends AbstractFaceletTestCase {
+class CsetTestCase extends AbstractFaceletTestCase {
 
     
     @Override
@@ -46,14 +48,14 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         // handle VariableMapper stuff properly and ui:param logic will not work
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     /**
      * c:set should not pass to pages referenced by ui:decorate
      * 
      * @throws Exception
      */
     @Test
-    public void testCsetPageScope1() throws Exception
+    void csetPageScope1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetpagescope1.xhtml");
@@ -66,16 +68,16 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * c:set should not pass to pages referenced by ui:composition
      * 
      * @throws Exception
      */
     @Test
-    public void testCsetPageScope2() throws Exception
+    void csetPageScope2() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetpagescope2.xhtml");
@@ -88,7 +90,7 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
 
     /**
@@ -99,7 +101,7 @@ public class CsetTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testCsetPageScope3() throws Exception
+    void csetPageScope3() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetpagescope3.xhtml");
@@ -112,7 +114,7 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
 
     /**
@@ -121,7 +123,7 @@ public class CsetTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testCsetPageScope4() throws Exception
+    void csetPageScope4() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetpagescope4.xhtml");
@@ -134,16 +136,16 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * c:set should not pass to pages referenced by composite components
      * 
      * @throws Exception
      */
     @Test
-    public void testCsetPageScope5() throws Exception
+    void csetPageScope5() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetpagescope5.xhtml");
@@ -156,7 +158,7 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
 
     /**
@@ -166,7 +168,7 @@ public class CsetTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testCsetPageScope6() throws Exception
+    void csetPageScope6() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetpagescope6.xhtml");
@@ -179,17 +181,17 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("rightValue"));
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertTrue(result.contains("rightValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * c:set tags defined before ui:decorate applies for expressions after that tag 
      * 
      * @throws Exception
      */
     @Test
-    public void testCsetPageScope7() throws Exception
+    void csetPageScope7() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetpagescope7.xhtml");
@@ -202,8 +204,8 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("rightValue"));
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertTrue(result.contains("rightValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
 
     /**
@@ -214,7 +216,7 @@ public class CsetTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testCsetRequestScope1() throws Exception
+    void csetRequestScope1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "csetrequestscope1.xhtml");
@@ -227,6 +229,6 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         rw.flush();
 
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("someValue"));
+        assertTrue(result.contains("someValue"));
     }
 }

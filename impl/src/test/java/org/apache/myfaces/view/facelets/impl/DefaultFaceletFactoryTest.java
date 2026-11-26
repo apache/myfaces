@@ -18,64 +18,63 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link DefaultFaceletFactory#_removeFirst(String, String)} (same-package access to protected).
  */
-public class DefaultFaceletFactoryTest extends AbstractFaceletTestCase
+class DefaultFaceletFactoryTest extends AbstractFaceletTestCase
 {
     @Test
-    public void testRemoveFirstPrefix() throws IOException
+    void removeFirstPrefix() throws Exception
     {
         DefaultFaceletFactory factory = new DefaultFaceletFactory(new SAXCompiler());
-        Assertions.assertEquals("/y/z", factory._removeFirst("/x/y/z", "/x"));
+        assertEquals("/y/z", factory._removeFirst("/x/y/z", "/x"));
     }
 
     @Test
-    public void testRemoveFirstOnlyFirstOccurrence() throws IOException
+    void removeFirstOnlyFirstOccurrence() throws Exception
     {
         DefaultFaceletFactory factory = new DefaultFaceletFactory(new SAXCompiler());
-        Assertions.assertEquals("/a/b/a", factory._removeFirst("/a/b/a/b/a", "/a/b"));
+        assertEquals("/a/b/a", factory._removeFirst("/a/b/a/b/a", "/a/b"));
     }
 
     @Test
-    public void testRemoveFirstNotFound() throws IOException
+    void removeFirstNotFound() throws Exception
     {
         DefaultFaceletFactory factory = new DefaultFaceletFactory(new SAXCompiler());
-        Assertions.assertEquals("/unchanged", factory._removeFirst("/unchanged", "/missing"));
+        assertEquals("/unchanged", factory._removeFirst("/unchanged", "/missing"));
     }
 
     @Test
-    public void testRemoveFirstEmptyToRemove() throws IOException
+    void removeFirstEmptyToRemove() throws Exception
     {
         DefaultFaceletFactory factory = new DefaultFaceletFactory(new SAXCompiler());
-        Assertions.assertEquals("/same", factory._removeFirst("/same", ""));
+        assertEquals("/same", factory._removeFirst("/same", ""));
     }
 
     @Test
-    public void testRemoveFirstNullToRemove() throws IOException
+    void removeFirstNullToRemove() throws Exception
     {
         DefaultFaceletFactory factory = new DefaultFaceletFactory(new SAXCompiler());
-        Assertions.assertEquals("/same", factory._removeFirst("/same", null));
+        assertEquals("/same", factory._removeFirst("/same", null));
     }
 
     @Test
-    public void testRemoveFirstRegexMetacharactersAreLiteral() throws IOException
+    void removeFirstRegexMetacharactersAreLiteral() throws Exception
     {
         DefaultFaceletFactory factory = new DefaultFaceletFactory(new SAXCompiler());
-        Assertions.assertEquals("prefixsuffix", factory._removeFirst("prefix.+suffix", ".+"));
+        assertEquals("prefixsuffix", factory._removeFirst("prefix.+suffix", ".+"));
     }
 
     @Test
-    public void testRemoveFirstWholeString() throws IOException
+    void removeFirstWholeString() throws Exception
     {
         DefaultFaceletFactory factory = new DefaultFaceletFactory(new SAXCompiler());
-        Assertions.assertEquals("", factory._removeFirst("/only", "/only"));
+        assertEquals("", factory._removeFirst("/only", "/only"));
     }
 }

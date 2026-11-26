@@ -20,13 +20,15 @@ package org.apache.myfaces.view.facelets;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
 
-public class ImportConstantsTest extends AbstractMyFacesCDIRequestTestCase
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ImportConstantsTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Test
-    public void test() throws Exception
+    void test() throws Exception
     {
         startViewRequest("/importConstants.xhtml");
         processLifecycleExecuteAndRender();
@@ -34,6 +36,6 @@ public class ImportConstantsTest extends AbstractMyFacesCDIRequestTestCase
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content = new String(writer1.content());
 
-        Assertions.assertTrue(content.contains("Value:a!"));
+        assertTrue(content.contains("Value:a!"));
     }
 }

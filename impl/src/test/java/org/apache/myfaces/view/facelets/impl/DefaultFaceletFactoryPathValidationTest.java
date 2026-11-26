@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URL;
 
 import jakarta.faces.application.ViewHandler;
@@ -26,7 +28,6 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.context.InvalidFileException;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -36,7 +37,7 @@ import org.junit.jupiter.api.Test;
  * <p>The suite runs under {@code Development} stage (overriding the default
  * {@code UnitTest} set by the base class) so the validation code-path is always active.</p>
  */
-public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIRequestTestCase
+class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -67,20 +68,20 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
      * {@link InvalidFileException.Reason#DISALLOWED_SCHEME}.
      */
     @Test
-    public void testExternalHttpUrlIsRejected() throws Exception
+    void externalHttpUrlIsRejected() throws Exception
     {
         // Only a live facesContext is needed — no view rendering required
         startViewRequest(null);
 
         DefaultFaceletFactory factory = getFactory();
 
-        InvalidFileException ex = Assertions.assertThrows(
+        InvalidFileException ex = assertThrows(
                 InvalidFileException.class,
                 () -> factory.resolveURL(facesContext, null,
                         "http://someverybadmaliciouswebsite.com/attack.xhtml"),
                 "Expected InvalidFileException for external http: URL");
 
-        Assertions.assertEquals(InvalidFileException.Reason.DISALLOWED_SCHEME, ex.getReason());
+        assertEquals(InvalidFileException.Reason.DISALLOWED_SCHEME, ex.getReason());
 
         endRequest();
     }
@@ -96,7 +97,7 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
      * the {@code mappingAllowed} check.</p>
      */
     @Test
-    public void testNonFaceletExtensionIsRejected() throws Exception
+    void nonFaceletExtensionIsRejected() throws Exception
     {
         servletContext.addInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ".xhtml");
         startViewRequest(null);
@@ -106,12 +107,12 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
         URL webappRoot = getWebappContextURI().toURL();
         URL source = new URL(webappRoot, "views/index.xhtml");
 
-        InvalidFileException ex = Assertions.assertThrows(
+        InvalidFileException ex = assertThrows(
                 InvalidFileException.class,
                 () -> factory.resolveURL(facesContext, source, "template.properties"),
                 "Expected InvalidFileException for a .properties path");
 
-        Assertions.assertEquals(InvalidFileException.Reason.INVALID_EXTENSION, ex.getReason());
+        assertEquals(InvalidFileException.Reason.INVALID_EXTENSION, ex.getReason());
 
         endRequest();
     }
@@ -121,11 +122,11 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
      * fail open when {@code source == null}).
      */
     @Test
-    public void testRelativeTraversalWithNullSourceIsRejected() throws Exception
+    void relativeTraversalWithNullSourceIsRejected() throws Exception
     {
         startViewRequest(null);
 
-        Assertions.assertThrows(
+        assertThrows(
                 java.io.IOException.class,
                 () -> getFactory().resolveURL(facesContext, null, "../../etc/passwd.xhtml"));
     }
@@ -136,7 +137,7 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
      * must not be rejected as {@code PATH_TRAVERSAL}.
      */
     @Test
-    public void testRelativeIncludeBetweenSiblingsInJarIsAllowed() throws Exception
+    void relativeIncludeBetweenSiblingsInJarIsAllowed() throws Exception
     {
         startViewRequest(null);
 
@@ -144,7 +145,7 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
 
         java.net.URL resolved = getFactory().resolveURL(facesContext, source, "breadcrumbs.xhtml");
 
-        Assertions.assertTrue(resolved.toExternalForm().endsWith("!/META-INF/resources/breadcrumbs.xhtml"),
+        assertTrue(resolved.toExternalForm().endsWith("!/META-INF/resources/breadcrumbs.xhtml"),
                 "Unexpected URL: " + resolved);
     }
 
@@ -152,17 +153,17 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
      * A relative path that climbs out of the jar's {@code META-INF/resources} root must still be rejected.
      */
     @Test
-    public void testRelativePathEscapingJarResourceRootIsRejected() throws Exception
+    void relativePathEscapingJarResourceRootIsRejected() throws Exception
     {
         startViewRequest(null);
 
         java.net.URL source = createTemplatesJar("includeOnly.xhtml");
 
-        InvalidFileException ex = Assertions.assertThrows(
+        InvalidFileException ex = assertThrows(
                 InvalidFileException.class,
                 () -> getFactory().resolveURL(facesContext, source, "../../escaped.xhtml"));
 
-        Assertions.assertEquals(InvalidFileException.Reason.PATH_TRAVERSAL, ex.getReason());
+        assertEquals(InvalidFileException.Reason.PATH_TRAVERSAL, ex.getReason());
     }
 
     /** Creates templates.jar with META-INF/resources/{includeOnly,breadcrumbs}.xhtml; returns URL of 'entry'. */

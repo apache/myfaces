@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
  * </p>
  */
 
-public class StateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
+class StateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
 {
     @Override
     @BeforeEach

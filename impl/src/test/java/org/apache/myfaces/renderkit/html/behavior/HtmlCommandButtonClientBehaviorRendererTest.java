@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlCommandButtonClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
+class HtmlCommandButtonClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {
     private HtmlRenderedClientEventAttr[] attrs = null;
     

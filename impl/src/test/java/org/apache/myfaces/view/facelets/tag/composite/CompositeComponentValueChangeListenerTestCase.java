@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
@@ -26,10 +28,9 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.ValueChangeEvent;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentValueChangeListenerTestCase extends AbstractFaceletTestCase
+class CompositeComponentValueChangeListenerTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected void setupComponents() throws Exception
@@ -52,9 +53,9 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
     {
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
-    public void testSimpleValueChangeListenerTarget() throws Exception
+    void simpleValueChangeListenerTarget() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -66,34 +67,34 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIInput input1 = (UIInput) compositeComponent1.findComponent("testComponent");
-        Assertions.assertNotNull(input1);
-        Assertions.assertNotNull(input1.getValueChangeListeners());
-        Assertions.assertEquals(1, input1.getValueChangeListeners().length);
+        assertNotNull(input1);
+        assertNotNull(input1.getValueChangeListeners());
+        assertEquals(1, input1.getValueChangeListeners().length);
         
         bean.setValueChangeListener1Called(false);
         input1.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
 
         UIComponent panelGroup2 = root.findComponent("testGroup2");
-        Assertions.assertNotNull(panelGroup2);
+        assertNotNull(panelGroup2);
         UINamingContainer compositeComponent2 = (UINamingContainer) panelGroup2.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         UIInput input2 = (UIInput) compositeComponent2.findComponent("testComponent");
-        Assertions.assertNotNull(input2);
-        Assertions.assertNotNull(input2.getValueChangeListeners());
-        Assertions.assertEquals(1, input2.getValueChangeListeners().length);
+        assertNotNull(input2);
+        assertNotNull(input2.getValueChangeListeners());
+        assertEquals(1, input2.getValueChangeListeners().length);
         
         bean.setValueChangeListener2Called(false);
         input2.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input2,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
     }
 
     @Test
-    public void testCompositeValueChangeListenerTarget() throws Exception
+    void compositeValueChangeListenerTarget() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -104,41 +105,41 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
         vdl.buildView(facesContext, root, "testCompositeAttributeValueChangeListenerTarget.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         
         UINamingContainer compositeComponent1inner = (UINamingContainer) compositeComponent1.findComponent("simpleAttributeMethodExpressionTarget");
-        Assertions.assertNotNull(compositeComponent1inner);
+        assertNotNull(compositeComponent1inner);
         UIInput input1 = (UIInput) compositeComponent1inner.findComponent("testComponent");
-        Assertions.assertNotNull(input1);
-        Assertions.assertNotNull(input1.getValueChangeListeners());
-        Assertions.assertEquals(1, input1.getValueChangeListeners().length);
+        assertNotNull(input1);
+        assertNotNull(input1.getValueChangeListeners());
+        assertEquals(1, input1.getValueChangeListeners().length);
         
         bean.setValueChangeListener1Called(false);
         input1.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
 
         UIComponent panelGroup2 = root.findComponent("testGroup2");
-        Assertions.assertNotNull(panelGroup2);
+        assertNotNull(panelGroup2);
         UINamingContainer compositeComponent2 = (UINamingContainer) panelGroup2.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         
         UINamingContainer compositeComponent2inner = (UINamingContainer) compositeComponent2.findComponent("simpleAttributeMethodExpressionTarget");
-        Assertions.assertNotNull(compositeComponent2inner);
+        assertNotNull(compositeComponent2inner);
         UIInput input2 = (UIInput) compositeComponent2inner.findComponent("testComponent");
-        Assertions.assertNotNull(input2);
-        Assertions.assertNotNull(input2.getValueChangeListeners());
-        Assertions.assertEquals(1, input2.getValueChangeListeners().length);
+        assertNotNull(input2);
+        assertNotNull(input2.getValueChangeListeners());
+        assertEquals(1, input2.getValueChangeListeners().length);
         
         bean.setValueChangeListener2Called(false);
         input2.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input2,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
 
     }
-    
+
     @Test
-    public void testSimpleValueChangeListenerTarget2() throws Exception
+    void simpleValueChangeListenerTarget2() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -150,58 +151,58 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIInput input1 = (UIInput) compositeComponent1.findComponent("testComponent");
-        Assertions.assertNotNull(input1);
-        Assertions.assertNotNull(input1.getValueChangeListeners());
-        Assertions.assertEquals(1, input1.getValueChangeListeners().length);
+        assertNotNull(input1);
+        assertNotNull(input1.getValueChangeListeners());
+        assertEquals(1, input1.getValueChangeListeners().length);
         
         bean.setValueChangeListener1Called(false);
         input1.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         
         UIInput input1n = (UIInput) compositeComponent1.findComponent("testComponentNoTarget");
         
-        Assertions.assertNotNull(input1n);
-        Assertions.assertNotNull(input1n.getValueChangeListeners());
-        Assertions.assertEquals(1, input1n.getValueChangeListeners().length);
+        assertNotNull(input1n);
+        assertNotNull(input1n.getValueChangeListeners());
+        assertEquals(1, input1n.getValueChangeListeners().length);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         bean.setValueChangeListener1Called(false);
         input1n.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1n,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         compositeComponent1.popComponentFromEL(facesContext);
         
         UIComponent panelGroup2 = root.findComponent("testGroup2");
-        Assertions.assertNotNull(panelGroup2);
+        assertNotNull(panelGroup2);
         UINamingContainer compositeComponent2 = (UINamingContainer) panelGroup2.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         UIInput input2 = (UIInput) compositeComponent2.findComponent("testComponent");
-        Assertions.assertNotNull(input2);
-        Assertions.assertNotNull(input2.getValueChangeListeners());
-        Assertions.assertEquals(1, input2.getValueChangeListeners().length);
+        assertNotNull(input2);
+        assertNotNull(input2.getValueChangeListeners());
+        assertEquals(1, input2.getValueChangeListeners().length);
         
         bean.setValueChangeListener2Called(false);
         input2.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input2,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
         
         UIInput input2n = (UIInput) compositeComponent2.findComponent("testComponentNoTarget");
         
-        Assertions.assertNotNull(input2n);
-        Assertions.assertNotNull(input2n.getValueChangeListeners());
-        Assertions.assertEquals(1, input2n.getValueChangeListeners().length);
+        assertNotNull(input2n);
+        assertNotNull(input2n.getValueChangeListeners());
+        assertEquals(1, input2n.getValueChangeListeners().length);
         
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
         bean.setValueChangeListener2Called(false);
         input2n.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input2n,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
         compositeComponent2.popComponentFromEL(facesContext);
     }
 
     @Test
-    public void testCompositeValueChangeListenerTarget2() throws Exception
+    void compositeValueChangeListenerTarget2() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -212,120 +213,120 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
         vdl.buildView(facesContext, root, "testCompositeAttributeValueChangeListenerTarget2.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         
         UINamingContainer compositeComponent1target = (UINamingContainer) compositeComponent1.findComponent("simpleAttributeMethodExpressionTarget");
-        Assertions.assertNotNull(compositeComponent1target);
+        assertNotNull(compositeComponent1target);
         UIInput input1target = (UIInput) compositeComponent1target.findComponent("testComponent");
-        Assertions.assertNotNull(input1target);
-        Assertions.assertNotNull(input1target.getValueChangeListeners());
-        Assertions.assertEquals(1, input1target.getValueChangeListeners().length);
+        assertNotNull(input1target);
+        assertNotNull(input1target.getValueChangeListeners());
+        assertEquals(1, input1target.getValueChangeListeners().length);
         
         bean.setValueChangeListener1Called(false);
         input1target.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1target,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
 
         UIInput input1notarget = (UIInput) compositeComponent1target.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(input1notarget);
-        Assertions.assertNotNull(input1notarget.getValueChangeListeners());
-        Assertions.assertEquals(1, input1notarget.getValueChangeListeners().length);
+        assertNotNull(input1notarget);
+        assertNotNull(input1notarget.getValueChangeListeners());
+        assertEquals(1, input1notarget.getValueChangeListeners().length);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         compositeComponent1target.pushComponentToEL(facesContext, compositeComponent1target);
         bean.setValueChangeListener1Called(false);
         input1notarget.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1notarget,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         compositeComponent1target.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
         
         UINamingContainer compositeComponent1notarget = (UINamingContainer) compositeComponent1.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assertions.assertNotNull(compositeComponent1notarget);
+        assertNotNull(compositeComponent1notarget);
         UIInput inputnotarget1target = (UIInput) compositeComponent1notarget.findComponent("testComponent");
-        Assertions.assertNotNull(inputnotarget1target);
-        Assertions.assertNotNull(inputnotarget1target.getValueChangeListeners());
-        Assertions.assertEquals(1, inputnotarget1target.getValueChangeListeners().length);
+        assertNotNull(inputnotarget1target);
+        assertNotNull(inputnotarget1target.getValueChangeListeners());
+        assertEquals(1, inputnotarget1target.getValueChangeListeners().length);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         compositeComponent1notarget.pushComponentToEL(facesContext, compositeComponent1notarget);
         bean.setValueChangeListener1Called(false);
         inputnotarget1target.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(inputnotarget1target,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         compositeComponent1notarget.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
         
         UIInput inputnotarget1notarget = (UIInput) compositeComponent1notarget.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(inputnotarget1notarget);
-        Assertions.assertNotNull(inputnotarget1notarget.getValueChangeListeners());
-        Assertions.assertEquals(1, inputnotarget1notarget.getValueChangeListeners().length);
+        assertNotNull(inputnotarget1notarget);
+        assertNotNull(inputnotarget1notarget.getValueChangeListeners());
+        assertEquals(1, inputnotarget1notarget.getValueChangeListeners().length);
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         compositeComponent1notarget.pushComponentToEL(facesContext, compositeComponent1notarget);
         bean.setValueChangeListener1Called(false);
         inputnotarget1notarget.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(inputnotarget1notarget,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         compositeComponent1notarget.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
         
         UIComponent panelGroup2 = root.findComponent("testGroup2");
-        Assertions.assertNotNull(panelGroup2);
+        assertNotNull(panelGroup2);
         UINamingContainer compositeComponent2 = (UINamingContainer) panelGroup2.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         
         UINamingContainer compositeComponent2target = (UINamingContainer) compositeComponent2.findComponent("simpleAttributeMethodExpressionTarget");
-        Assertions.assertNotNull(compositeComponent2target);
+        assertNotNull(compositeComponent2target);
         UIInput input2target = (UIInput) compositeComponent2target.findComponent("testComponent");
-        Assertions.assertNotNull(input2target);
-        Assertions.assertNotNull(input2target.getValueChangeListeners());
-        Assertions.assertEquals(1, input2target.getValueChangeListeners().length);
+        assertNotNull(input2target);
+        assertNotNull(input2target.getValueChangeListeners());
+        assertEquals(1, input2target.getValueChangeListeners().length);
         
         bean.setValueChangeListener2Called(false);
         input2target.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input2target,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
 
         UIInput input2notarget = (UIInput) compositeComponent2target.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(input2notarget);
-        Assertions.assertNotNull(input2notarget.getValueChangeListeners());
-        Assertions.assertEquals(1, input2notarget.getValueChangeListeners().length);
+        assertNotNull(input2notarget);
+        assertNotNull(input2notarget.getValueChangeListeners());
+        assertEquals(1, input2notarget.getValueChangeListeners().length);
         
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
         compositeComponent2target.pushComponentToEL(facesContext, compositeComponent2target);
         bean.setValueChangeListener2Called(false);
         input2notarget.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input2notarget,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
         compositeComponent2target.popComponentFromEL(facesContext);
         compositeComponent2.popComponentFromEL(facesContext);
         
         UINamingContainer compositeComponent2notarget = (UINamingContainer) compositeComponent2.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assertions.assertNotNull(compositeComponent2notarget);
+        assertNotNull(compositeComponent2notarget);
         UIInput inputnotarget2target = (UIInput) compositeComponent2notarget.findComponent("testComponent");
-        Assertions.assertNotNull(inputnotarget2target);
-        Assertions.assertNotNull(inputnotarget2target.getValueChangeListeners());
-        Assertions.assertEquals(1, inputnotarget2target.getValueChangeListeners().length);
+        assertNotNull(inputnotarget2target);
+        assertNotNull(inputnotarget2target.getValueChangeListeners());
+        assertEquals(1, inputnotarget2target.getValueChangeListeners().length);
         
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
         compositeComponent2notarget.pushComponentToEL(facesContext, compositeComponent2notarget);
         bean.setValueChangeListener2Called(false);
         inputnotarget2target.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(inputnotarget2target,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
         compositeComponent2notarget.popComponentFromEL(facesContext);
         compositeComponent2.popComponentFromEL(facesContext);
         
         UIInput inputnotarget2notarget = (UIInput) compositeComponent2notarget.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(inputnotarget2notarget);
-        Assertions.assertNotNull(inputnotarget2notarget.getValueChangeListeners());
-        Assertions.assertEquals(1, inputnotarget2notarget.getValueChangeListeners().length);
+        assertNotNull(inputnotarget2notarget);
+        assertNotNull(inputnotarget2notarget.getValueChangeListeners());
+        assertEquals(1, inputnotarget2notarget.getValueChangeListeners().length);
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
         compositeComponent2notarget.pushComponentToEL(facesContext, compositeComponent2notarget);
         bean.setValueChangeListener2Called(false);
         inputnotarget2notarget.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(inputnotarget2notarget,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
         compositeComponent2notarget.popComponentFromEL(facesContext);
         compositeComponent2.popComponentFromEL(facesContext);
     }
-    
+
     @Test
-    public void testSimpleValueChangeListenerNoTarget() throws Exception
+    void simpleValueChangeListenerNoTarget() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -336,44 +337,44 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
         vdl.buildView(facesContext, root, "testSimpleAttributeValueChangeListenerNoTarget.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         UIInput input1 = (UIInput) compositeComponent1.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(input1);
-        Assertions.assertNotNull(input1.getValueChangeListeners());
-        Assertions.assertEquals(1, input1.getValueChangeListeners().length);
+        assertNotNull(input1);
+        assertNotNull(input1.getValueChangeListeners());
+        assertEquals(1, input1.getValueChangeListeners().length);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         input1.pushComponentToEL(facesContext,  input1);
         bean.setValueChangeListener1Called(false);
         input1.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         input1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
 
         UIComponent panelGroup2 = root.findComponent("testGroup2");
-        Assertions.assertNotNull(panelGroup2);
+        assertNotNull(panelGroup2);
         UINamingContainer compositeComponent2 = (UINamingContainer) panelGroup2.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
         UIInput input2 = (UIInput) compositeComponent2.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(input2);
-        Assertions.assertNotNull(input2.getValueChangeListeners());
-        Assertions.assertEquals(1, input2.getValueChangeListeners().length);
+        assertNotNull(input2);
+        assertNotNull(input2.getValueChangeListeners());
+        assertEquals(1, input2.getValueChangeListeners().length);
 
         
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
         input2.pushComponentToEL(facesContext,  input2);
         bean.setValueChangeListener2Called(false);
         input2.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input2,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
         input2.popComponentFromEL(facesContext);
         compositeComponent2.popComponentFromEL(facesContext);
 
     }
-    
+
     @Test
-    public void testCompositeValueChangeListenerNoTarget() throws Exception
+    void compositeValueChangeListenerNoTarget() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -384,49 +385,49 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
         vdl.buildView(facesContext, root, "testCompositeAttributeValueChangeListenerNoTarget.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
 
         UINamingContainer compositeComponent1inner = (UINamingContainer) compositeComponent1.findComponent("simpleAttributeActionMethodExpressionNoTarget");
-        Assertions.assertNotNull(compositeComponent1inner);
+        assertNotNull(compositeComponent1inner);
         UIInput testComponentNoTarget1 = (UIInput) compositeComponent1inner.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(testComponentNoTarget1);
-        Assertions.assertNotNull(testComponentNoTarget1.getValueChangeListeners());
-        Assertions.assertEquals(1, testComponentNoTarget1.getValueChangeListeners().length);
+        assertNotNull(testComponentNoTarget1);
+        assertNotNull(testComponentNoTarget1.getValueChangeListeners());
+        assertEquals(1, testComponentNoTarget1.getValueChangeListeners().length);
 
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1inner);
         bean.setValueChangeListener1Called(false);
         testComponentNoTarget1.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(testComponentNoTarget1,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         compositeComponent1inner.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
 
         UIComponent panelGroup2 = root.findComponent("testGroup2");
-        Assertions.assertNotNull(panelGroup2);
+        assertNotNull(panelGroup2);
         UINamingContainer compositeComponent2 = (UINamingContainer) panelGroup2.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent2);
+        assertNotNull(compositeComponent2);
 
         UINamingContainer compositeComponent2inner = (UINamingContainer) compositeComponent2.findComponent("simpleAttributeActionMethodExpressionNoTarget");
-        Assertions.assertNotNull(compositeComponent2inner);
+        assertNotNull(compositeComponent2inner);
         UIInput testComponentNoTarget2 = (UIInput) compositeComponent2inner.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(testComponentNoTarget2);
-        Assertions.assertNotNull(testComponentNoTarget2.getValueChangeListeners());
-        Assertions.assertEquals(1, testComponentNoTarget2.getValueChangeListeners().length);
+        assertNotNull(testComponentNoTarget2);
+        assertNotNull(testComponentNoTarget2.getValueChangeListeners());
+        assertEquals(1, testComponentNoTarget2.getValueChangeListeners().length);
 
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2inner);
         bean.setValueChangeListener2Called(false);
         testComponentNoTarget2.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(testComponentNoTarget2,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener2Called());
+        assertTrue(bean.isValueChangeListener2Called());
         compositeComponent2inner.popComponentFromEL(facesContext);
         compositeComponent2.popComponentFromEL(facesContext);
     
     }
 
     @Test
-    public void testCompositeValueChangeListenerNoTarget2() throws Exception
+    void compositeValueChangeListenerNoTarget2() throws Exception
     {
         MockAttributeBean bean = new MockAttributeBean();
         
@@ -437,23 +438,23 @@ public class CompositeComponentValueChangeListenerTestCase extends AbstractFacel
         vdl.buildView(facesContext, root, "testCompositeAttributeValueChangeListenerNoTarget2.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assertions.assertNotNull(compositeComponent1);
+        assertNotNull(compositeComponent1);
         
         UINamingContainer compositeComponent1n1 = (UINamingContainer) compositeComponent1.findComponent("compositeAttributeMethodExpressionNoTarget");
-        Assertions.assertNotNull(compositeComponent1n1);
+        assertNotNull(compositeComponent1n1);
         UINamingContainer compositeComponent1n2 = (UINamingContainer) compositeComponent1n1.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assertions.assertNotNull(compositeComponent1n2);
+        assertNotNull(compositeComponent1n2);
         UIInput input1 = (UIInput) compositeComponent1n2.findComponent("testComponentNoTarget");
-        Assertions.assertNotNull(input1);
-        Assertions.assertNotNull(input1.getValueChangeListeners());
-        Assertions.assertEquals(1, input1.getValueChangeListeners().length);
+        assertNotNull(input1);
+        assertNotNull(input1.getValueChangeListeners());
+        assertEquals(1, input1.getValueChangeListeners().length);
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1n2);
         bean.setValueChangeListener1Called(false);
         input1.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(input1,"x","y"));
-        Assertions.assertTrue(bean.isValueChangeListener1Called());
+        assertTrue(bean.isValueChangeListener1Called());
         compositeComponent1n2.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
     }

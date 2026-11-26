@@ -18,26 +18,27 @@
  */
 package org.apache.myfaces.cdi.view;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Map;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.view.ViewScopeProxyMap;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ViewScopeCDIMapTest extends AbstractMyFacesCDIRequestTestCase
+class ViewScopeCDIMapTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Test
-    public void testPutReturnsPreviousValue() throws Exception
+    void putReturnsPreviousValue() throws Exception
     {
         startViewRequest("/viewScopeCDIMap.xhtml");
         processLifecycleExecuteAndRender();
 
         Map<String, Object> viewMap = facesContext.getViewRoot().getViewMap();
-        Assertions.assertInstanceOf(ViewScopeCDIMap.class, ((ViewScopeProxyMap) viewMap).getDelegate());
+        assertInstanceOf(ViewScopeCDIMap.class, ((ViewScopeProxyMap) viewMap).getDelegate());
 
-        Assertions.assertNull(viewMap.put("key", "first"));
-        Assertions.assertEquals("first", viewMap.put("key", "second"));
-        Assertions.assertEquals("second", viewMap.get("key"));
+        assertNull(viewMap.put("key", "first"));
+        assertEquals("first", viewMap.put("key", "second"));
+        assertEquals("second", viewMap.get("key"));
     }
 }

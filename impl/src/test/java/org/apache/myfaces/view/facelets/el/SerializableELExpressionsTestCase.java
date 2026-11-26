@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -29,10 +31,9 @@ import jakarta.faces.view.Location;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SerializableELExpressionsTestCase extends AbstractFaceletTestCase
+class SerializableELExpressionsTestCase extends AbstractFaceletTestCase
 {
    
     @Override
@@ -40,9 +41,9 @@ public class SerializableELExpressionsTestCase extends AbstractFaceletTestCase
     {
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
-    public void testSerializeLocationValueExpressionWrapper() throws Exception
+    void serializeLocationValueExpressionWrapper() throws Exception
     {
         ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(
                 facesContext.getELContext(), "#{cc.attrs.value}", Object.class);
@@ -61,16 +62,16 @@ public class SerializableELExpressionsTestCase extends AbstractFaceletTestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         LocationValueExpression lve2 = (LocationValueExpression) ois.readObject();
-        Assertions.assertEquals(lve.getExpressionString(), lve2.getExpressionString());
-        Assertions.assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
-        Assertions.assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
-        Assertions.assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
+        assertEquals(lve.getExpressionString(), lve2.getExpressionString());
+        assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
+        assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
+        assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
         oos.close();
         ois.close();
     }
-    
+
     @Test
-    public void testSerializeLocationValueExpressionUELWrapper() throws Exception
+    void serializeLocationValueExpressionUELWrapper() throws Exception
     {
         ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(
                 facesContext.getELContext(), "#{cc.attrs.value}", Object.class);
@@ -89,10 +90,10 @@ public class SerializableELExpressionsTestCase extends AbstractFaceletTestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         LocationValueExpression lve2 = (LocationValueExpression) ois.readObject();
-        Assertions.assertEquals(lve.getExpressionString(), lve2.getExpressionString());
-        Assertions.assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
-        Assertions.assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
-        Assertions.assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
+        assertEquals(lve.getExpressionString(), lve2.getExpressionString());
+        assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
+        assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
+        assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
         oos.close();
         ois.close();
     }

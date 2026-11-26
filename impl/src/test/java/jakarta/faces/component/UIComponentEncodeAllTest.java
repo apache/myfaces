@@ -22,20 +22,22 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
-     * Tests for {@link UIComponent#encodeAll(jakarta.faces.context.FacesContext)}.
+ * Tests for {@link UIComponent#encodeAll(jakarta.faces.context.FacesContext)}.
  */
-public class UIComponentEncodeAllTest extends AbstractFacesTestCase
+class UIComponentEncodeAllTest extends AbstractFacesTestCase
 {
     protected IMocksControl _mocksControl;
     private UIComponent _testimpl;
@@ -64,14 +66,14 @@ public class UIComponentEncodeAllTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testEncodeAllNullContext() throws Exception
+    void encodeAllNullContext() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () ->  _testimpl.encodeAll(null));
     }
 
     @Test
-    public void testEncodeAllNotRendered() throws Exception
+    void encodeAllNotRendered() throws Exception
     {
         /*TODO: implement me
         EasyMock.expect(_testimpl.isRendered()).andReturn(false);
@@ -82,7 +84,7 @@ public class UIComponentEncodeAllTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testEncodeAllRenderesChildren() throws Exception
+    void encodeAllRenderesChildren() throws Exception
     {
         /*TODO: implement me
         EasyMock.expect(_testimpl.isRendered()).andReturn(true);
@@ -97,7 +99,7 @@ public class UIComponentEncodeAllTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testEncodeAllNotRenderesChildren() throws Exception
+    void encodeAllNotRenderesChildren() throws Exception
     {
         /*TODO: implement me
         EasyMock.expect(_testimpl.isRendered()).andReturn(true);
@@ -128,7 +130,7 @@ public class UIComponentEncodeAllTest extends AbstractFacesTestCase
      * silently dropping any children added mid-iteration.
      */
     @Test
-    public void testEncodeAllChildAppendedDuringParentEncodeIsVisited() throws Exception
+    void encodeAllChildAppendedDuringParentEncodeIsVisited() throws Exception
     {
         List<String> encoded = new ArrayList<>();
 
@@ -169,7 +171,7 @@ public class UIComponentEncodeAllTest extends AbstractFacesTestCase
         parent.getChildren().add(firstChild);
         parent.encodeAll(facesContext);
 
-        Assertions.assertEquals(List.of("first", "late"), encoded,
+        assertEquals(List.of("first", "late"), encoded,
                 "A child appended to the parent during encodeAll must be visited in the same pass");
     }
 }

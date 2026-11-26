@@ -18,54 +18,54 @@
  */
 package org.apache.myfaces.util;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CommentUtilsTest extends AbstractFacesTestCase
+class CommentUtilsTest extends AbstractFacesTestCase
 {
     @Test
-    public void testIsStartMatchWithCommentedCDATA() throws IOException
+    void isStartMatchWithCommentedCDATA() throws Exception
     {
-        Assertions.assertTrue(CommentUtils.isStartMatchWithCommentedCDATA("/*"+CommentUtils.CDATA_SIMPLE_START));
-        Assertions.assertTrue(CommentUtils.isStartMatchWithCommentedCDATA("/* "+CommentUtils.CDATA_SIMPLE_START));
-        Assertions.assertTrue(CommentUtils.isStartMatchWithCommentedCDATA("/* \n\t"+CommentUtils.CDATA_SIMPLE_START));        
-    }
-    
-    @Test
-    public void testIsEndMatchWithCommentedCDATA() throws IOException
-    {
-        Assertions.assertTrue(CommentUtils.isEndMatchWithCommentedCDATA("fkdjslkfjsl "+CommentUtils.CDATA_SIMPLE_END+"*/"));
-        Assertions.assertTrue(CommentUtils.isEndMatchWithCommentedCDATA("fkdjslkfjsl "+CommentUtils.CDATA_SIMPLE_END+" */"));
-        Assertions.assertTrue(CommentUtils.isEndMatchWithCommentedCDATA("fkdjslkfjsl "+CommentUtils.CDATA_SIMPLE_END+"\n\t */"));
-    }
-    
-    @Test
-    public void testIsStartMatchWithInlineCommentedCDATA() throws IOException
-    {
-        Assertions.assertTrue(CommentUtils.isStartMatchWithInlineCommentedCDATA("//"+CommentUtils.CDATA_SIMPLE_START));
-        Assertions.assertTrue(CommentUtils.isStartMatchWithInlineCommentedCDATA("// "+CommentUtils.CDATA_SIMPLE_START));
-        Assertions.assertTrue(CommentUtils.isStartMatchWithInlineCommentedCDATA("// \t"+CommentUtils.CDATA_SIMPLE_START));
-        Assertions.assertFalse(CommentUtils.isStartMatchWithInlineCommentedCDATA("// \n"+CommentUtils.CDATA_SIMPLE_START));
+        assertTrue(CommentUtils.isStartMatchWithCommentedCDATA("/*"+CommentUtils.CDATA_SIMPLE_START));
+        assertTrue(CommentUtils.isStartMatchWithCommentedCDATA("/* "+CommentUtils.CDATA_SIMPLE_START));
+        assertTrue(CommentUtils.isStartMatchWithCommentedCDATA("/* \n\t"+CommentUtils.CDATA_SIMPLE_START));        
     }
 
     @Test
-    public void testIsEndMatchWithInlineCommentedCDATA() throws IOException
+    void isEndMatchWithCommentedCDATA() throws Exception
     {
-        Assertions.assertTrue(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl //"+CommentUtils.CDATA_SIMPLE_END));
-        Assertions.assertTrue(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl // "+CommentUtils.CDATA_SIMPLE_END));
-        Assertions.assertTrue(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl //\t "+CommentUtils.CDATA_SIMPLE_END));
-        Assertions.assertFalse(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl //\n\t "+CommentUtils.CDATA_SIMPLE_END));
+        assertTrue(CommentUtils.isEndMatchWithCommentedCDATA("fkdjslkfjsl "+CommentUtils.CDATA_SIMPLE_END+"*/"));
+        assertTrue(CommentUtils.isEndMatchWithCommentedCDATA("fkdjslkfjsl "+CommentUtils.CDATA_SIMPLE_END+" */"));
+        assertTrue(CommentUtils.isEndMatchWithCommentedCDATA("fkdjslkfjsl "+CommentUtils.CDATA_SIMPLE_END+"\n\t */"));
     }
-    
+
     @Test
-    public void testIsEndMatchtWithInlineCommentedXmlCommentTag() throws IOException
+    void isStartMatchWithInlineCommentedCDATA() throws Exception
     {
-        Assertions.assertTrue(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl //"+CommentUtils.COMMENT_SIMPLE_END));
-        Assertions.assertTrue(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl // "+CommentUtils.COMMENT_SIMPLE_END));
-        Assertions.assertTrue(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl //\t "+CommentUtils.COMMENT_SIMPLE_END));
-        Assertions.assertFalse(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl //\n\t "+CommentUtils.COMMENT_SIMPLE_END));        
+        assertTrue(CommentUtils.isStartMatchWithInlineCommentedCDATA("//"+CommentUtils.CDATA_SIMPLE_START));
+        assertTrue(CommentUtils.isStartMatchWithInlineCommentedCDATA("// "+CommentUtils.CDATA_SIMPLE_START));
+        assertTrue(CommentUtils.isStartMatchWithInlineCommentedCDATA("// \t"+CommentUtils.CDATA_SIMPLE_START));
+        assertFalse(CommentUtils.isStartMatchWithInlineCommentedCDATA("// \n"+CommentUtils.CDATA_SIMPLE_START));
+    }
+
+    @Test
+    void isEndMatchWithInlineCommentedCDATA() throws Exception
+    {
+        assertTrue(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl //"+CommentUtils.CDATA_SIMPLE_END));
+        assertTrue(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl // "+CommentUtils.CDATA_SIMPLE_END));
+        assertTrue(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl //\t "+CommentUtils.CDATA_SIMPLE_END));
+        assertFalse(CommentUtils.isEndMatchWithInlineCommentedCDATA("fkdjslkfjsl //\n\t "+CommentUtils.CDATA_SIMPLE_END));
+    }
+
+    @Test
+    void isEndMatchtWithInlineCommentedXmlCommentTag() throws Exception
+    {
+        assertTrue(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl //"+CommentUtils.COMMENT_SIMPLE_END));
+        assertTrue(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl // "+CommentUtils.COMMENT_SIMPLE_END));
+        assertTrue(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl //\t "+CommentUtils.COMMENT_SIMPLE_END));
+        assertFalse(CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag("fkdjslkfjsl //\n\t "+CommentUtils.COMMENT_SIMPLE_END));        
     }
 }

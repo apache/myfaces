@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.stateless;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.render.ResponseStateManager;
@@ -25,13 +27,12 @@ import jakarta.faces.render.ResponseStateManager;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * See https://issues.apache.org/jira/browse/MYFACES-4267
  */
-public class StatelessTest extends AbstractMyFacesCDIRequestTestCase
+class StatelessTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -41,19 +42,19 @@ public class StatelessTest extends AbstractMyFacesCDIRequestTestCase
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
-    
+
     /**
      * Verify that a view with a template that has transient set can be restored
      * 
      * @throws Exception
      */
     @Test
-    public void restoreStatelessTemplateView() throws Exception
+    void restoreStatelessTemplateView() throws Exception
     {
         startViewRequest("/stateless.xhtml");
         processLifecycleExecuteAndRender();
 
-        Assertions.assertTrue(facesContext.getViewRoot().isTransient());
+        assertTrue(facesContext.getViewRoot().isTransient());
 
         // set the view state param so this context is treated as a postback
         client.getParameters().put(ResponseStateManager.VIEW_STATE_PARAM, "stateless");
@@ -64,18 +65,18 @@ public class StatelessTest extends AbstractMyFacesCDIRequestTestCase
             // this will cause an exception without the fix in MYFACES-4267
             restoreView();
         } catch (Exception e) {
-            Assertions.fail("caught an exception trying to restore a stateless view", e);
+            fail("caught an exception trying to restore a stateless view", e);
             endRequest();
             return;
         }
 
-        Assertions.assertNotNull(facesContext.getViewRoot());
+        assertNotNull(facesContext.getViewRoot());
 
         // render the response and make sure the view contains the expected text
         renderResponse();
         String text = getRenderedContent(facesContext);
 
-        Assertions.assertTrue(text.contains("success"));
+        assertTrue(text.contains("success"));
 
         endRequest();
     }

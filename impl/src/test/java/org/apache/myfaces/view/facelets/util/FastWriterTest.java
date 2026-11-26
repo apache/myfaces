@@ -19,14 +19,16 @@
 package org.apache.myfaces.view.facelets.util;
 
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
 
-public class FastWriterTest 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class FastWriterTest 
 {
     // Test FastWriter.write(String str, int off, int len)
     @Test
-    public void testFastWriterWriteString() throws Exception
+    void fastWriterWriteString() throws Exception
     {
         String sampleStringToWrite = "Test String to write";
         
@@ -34,11 +36,11 @@ public class FastWriterTest
         fw.write(sampleStringToWrite, 0, sampleStringToWrite.length());
 
         // fw.toString() should be: Test String to write
-        Assertions.assertEquals(fw.toString(), sampleStringToWrite);
+        assertEquals(fw.toString(), sampleStringToWrite);
     }
-    
+
     @Test
-    public void testFastWriterWriteStringOffSet() throws Exception
+    void fastWriterWriteStringOffSet() throws Exception
     {
         int offSet = 5;
         String sampleStringToWrite = "Test String to write";
@@ -47,11 +49,11 @@ public class FastWriterTest
         fw.write(sampleStringToWrite, offSet, sampleStringToWrite.length() - offSet);
 
         // fw.toString() should be: String to write
-        Assertions.assertEquals(fw.toString(), sampleStringToWrite.substring(offSet));
+        assertEquals(fw.toString(), sampleStringToWrite.substring(offSet));
     }
-    
+
     @Test
-    public void testFastWriterWriteStringLength() throws Exception
+    void fastWriterWriteStringLength() throws Exception
     {
        String sampleStringToWrite = "Test String to write";
        int length = sampleStringToWrite.substring(0, sampleStringToWrite.indexOf(' ')).length();
@@ -60,6 +62,6 @@ public class FastWriterTest
        fw.write(sampleStringToWrite, 0, length);
 
        // fw.toString() should be: Test
-       Assertions.assertEquals(fw.toString(), sampleStringToWrite.substring(0,length));
+       assertEquals(fw.toString(), sampleStringToWrite.substring(0,length));
     }
 }

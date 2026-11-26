@@ -18,6 +18,8 @@
  */
 package jakarta.faces.validator;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Field;
 
 import jakarta.el.MethodExpression;
@@ -25,14 +27,13 @@ import jakarta.faces.component.UIInput;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.easymock.classextension.EasyMock;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link MethodExpressionValidator}
  */
-public class MethodExpressionValidatorTest extends AbstractFacesTestCase
+class MethodExpressionValidatorTest extends AbstractFacesTestCase
 {
 
     private MethodExpression methodExpression;
@@ -47,52 +48,52 @@ public class MethodExpressionValidatorTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testSaveAndRestoreState() throws Exception
+    void saveAndRestoreState() throws Exception
     {
         MethodExpressionValidator validator = new MethodExpressionValidator(methodExpression);
         Object state = validator.saveState(facesContext);
-        Assertions.assertNotNull(state);
+        assertNotNull(state);
 
         MethodExpressionValidator restored = new MethodExpressionValidator();
         restored.restoreState(facesContext, state);
-        Assertions.assertSame(methodExpression, getMethodExpression(restored));
+        assertSame(methodExpression, getMethodExpression(restored));
     }
 
     @Test
-    public void testSaveStateWhileInitialStateMarked()
+    void saveStateWhileInitialStateMarked()
     {
         MethodExpressionValidator validator = new MethodExpressionValidator(methodExpression);
         validator.markInitialState();
-        Assertions.assertTrue(validator.initialStateMarked());
-        Assertions.assertNull(validator.saveState(facesContext),
+        assertTrue(validator.initialStateMarked());
+        assertNull(validator.saveState(facesContext),
                 "No state must be saved while the initial state is marked.");
 
         validator.clearInitialState();
-        Assertions.assertFalse(validator.initialStateMarked());
-        Assertions.assertSame(methodExpression, validator.saveState(facesContext),
+        assertFalse(validator.initialStateMarked());
+        assertSame(methodExpression, validator.saveState(facesContext),
                 "The MethodExpression must be saved after clearInitialState().");
     }
 
     @Test
-    public void testRestoreNullState() throws Exception
+    void restoreNullState() throws Exception
     {
         MethodExpressionValidator validator = new MethodExpressionValidator(methodExpression);
         validator.markInitialState();
         validator.restoreState(facesContext, null);
-        Assertions.assertSame(methodExpression, getMethodExpression(validator));
+        assertSame(methodExpression, getMethodExpression(validator));
     }
 
     /**
      * The view state of an unchanged component holds no state for its MethodExpressionValidator.
      */
     @Test
-    public void testUnchangedComponentHasNoState()
+    void unchangedComponentHasNoState()
     {
         UIInput input = new UIInput();
         input.addValidator(new MethodExpressionValidator(methodExpression));
         input.markInitialState();
 
-        Assertions.assertNull(input.saveState(facesContext));
+        assertNull(input.saveState(facesContext));
     }
 
     /**
@@ -100,7 +101,7 @@ public class MethodExpressionValidatorTest extends AbstractFacesTestCase
      * holds a null state for the MethodExpressionValidator, which must keep the MethodExpression of the build.
      */
     @Test
-    public void testDeltaRestoreKeepsMethodExpression() throws Exception
+    void deltaRestoreKeepsMethodExpression() throws Exception
     {
         UIInput input = new UIInput();
         LengthValidator lengthValidator = new LengthValidator();
@@ -110,7 +111,7 @@ public class MethodExpressionValidatorTest extends AbstractFacesTestCase
         lengthValidator.setMaximum(5);
 
         Object state = input.saveState(facesContext);
-        Assertions.assertNotNull(state);
+        assertNotNull(state);
 
         // rebuild the view
         UIInput rebuilt = new UIInput();
@@ -120,9 +121,9 @@ public class MethodExpressionValidatorTest extends AbstractFacesTestCase
         rebuilt.restoreState(facesContext, state);
 
         Validator<?>[] validators = rebuilt.getValidators();
-        Assertions.assertEquals(2, validators.length);
-        Assertions.assertEquals(5, ((LengthValidator) validators[0]).getMaximum());
-        Assertions.assertSame(methodExpression, getMethodExpression((MethodExpressionValidator) validators[1]));
+        assertEquals(2, validators.length);
+        assertEquals(5, ((LengthValidator) validators[0]).getMaximum());
+        assertSame(methodExpression, getMethodExpression((MethodExpressionValidator) validators[1]));
     }
 
     private static MethodExpression getMethodExpression(MethodExpressionValidator validator) throws Exception

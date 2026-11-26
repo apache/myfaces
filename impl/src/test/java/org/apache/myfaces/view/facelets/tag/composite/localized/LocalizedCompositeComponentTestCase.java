@@ -21,8 +21,10 @@ package org.apache.myfaces.view.facelets.tag.composite.localized;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Check if a composite component can be localized following the rules
@@ -33,7 +35,7 @@ import org.junit.jupiter.api.Test;
  *
  */
 @DeclareFacesConfig("/faces-config.xml")
-public class LocalizedCompositeComponentTestCase extends AbstractMyFacesCDIRequestTestCase
+class LocalizedCompositeComponentTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     // This is a nice example that shows how AbstractMyFacesRequestTestCase 
     // could be be useful.
@@ -43,31 +45,31 @@ public class LocalizedCompositeComponentTestCase extends AbstractMyFacesCDIReque
     // teardown all MyFaces container. 
     
     @Test
-    public void testNoLocaleCompositeComponent() throws Exception
+    void noLocaleCompositeComponent() throws Exception
     {
         startViewRequest("/testNoLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
-        Assertions.assertTrue(getRenderedContent().contains(
+        assertTrue(getRenderedContent().contains(
                 "English page fragment"));
         endRequest();
     }
-    
+
     @Test
-    public void testSpanishLocaleCompositeComponent() throws Exception
+    void spanishLocaleCompositeComponent() throws Exception
     {
         startViewRequest("/testSpanishLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
-        Assertions.assertTrue(getRenderedContent().contains(
+        assertTrue(getRenderedContent().contains(
                 "Fragmento de pagina Espanol"));
         endRequest();
     }
-    
+
     @Test
-    public void testGermanLocaleCompositeComponent() throws Exception
+    void germanLocaleCompositeComponent() throws Exception
     {
         startViewRequest("/testGermanLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
-        Assertions.assertTrue(getRenderedContent().contains(
+        assertTrue(getRenderedContent().contains(
                 "Deutsches Seitenfragment"));
         endRequest();
     }

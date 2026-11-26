@@ -17,6 +17,8 @@
 
 package org.apache.myfaces.config;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.List;
@@ -26,11 +28,10 @@ import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class FacesConfigValidatorTestCase extends AbstractFacesTestCase
+class FacesConfigValidatorTestCase extends AbstractFacesTestCase
 {
     private FacesConfigDispenser dispenser;
     private FacesConfigUnmarshaller<FacesConfigImpl> unmarshaller;
@@ -54,15 +55,15 @@ public class FacesConfigValidatorTestCase extends AbstractFacesTestCase
         }
         
     }
-    
+
     @Test
-    public void testVerifyExistence(){
+    void verifyExistence(){
         
         Collection<NavigationRule> navRules = dispenser.getNavigationRules();
         
         List<String> list = FacesConfigValidator.validate(navRules, externalContext);
         
-        Assertions.assertSame(2, list.size());
+        assertSame(2, list.size());
         
     }
     

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ViewHandler;
@@ -27,14 +29,13 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author lu4242
  */
-public class CacheELExpressionsAlwaysRecompileTestCase extends AbstractFaceletTestCase
+class CacheELExpressionsAlwaysRecompileTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected void setUpServletObjects() throws Exception
@@ -51,9 +52,9 @@ public class CacheELExpressionsAlwaysRecompileTestCase extends AbstractFaceletTe
     {
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
-    public void testUIParamCaching1() throws Exception
+    void uIParamCaching1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamcache1.xhtml");
@@ -64,14 +65,14 @@ public class CacheELExpressionsAlwaysRecompileTestCase extends AbstractFaceletTe
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     @Test
-    public void testUserTagCaching1() throws Exception
+    void userTagCaching1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "usertagtest1.xhtml");
@@ -82,14 +83,14 @@ public class CacheELExpressionsAlwaysRecompileTestCase extends AbstractFaceletTe
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
 
     @Test
-    public void testUIParamIncludeCaching1() throws Exception
+    void uIParamIncludeCaching1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "includetagtest1.xhtml");
@@ -100,9 +101,9 @@ public class CacheELExpressionsAlwaysRecompileTestCase extends AbstractFaceletTe
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
 }

@@ -20,15 +20,18 @@ package org.apache.myfaces.view.facelets.component.rowstate;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * MYFACES-4777 (TCK Issue6128IT): with {@code rowStatePreserved="true"}, a row without saved state of its own, such
  * as a row added to the model after the last render, must not show the local value of the row before it. The input is
  * created in Java with only an id, so that nothing is in its state helper initially.
  */
-public class RowStatePreservedNewRowTest extends AbstractMyFacesCDIRequestTestCase
+class RowStatePreservedNewRowTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -39,7 +42,7 @@ public class RowStatePreservedNewRowTest extends AbstractMyFacesCDIRequestTestCa
     }
 
     @Test
-    public void testNewRowDoesNotShowLocalValueOfRowBefore() throws Exception
+    void newRowDoesNotShowLocalValueOfRowBefore() throws Exception
     {
         startViewRequest("/rowStatePreservedNewRow.xhtml");
         processLifecycleExecuteAndRender();
@@ -52,20 +55,20 @@ public class RowStatePreservedNewRowTest extends AbstractMyFacesCDIRequestTestCa
         processLifecycleExecuteAndRender();
 
         String content = content();
-        Assertions.assertTrue(renderedInput(content, "form:table:1:in").contains("value=\"typed\""), content);
-        Assertions.assertTrue(renderedInput(content, "form:repeat:1:in").contains("value=\"typed\""), content);
+        assertTrue(renderedInput(content, "form:table:1:in").contains("value=\"typed\""), content);
+        assertTrue(renderedInput(content, "form:repeat:1:in").contains("value=\"typed\""), content);
 
         client.ajax("form:addRow", "action", "form:addRow", "form", true);
         processLifecycleExecuteAndRender();
 
         content = content();
-        Assertions.assertTrue(renderedInput(content, "form:table:1:in").contains("value=\"typed\""), content);
-        Assertions.assertTrue(renderedInput(content, "form:repeat:1:in").contains("value=\"typed\""), content);
+        assertTrue(renderedInput(content, "form:table:1:in").contains("value=\"typed\""), content);
+        assertTrue(renderedInput(content, "form:repeat:1:in").contains("value=\"typed\""), content);
         String tableRow2 = renderedInput(content, "form:table:2:in");
-        Assertions.assertFalse(tableRow2.contains("typed"), "new table row shows the value of the row before: "
+        assertFalse(tableRow2.contains("typed"), "new table row shows the value of the row before: "
                 + tableRow2);
         String repeatRow2 = renderedInput(content, "form:repeat:2:in");
-        Assertions.assertFalse(repeatRow2.contains("typed"), "new repeat row shows the value of the row before: "
+        assertFalse(repeatRow2.contains("typed"), "new repeat row shows the value of the row before: "
                 + repeatRow2);
         endRequest();
     }
@@ -78,7 +81,7 @@ public class RowStatePreservedNewRowTest extends AbstractMyFacesCDIRequestTestCa
     private static String renderedInput(String content, String clientId)
     {
         int start = content.indexOf("id=\"" + clientId + "\"");
-        Assertions.assertTrue(start >= 0, clientId + " not rendered in: " + content);
+        assertTrue(start >= 0, clientId + " not rendered in: " + content);
         return content.substring(start, content.indexOf('>', start));
     }
 }

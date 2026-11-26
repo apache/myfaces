@@ -25,7 +25,7 @@ import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.Test;
 
-public class InstructionsTestCase extends AbstractFaceletTestCase
+class InstructionsTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -46,7 +46,7 @@ public class InstructionsTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testInstructions() throws Exception
+    void instructions() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "instructions.xhtml");

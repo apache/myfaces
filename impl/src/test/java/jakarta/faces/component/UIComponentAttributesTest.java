@@ -25,7 +25,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class UIComponentAttributesTest extends AbstractFacesTestCase
+class UIComponentAttributesTest extends AbstractFacesTestCase
 {
     private HtmlInputText input;
 
@@ -47,7 +47,7 @@ public class UIComponentAttributesTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testSetNullAttributeOnValidProperty()
+    void setNullAttributeOnValidProperty()
     {
         input.getAttributes().put("style", null);
     }

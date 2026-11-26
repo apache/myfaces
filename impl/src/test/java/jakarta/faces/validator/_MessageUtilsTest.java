@@ -21,6 +21,7 @@ package jakarta.faces.validator;
 import org.apache.myfaces.core.api.shared.MessageUtils;
 import java.util.HashMap;
 import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
@@ -34,10 +35,9 @@ import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class _MessageUtilsTest
+class _MessageUtilsTest
 {
 
     /**
@@ -45,7 +45,7 @@ public class _MessageUtilsTest
      * {@link jakarta.faces.validator._MessageUtils#getErrorMessage(jakarta.faces.context.FacesContext, java.lang.String, java.lang.Object[])}.
      */
     @Test
-    public void testErrorMessage()
+    void errorMessage()
     {
         UIViewRoot root = new UIViewRoot();
         MockFacesContext facesContext = new MockFacesContext();
@@ -71,9 +71,9 @@ public class _MessageUtilsTest
         expect(valueExpression.getValue(elContext)).andReturn(s);
         mocksControl.replay();
 
-        Assertions.assertEquals(MessageUtils.getErrorMessage(facesContext, "jakarta.faces.validator.DoubleRangeValidator.MAXIMUM",
-                new Object[] { "xyz", "xxx" }).getDetail(),
-                "xxx: Validation Error: Value is greater than allowable maximum of 'xyz'");
+        assertEquals(
+                "xxx: Validation Error: Value is greater than allowable maximum of 'xyz'", MessageUtils.getErrorMessage(facesContext, "jakarta.faces.validator.DoubleRangeValidator.MAXIMUM",
+                        new Object[]{"xyz", "xxx"}).getDetail());
     }
 
 }

@@ -18,12 +18,14 @@
  */
 package org.apache.myfaces.util.lang;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,32 +33,32 @@ import org.junit.jupiter.api.Test;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class AbstractAttributeMapTest
+class AbstractAttributeMapTest
 {
     private TestAttributeMap _testimpl;
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("key", "value");
         _testimpl = new TestAttributeMap(map);
     }
-    
+
     /**
      * Test method for {@link java.util.AbstractMap#hashCode()}.
      */
     @Test
-    public void testHashCodeEquals()
+    void hashCodeEquals()
     {
-        Assertions.assertEquals(_testimpl.hashCode(), _testimpl.hashCode());
+        assertEquals(_testimpl.hashCode(), _testimpl.hashCode());
     }
 
     @Test
-    public void testValues() throws Exception
+    void values() throws Exception
     {
         _testimpl.put("myKey", "myValue");
-        Assertions.assertTrue(_testimpl.containsValue("myValue"));
+        assertTrue(_testimpl.containsValue("myValue"));
     }
 
     private static final class TestAttributeMap extends AbstractAttributeMap<Object>

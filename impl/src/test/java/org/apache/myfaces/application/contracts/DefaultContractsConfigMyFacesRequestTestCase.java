@@ -18,18 +18,19 @@
  */
 package org.apache.myfaces.application.contracts;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Set;
 import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.jupiter.api.Test;
 
-public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
 
     @Override
@@ -40,9 +41,9 @@ public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFace
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
-    
+
     @Test
-    public void testDefaultConfiguration() throws Exception
+    void defaultConfiguration() throws Exception
     {
         startViewRequest("/index.xhtml");
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
@@ -51,27 +52,27 @@ public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFace
         Set<String> externalContextContracts = runtimeConfig.getExternalContextResourceLibraryContracts();
         Set<String> classloaderContracts = runtimeConfig.getClassLoaderResourceLibraryContracts();
 
-        Assertions.assertTrue(allContracts.contains("yellow"));
-        Assertions.assertTrue(allContracts.contains("blue"));
-        Assertions.assertTrue(allContracts.contains("red"));
+        assertTrue(allContracts.contains("yellow"));
+        assertTrue(allContracts.contains("blue"));
+        assertTrue(allContracts.contains("red"));
 
-        Assertions.assertTrue(classloaderContracts.contains("yellow"));
-        Assertions.assertTrue(classloaderContracts.contains("blue"));
-        Assertions.assertTrue(externalContextContracts.contains("red"));
+        assertTrue(classloaderContracts.contains("yellow"));
+        assertTrue(classloaderContracts.contains("blue"));
+        assertTrue(externalContextContracts.contains("red"));
         
         List<String> defaultContracts = runtimeConfig.getContractMappings().get("*");
         
-        Assertions.assertTrue(defaultContracts.contains("yellow"));
-        Assertions.assertTrue(defaultContracts.contains("blue"));
-        Assertions.assertTrue(defaultContracts.contains("red"));
+        assertTrue(defaultContracts.contains("yellow"));
+        assertTrue(defaultContracts.contains("blue"));
+        assertTrue(defaultContracts.contains("red"));
         
         processLifecycleExecute();
         executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList.contains("yellow"));
-        Assertions.assertTrue(contractsList.contains("blue"));
-        Assertions.assertTrue(contractsList.contains("red"));
+        assertTrue(contractsList.contains("yellow"));
+        assertTrue(contractsList.contains("blue"));
+        assertTrue(contractsList.contains("red"));
         
         endRequest();
     }

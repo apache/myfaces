@@ -18,6 +18,8 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.NotSerializableException;
@@ -39,7 +41,6 @@ import java.util.TreeSet;
 import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +53,7 @@ import org.junit.jupiter.api.Test;
  * Each case is restored without serialization, as with server side state saving, and after serialization, as with
  * client side state saving.
  */
-public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
+class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach
@@ -63,61 +64,61 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testListOf() throws Exception
+    void listOf() throws Exception
     {
         assertRestoredWithExactType(List.of("b", "a", "b"));
     }
 
     @Test
-    public void testListCopyOf() throws Exception
+    void listCopyOf() throws Exception
     {
         assertRestoredWithExactType(List.copyOf(Arrays.asList("b", "a", "b")));
     }
 
     @Test
-    public void testArraysAsList() throws Exception
+    void arraysAsList() throws Exception
     {
         assertRestoredWithExactType(Arrays.asList("b", "a", "b"));
     }
 
     @Test
-    public void testUnmodifiableList() throws Exception
+    void unmodifiableList() throws Exception
     {
         assertRestoredWithExactType(Collections.unmodifiableList(new LinkedList<>(List.of("b", "a", "b"))));
     }
 
     @Test
-    public void testSingletonList() throws Exception
+    void singletonList() throws Exception
     {
         assertRestoredWithExactType(Collections.singletonList("b"));
     }
 
     @Test
-    public void testEmptyList() throws Exception
+    void emptyList() throws Exception
     {
         assertRestoredWithExactType(Collections.emptyList());
     }
 
     @Test
-    public void testSetOf() throws Exception
+    void setOf() throws Exception
     {
         assertRestoredWithExactType(Set.of("a", "b", "c"));
     }
 
     @Test
-    public void testUnmodifiableSetKeepsOrder() throws Exception
+    void unmodifiableSetKeepsOrder() throws Exception
     {
         Set<String> set = Collections.unmodifiableSet(new LinkedHashSet<>(List.of("c", "a", "b")));
         assertSavedWhole(set);
         for (Object restored : restore(set))
         {
-            Assertions.assertEquals(set.getClass(), restored.getClass());
-            Assertions.assertEquals(List.of("c", "a", "b"), List.copyOf((Set<?>) restored));
+            assertEquals(set.getClass(), restored.getClass());
+            assertEquals(List.of("c", "a", "b"), List.copyOf((Set<?>) restored));
         }
     }
 
     @Test
-    public void testQueueWithoutNoArgConstructor() throws Exception
+    void queueWithoutNoArgConstructor() throws Exception
     {
         Collection<String> queue = Collections.asLifoQueue(new ArrayDeque<>());
         queue.add("a");
@@ -125,8 +126,8 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
         assertSavedWhole(queue);
         for (Object restored : restore(queue))
         {
-            Assertions.assertEquals(queue.getClass(), restored.getClass());
-            Assertions.assertEquals(List.copyOf(queue), List.copyOf((Collection<?>) restored));
+            assertEquals(queue.getClass(), restored.getClass());
+            assertEquals(List.copyOf(queue), List.copyOf((Collection<?>) restored));
         }
     }
 
@@ -135,23 +136,23 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
      * instance of its class.
      */
     @Test
-    public void testCollectionWithNoArgConstructorIsRestoredIntoNewInstance() throws Exception
+    void collectionWithNoArgConstructorIsRestoredIntoNewInstance() throws Exception
     {
         LinkedList<String> linkedList = new LinkedList<>(List.of("b", "a", "b"));
         assertSavedItemByItem(linkedList);
         for (Object restored : restore(linkedList))
         {
-            Assertions.assertNotSame(linkedList, restored);
-            Assertions.assertEquals(LinkedList.class, restored.getClass());
-            Assertions.assertEquals(linkedList, restored);
+            assertNotSame(linkedList, restored);
+            assertEquals(LinkedList.class, restored.getClass());
+            assertEquals(linkedList, restored);
         }
 
         TreeSet<String> treeSet = new TreeSet<>(List.of("c", "a", "b"));
         assertSavedItemByItem(treeSet);
         for (Object restored : restore(treeSet))
         {
-            Assertions.assertEquals(TreeSet.class, restored.getClass());
-            Assertions.assertEquals(treeSet, restored);
+            assertEquals(TreeSet.class, restored.getClass());
+            assertEquals(treeSet, restored);
         }
     }
 
@@ -160,7 +161,7 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
      * zero-argument constructor, the same as for clazz.newInstance() in restoreAttachedState().
      */
     @Test
-    public void testPrivateNoArgConstructorIsSavedWhole() throws Exception
+    void privateNoArgConstructorIsSavedWhole() throws Exception
     {
         PrivateConstructorList list = PrivateConstructorList.of("b", "a");
         assertSavedWhole(list);
@@ -172,7 +173,7 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
      * is still saved item by item and restored into a new instance of its class.
      */
     @Test
-    public void testAccessiblePackagePrivateNoArgConstructorIsSavedItemByItem() throws Exception
+    void accessiblePackagePrivateNoArgConstructorIsSavedItemByItem() throws Exception
     {
         PackagePrivateConstructorList list = new PackagePrivateConstructorList();
         list.add("b");
@@ -180,9 +181,9 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
         assertSavedItemByItem(list);
         for (Object restored : restore(list))
         {
-            Assertions.assertNotSame(list, restored);
-            Assertions.assertEquals(PackagePrivateConstructorList.class, restored.getClass());
-            Assertions.assertEquals(list, restored);
+            assertNotSame(list, restored);
+            assertEquals(PackagePrivateConstructorList.class, restored.getClass());
+            assertEquals(list, restored);
         }
     }
 
@@ -191,25 +192,25 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
      * state fails, while restoring it without serialization works.
      */
     @Test
-    public void testNotSerializableItemFailsOnlyWhenSerialized() throws Exception
+    void notSerializableItemFailsOnlyWhenSerialized() throws Exception
     {
         Object item = new Object();
         List<Object> list = List.of(item);
         Object state = UIComponentBase.saveAttachedState(facesContext, list);
-        Assertions.assertSame(list, state);
-        Assertions.assertSame(item, ((List<?>) UIComponentBase.restoreAttachedState(facesContext, state)).get(0));
-        Assertions.assertThrows(NotSerializableException.class, () -> serialize(state));
+        assertSame(list, state);
+        assertSame(item, ((List<?>) UIComponentBase.restoreAttachedState(facesContext, state)).get(0));
+        assertThrows(NotSerializableException.class, () -> serialize(state));
     }
 
     /**
      * A collection whose class cannot be instantiated and which is not Serializable either still cannot be restored.
      */
     @Test
-    public void testNotSerializableCollectionWithoutNoArgConstructorFails()
+    void notSerializableCollectionWithoutNoArgConstructorFails()
     {
         Map<String, Integer> map = new HashMap<>(Map.of("a", 1));
         Object state = UIComponentBase.saveAttachedState(facesContext, map.keySet());
-        Assertions.assertThrows(RuntimeException.class, () -> UIComponentBase.restoreAttachedState(facesContext,
+        assertThrows(RuntimeException.class, () -> UIComponentBase.restoreAttachedState(facesContext,
                 state));
     }
 
@@ -219,7 +220,7 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
      * serialization (server side state saving) and with it (client side state saving).
      */
     @Test
-    public void testUIDataValueSetToListOf() throws Exception
+    void uIDataValueSetToListOf() throws Exception
     {
         List<String> value = List.of("b", "a", "b");
         for (boolean delta : new boolean[] {false, true})
@@ -249,20 +250,20 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
                 restored.restoreState(facesContext, state);
 
                 String message = "delta=" + delta + ", serialized=" + serialized;
-                Assertions.assertEquals(value.getClass(), restored.getValue().getClass(), message);
-                Assertions.assertEquals(value, restored.getValue(), message);
+                assertEquals(value.getClass(), restored.getValue().getClass(), message);
+                assertEquals(value, restored.getValue(), message);
             }
         }
     }
 
     private void assertSavedWhole(Collection<?> collection)
     {
-        Assertions.assertSame(collection, UIComponentBase.saveAttachedState(facesContext, collection));
+        assertSame(collection, UIComponentBase.saveAttachedState(facesContext, collection));
     }
 
     private void assertSavedItemByItem(Collection<?> collection)
     {
-        Assertions.assertInstanceOf(_AttachedCollectionStateWrapper.class,
+        assertInstanceOf(_AttachedCollectionStateWrapper.class,
                 UIComponentBase.saveAttachedState(facesContext, collection));
     }
 
@@ -271,8 +272,8 @@ public class UIComponentBaseRestoreCollectionTest extends AbstractFacesTestCase
         assertSavedWhole(collection);
         for (Object restored : restore(collection))
         {
-            Assertions.assertEquals(collection.getClass(), restored.getClass());
-            Assertions.assertEquals(collection, restored);
+            assertEquals(collection.getClass(), restored.getClass());
+            assertEquals(collection, restored);
         }
     }
 

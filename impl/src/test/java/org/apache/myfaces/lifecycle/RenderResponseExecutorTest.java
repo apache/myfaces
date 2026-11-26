@@ -18,18 +18,19 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import jakarta.faces.component.UIViewRoot;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
+import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class RenderResponseExecutorTest extends AbstractFacesTestCase
+class RenderResponseExecutorTest extends AbstractFacesTestCase
 {
 
     @Test
-    public void testNavigationCondition() throws Exception
+    void navigationCondition() throws Exception
     {
         UIViewRoot a = new UIViewRoot();
         UIViewRoot b = new UIViewRoot();
@@ -40,22 +41,22 @@ public class RenderResponseExecutorTest extends AbstractFacesTestCase
         c.setViewId("/c.xhtml");
 
         //If the view was not changed continue (return false)
-        Assertions.assertFalse(checkCondition(a, a));
+        assertFalse(checkCondition(a, a));
         
         //If the view is different instance but same viewId iterate again (return true) 
-        Assertions.assertTrue(checkCondition(a, b));
+        assertTrue(checkCondition(a, b));
         
         //If the view is different instance and different id iterate again
-        Assertions.assertTrue(checkCondition(a, c));
+        assertTrue(checkCondition(a, c));
         
         //If the view is different instance and id is null iterate again
-        Assertions.assertTrue(checkCondition(a, d));
+        assertTrue(checkCondition(a, d));
         
         //If the view is different instance and id is not null iterate again
-        Assertions.assertTrue(checkCondition(d, a));
+        assertTrue(checkCondition(d, a));
 
         //If the view was not change continue (return false)
-        Assertions.assertFalse(checkCondition(d, d));
+        assertFalse(checkCondition(d, d));
     }
     
     protected boolean checkCondition(UIViewRoot previousRoot, UIViewRoot root)

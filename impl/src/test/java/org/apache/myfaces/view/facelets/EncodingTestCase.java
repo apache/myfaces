@@ -28,7 +28,7 @@ import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Test;
 
-public class EncodingTestCase extends AbstractFaceletTestCase
+class EncodingTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -49,7 +49,7 @@ public class EncodingTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testPattern() throws Exception
+    void pattern() throws Exception
     {
         Pattern p = Pattern
                 .compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
@@ -71,7 +71,7 @@ public class EncodingTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testEncoding() throws Exception
+    void encoding() throws Exception
     {
         request.setAttribute("name", "Mr. Hookom");
         UIViewRoot root = facesContext.getViewRoot();

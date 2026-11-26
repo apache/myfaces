@@ -19,6 +19,8 @@
 
 package jakarta.faces.convert;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,7 +41,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class DateTimeConverterTest extends AbstractFacesTestCase
+class DateTimeConverterTest extends AbstractFacesTestCase
 {
     private DateTimeConverter mock;
 
@@ -68,7 +70,7 @@ public class DateTimeConverterTest extends AbstractFacesTestCase
      * Test method for 'jakarta.faces.component.UIComponentBase.getAsObject()'
      */
     @Test
-    public void testGetAsObject()
+    void getAsObject()
     {
 
         UIInput input = new UIInput();
@@ -80,7 +82,7 @@ public class DateTimeConverterTest extends AbstractFacesTestCase
         {
             mock.getAsObject(FacesContext.getCurrentInstance(), input, "15/15/15");
 
-            Assertions.assertTrue(false, "this date should not be parsable - and it is, so this is wrong.");
+            fail("this date should not be parsable - and it is, so this is wrong.");
         }
         catch (ConverterException e)
         {
@@ -88,8 +90,7 @@ public class DateTimeConverterTest extends AbstractFacesTestCase
         }
 
         // should not trow a ConverterException
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12/01/01");
 
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
@@ -97,23 +98,19 @@ public class DateTimeConverterTest extends AbstractFacesTestCase
 
             String str = format.format(date);
 
-            Assertions.assertEquals("12/01/01", str);
+            assertEquals("12/01/01", str);
 
             format = new SimpleDateFormat("MM/dd/yyyy");
             format.setTimeZone(TimeZone.getDefault());
 
             str = format.format(date);
 
-            Assertions.assertEquals("12/01/0001", str);
-        }
-        catch (ConverterException e)
-        {
-            Assertions.assertTrue(false, "this date should not be parsable - and it is, so this is wrong.");
-        }
+            assertEquals("12/01/0001", str);
+        }, "this date should not be parsable - and it is, so this is wrong.");
     }
 
     @Test
-    public void testLocalDateParsesRegularSpacesWhenLocaleUsesFixedWidthWhitespace()
+    void localDateParsesRegularSpacesWhenLocaleUsesFixedWidthWhitespace()
     {
         UIInput input = new UIInput();
         mock.setType("localDate");
@@ -123,11 +120,11 @@ public class DateTimeConverterTest extends AbstractFacesTestCase
         String formatted = mock.getAsString(facesContext, input, expected);
         String withAsciiSpaces = formatted.replace('\u202f', ' ').replace('\u00a0', ' ');
         Object parsed = mock.getAsObject(facesContext, input, withAsciiSpaces);
-        Assertions.assertEquals(expected, parsed);
+        assertEquals(expected, parsed);
     }
 
     @Test
-    public void testLocalTimeStripsZeroWidthWhitespaceFromInput()
+    void localTimeStripsZeroWidthWhitespaceFromInput()
     {
         UIInput input = new UIInput();
         mock.setType("localTime");
@@ -135,98 +132,98 @@ public class DateTimeConverterTest extends AbstractFacesTestCase
         mock.setTimeStyle("short");
         LocalTime expected = LocalTime.of(14, 30);
         String formatted = mock.getAsString(facesContext, input, expected);
-        Assertions.assertFalse(formatted.isEmpty());
+        assertFalse(formatted.isEmpty());
         String withZw = formatted.charAt(0) + "\u200b" + formatted.substring(1);
         Object parsed = mock.getAsObject(facesContext, input, withZw);
-        Assertions.assertEquals(expected, parsed);
+        assertEquals(expected, parsed);
     }
 
     @Test
-    public void testYearIsoRoundTrip()
+    void yearIsoRoundTrip()
     {
         UIInput input = new UIInput();
         mock.setType("year");
         Year expected = Year.of(2011);
-        Assertions.assertEquals("2011", mock.getAsString(facesContext, input, expected));
-        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011"));
+        assertEquals("2011", mock.getAsString(facesContext, input, expected));
+        assertEquals(expected, mock.getAsObject(facesContext, input, "2011"));
     }
 
     @Test
-    public void testYearMonthIsoRoundTrip()
+    void yearMonthIsoRoundTrip()
     {
         UIInput input = new UIInput();
         mock.setType("yearMonth");
         YearMonth expected = YearMonth.of(2011, 12);
-        Assertions.assertEquals("2011-12", mock.getAsString(facesContext, input, expected));
-        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12"));
+        assertEquals("2011-12", mock.getAsString(facesContext, input, expected));
+        assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12"));
     }
 
     @Test
-    public void testMonthDayIsoRoundTrip()
+    void monthDayIsoRoundTrip()
     {
         UIInput input = new UIInput();
         mock.setType("monthDay");
         MonthDay expected = MonthDay.of(12, 3);
-        Assertions.assertEquals("--12-03", mock.getAsString(facesContext, input, expected));
-        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "--12-03"));
+        assertEquals("--12-03", mock.getAsString(facesContext, input, expected));
+        assertEquals(expected, mock.getAsObject(facesContext, input, "--12-03"));
     }
 
     @Test
-    public void testMonthDayAcceptsLeapDay()
+    void monthDayAcceptsLeapDay()
     {
         UIInput input = new UIInput();
         mock.setType("monthDay");
         MonthDay leapDay = MonthDay.of(2, 29);
-        Assertions.assertEquals("--02-29", mock.getAsString(facesContext, input, leapDay));
-        Assertions.assertEquals(leapDay, mock.getAsObject(facesContext, input, "--02-29"));
+        assertEquals("--02-29", mock.getAsString(facesContext, input, leapDay));
+        assertEquals(leapDay, mock.getAsObject(facesContext, input, "--02-29"));
     }
 
     @Test
-    public void testInstantIsoRoundTrip()
+    void instantIsoRoundTrip()
     {
         UIInput input = new UIInput();
         mock.setType("instant");
         Instant expected = Instant.parse("2011-12-03T10:15:30Z");
-        Assertions.assertEquals("2011-12-03T10:15:30Z", mock.getAsString(facesContext, input, expected));
-        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12-03T10:15:30Z"));
+        assertEquals("2011-12-03T10:15:30Z", mock.getAsString(facesContext, input, expected));
+        assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12-03T10:15:30Z"));
     }
 
     @Test
-    public void testInstantWithCustomPatternUsesTimeZone()
+    void instantWithCustomPatternUsesTimeZone()
     {
         UIInput input = new UIInput();
         mock.setType("instant");
         mock.setPattern("yyyy-MM-dd HH:mm:ss");
         mock.setTimeZone(TimeZone.getTimeZone("GMT"));
         Instant expected = Instant.parse("2011-12-03T10:15:30Z");
-        Assertions.assertEquals("2011-12-03 10:15:30", mock.getAsString(facesContext, input, expected));
-        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12-03 10:15:30"));
+        assertEquals("2011-12-03 10:15:30", mock.getAsString(facesContext, input, expected));
+        assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12-03 10:15:30"));
     }
 
     @Test
-    public void testYearWithExplicitPattern()
+    void yearWithExplicitPattern()
     {
         UIInput input = new UIInput();
         mock.setType("year");
         mock.setPattern("yy");
-        Assertions.assertEquals("11", mock.getAsString(facesContext, input, Year.of(2011)));
+        assertEquals("11", mock.getAsString(facesContext, input, Year.of(2011)));
     }
 
     @Test
-    public void testYearRejectsUnparseableInput()
+    void yearRejectsUnparseableInput()
     {
         UIInput input = new UIInput();
         mock.setType("year");
-        Assertions.assertThrows(ConverterException.class,
+        assertThrows(ConverterException.class,
                 () -> mock.getAsObject(facesContext, input, "not-a-year"));
     }
 
     @Test
-    public void testMonthDayRejectsInvalidInput()
+    void monthDayRejectsInvalidInput()
     {
         UIInput input = new UIInput();
         mock.setType("monthDay");
-        Assertions.assertThrows(ConverterException.class,
+        assertThrows(ConverterException.class,
                 () -> mock.getAsObject(facesContext, input, "--13-40"));
     }
 }

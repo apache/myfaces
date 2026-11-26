@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIOutput;
@@ -33,10 +36,9 @@ import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class IncludeParamTestCase extends AbstractFaceletTestCase
+class IncludeParamTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -77,7 +79,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testCaching() throws Exception
+    void caching() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
 
@@ -120,8 +122,8 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         
         String result = fw.toString();
         
-        Assertions.assertTrue(result.contains("<p>Component value: page test2</p>"));
-        Assertions.assertTrue(result.contains("<p>Inline EL value: page test2</p>"));
+        assertTrue(result.contains("<p>Component value: page test2</p>"));
+        assertTrue(result.contains("<p>Inline EL value: page test2</p>"));
         
         //System.out.println(fw);
 
@@ -145,13 +147,13 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         
         result = fw.toString();
         
-        Assertions.assertTrue(result.contains("<p>Component value: page test3</p>"));
-        Assertions.assertTrue(result.contains("<p>Inline EL value: page test3</p>"));
+        assertTrue(result.contains("<p>Component value: page test3</p>"));
+        assertTrue(result.contains("<p>Inline EL value: page test3</p>"));
 
     }
-    
+
     @Test
-    public void testSimpleCompositionParam() throws Exception
+    void simpleCompositionParam() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "simpleCompositionParam.xhtml");
@@ -164,7 +166,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("value1"));
+        assertTrue(result.contains("value1"));
     }
 
     /**
@@ -174,7 +176,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testUIParamTemplateScope1() throws Exception
+    void uIParamTemplateScope1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamtemplatescope1.xhtml");
@@ -187,10 +189,10 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("rightValue"));
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertTrue(result.contains("rightValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * ui:param defined outside should not pass through ui:include, because it occurs
      * on another template context.
@@ -198,7 +200,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testUIParamTemplateScope2() throws Exception
+    void uIParamTemplateScope2() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamtemplatescope2.xhtml");
@@ -211,9 +213,9 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * ui:param inside ui:include applies only to the content of the tag and the
      * referenced template.
@@ -221,7 +223,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testUIParamTemplateScope3() throws Exception
+    void uIParamTemplateScope3() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamtemplatescope3.xhtml");
@@ -234,10 +236,10 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("rightValue"));
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertTrue(result.contains("rightValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * ui:param inside ui:composition applies only to the content of the tag and the
      * referenced template.
@@ -245,7 +247,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testUIParamTemplateScope4() throws Exception
+    void uIParamTemplateScope4() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamtemplatescope4.xhtml");
@@ -258,17 +260,17 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("rightValue"));
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertTrue(result.contains("rightValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * ui:param defined outside should only pass through ui:include if the param is declared.
      * 
      * @throws Exception
      */
     @Test
-    public void testUIParamTemplateScope5() throws Exception
+    void uIParamTemplateScope5() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamtemplatescope5.xhtml");
@@ -281,11 +283,11 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("rightValue"));
-        Assertions.assertTrue(result.contains("right2Value"));
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertTrue(result.contains("rightValue"));
+        assertTrue(result.contains("right2Value"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * ui:param defined outside should not pass through composite components, to do
      * that the composite component provide a clean attribute interface.
@@ -293,7 +295,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testUIParamTemplateScope6() throws Exception
+    void uIParamTemplateScope6() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamtemplatescope6.xhtml");
@@ -306,10 +308,10 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("rightValue"));
-        Assertions.assertFalse(result.contains("doNotPrintValue"));
+        assertTrue(result.contains("rightValue"));
+        assertFalse(result.contains("doNotPrintValue"));
     }
-    
+
     /**
      * ui:param should pass through nested ui:decorate or ui:composition constructions, because it is the
      * same template context. Additionally, ui:param declarations should follow the same ordering rules
@@ -318,7 +320,7 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testUIParamTemplateScope7() throws Exception
+    void uIParamTemplateScope7() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "uiparamtemplatescope7.xhtml");
@@ -331,13 +333,13 @@ public class IncludeParamTestCase extends AbstractFaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assertions.assertTrue(result.contains("value1"));
-        Assertions.assertTrue(result.contains("value2"));
-        Assertions.assertTrue(result.contains("value3"));
-        Assertions.assertTrue(result.contains("value4"));
-        Assertions.assertTrue(result.contains("value5"));
-        Assertions.assertTrue(result.contains("valu1e5"));
-        Assertions.assertTrue(result.contains("valu1e6"));
-        Assertions.assertFalse(result.contains("value6"));
+        assertTrue(result.contains("value1"));
+        assertTrue(result.contains("value2"));
+        assertTrue(result.contains("value3"));
+        assertTrue(result.contains("value4"));
+        assertTrue(result.contains("value5"));
+        assertTrue(result.contains("valu1e5"));
+        assertTrue(result.contains("valu1e6"));
+        assertFalse(result.contains("value6"));
     }
 }

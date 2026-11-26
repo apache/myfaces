@@ -18,18 +18,19 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ImportConstantsMetadataTest extends AbstractMyFacesCDIRequestTestCase
+class ImportConstantsMetadataTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Test
-    public void test() throws Exception
+    void test() throws Exception
     {
         startViewRequest("/importConstantsMetadata.xhtml");
         processLifecycleExecuteAndRender();
@@ -37,6 +38,6 @@ public class ImportConstantsMetadataTest extends AbstractMyFacesCDIRequestTestCa
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content = new String(writer1.content());
 
-        Assertions.assertTrue(content.contains("Value:a!"));
+        assertTrue(content.contains("Value:a!"));
     }
 }

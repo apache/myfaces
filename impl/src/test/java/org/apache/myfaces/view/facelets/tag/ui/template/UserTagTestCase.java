@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui.template;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 import jakarta.faces.application.ViewHandler;
 
@@ -25,10 +28,9 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UserTagTestCase extends AbstractFaceletTestCase
+class UserTagTestCase extends AbstractFaceletTestCase
 {
     
     @Override
@@ -38,9 +40,9 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         servletContext.addInitParameter(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, "true");
         servletContext.addInitParameter(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, "/user.taglib.xml");
     }
-    
+
     @Test
-    public void testUserTag1() throws Exception {
+    void userTag1() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest1.xhtml");
@@ -53,11 +55,11 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
+        assertTrue(response.contains("Do you see me?"));
     }
 
     @Test
-    public void testUserTag2() throws Exception {
+    void userTag2() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest2.xhtml");
@@ -70,12 +72,12 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
-        Assertions.assertFalse(response.contains("This text should not be rendered"));
+        assertTrue(response.contains("Do you see me?"));
+        assertFalse(response.contains("This text should not be rendered"));
     }
-    
+
     @Test
-    public void testUserTag3() throws Exception {
+    void userTag3() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest3.xhtml");
@@ -88,12 +90,12 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
-        Assertions.assertFalse(response.contains("This text should not be rendered"));
+        assertTrue(response.contains("Do you see me?"));
+        assertFalse(response.contains("This text should not be rendered"));
     }
-    
+
     @Test
-    public void testUserTag4() throws Exception {
+    void userTag4() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest4.xhtml");
@@ -106,12 +108,12 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
-        Assertions.assertFalse(response.contains("This text should not be rendered"));
+        assertTrue(response.contains("Do you see me?"));
+        assertFalse(response.contains("This text should not be rendered"));
     }
-    
+
     @Test
-    public void testUserTag5() throws Exception {
+    void userTag5() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest5.xhtml");
@@ -124,12 +126,12 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
-        Assertions.assertFalse(response.contains("This text should not be rendered"));
+        assertTrue(response.contains("Do you see me?"));
+        assertFalse(response.contains("This text should not be rendered"));
     }
 
     @Test
-    public void testUserTag6() throws Exception {
+    void userTag6() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest6.xhtml");
@@ -142,12 +144,12 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
-        Assertions.assertFalse(response.contains("This text should not be rendered"));
+        assertTrue(response.contains("Do you see me?"));
+        assertFalse(response.contains("This text should not be rendered"));
     }
-    
+
     @Test
-    public void testUserTag7() throws Exception {
+    void userTag7() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest7.xhtml");
@@ -160,12 +162,12 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
-        Assertions.assertFalse(response.contains("This text should not be rendered"));
+        assertTrue(response.contains("Do you see me?"));
+        assertFalse(response.contains("This text should not be rendered"));
     }
-    
+
     @Test
-    public void testUserTag8() throws Exception {
+    void userTag8() throws Exception {
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "userTagTest8.xhtml");
@@ -178,7 +180,7 @@ public class UserTagTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
-        Assertions.assertFalse(response.contains("This text should not be rendered"));
+        assertTrue(response.contains("Do you see me?"));
+        assertFalse(response.contains("This text should not be rendered"));
     }
 }

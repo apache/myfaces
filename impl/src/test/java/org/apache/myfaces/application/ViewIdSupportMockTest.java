@@ -20,17 +20,20 @@ package org.apache.myfaces.application;
 
 import jakarta.faces.FacesException;
 import org.apache.myfaces.test.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ViewIdSupportMockTest extends AbstractFacesTestCase
+class ViewIdSupportMockTest extends AbstractFacesTestCase
 {
     private ViewIdSupport viewIdSupport;
 
@@ -47,29 +50,29 @@ public class ViewIdSupportMockTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testCalculateViewIdFromRequestAttributeIncludePathInfo()
+    void calculateViewIdFromRequestAttributeIncludePathInfo()
     {
         Map<String, Object> map = new HashMap<String, Object>();
         String expectedValue = "jakarta.servlet.include.path_info_VIEWID";
         map.put("jakarta.servlet.include.path_info", expectedValue);        
         Mockito.when(_externalContext.getRequestMap()).thenReturn(map);
 
-        Assertions.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
     @Test
-    public void testCalculateViewIdFromRequestPathInfo()
+    void calculateViewIdFromRequestPathInfo()
     {
         Mockito.when(_externalContext.getRequestMap()).thenReturn(Collections.emptyMap());
         
         String expectedValue = "requestPathInfo_VIEWID";
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(expectedValue);
 
-        Assertions.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
-    
+
     @Test
-    public void testCalculateViewIdFromRequestAttributeIncludeServletPath()
+    void calculateViewIdFromRequestAttributeIncludeServletPath()
     {
         Map<String, Object> map = new HashMap<String, Object>();
         String expectedValue = "jakarta.servlet.include.servlet_path_VIEWID";
@@ -78,28 +81,28 @@ public class ViewIdSupportMockTest extends AbstractFacesTestCase
         
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(null);
 
-        Assertions.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
     @Test
-    public void testCalculateViewIdFromRequestServletPath()
+    void calculateViewIdFromRequestServletPath()
     {
         Mockito.when(_externalContext.getRequestMap()).thenReturn(Collections.emptyMap());
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(null);
         String expectedValue = "RequestServletPath_VIEWID";
         Mockito.when(_externalContext.getRequestServletPath()).thenReturn(expectedValue);
 
-        Assertions.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
     @Test
-    public void testCalculateViewIdFacesException()
+    void calculateViewIdFacesException()
     {
         Mockito.when(_externalContext.getRequestMap()).thenReturn(Collections.emptyMap());
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(null);
         Mockito.when(_externalContext.getRequestServletPath()).thenReturn(null);
 
-        Assertions.assertThrows(FacesException.class,
+        assertThrows(FacesException.class,
                 () -> viewIdSupport.calculateViewId(_facesContext));
     }
 }

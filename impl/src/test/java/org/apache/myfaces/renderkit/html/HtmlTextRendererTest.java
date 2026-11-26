@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -48,7 +50,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlTextRendererTest extends AbstractFacesTestCase
+class HtmlTextRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer ;
@@ -93,7 +95,7 @@ public class HtmlTextRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testStyleClassAttr() throws IOException
+    void styleClassAttr() throws Exception
     {
         outputText.setValue("Output");
         outputText.setStyleClass("myStyleClass");
@@ -104,24 +106,24 @@ public class HtmlTextRendererTest extends AbstractFacesTestCase
 
         String output = writer.getWriter().toString();
 
-        Assertions.assertEquals("<span class=\"myStyleClass\">Output</span>", output);
-        Assertions.assertNotSame("Output", output);
+        assertEquals("<span class=\"myStyleClass\">Output</span>", output);
+        assertNotSame("Output", output);
     }
 
     @Test
-    public void testInputDefaultTypeAttr() throws IOException
+    void inputDefaultTypeAttr() throws Exception
     {
         inputText.encodeBegin(facesContext);
         inputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<input id=\"j_id__v_0\" name=\"j_id__v_0\" type=\"text\" value=\"\"/>", output);
-        Assertions.assertNotSame("Output", output);
+        assertEquals("<input id=\"j_id__v_0\" name=\"j_id__v_0\" type=\"text\" value=\"\"/>", output);
+        assertNotSame("Output", output);
     }
 
     @Test
-    public void testInputTypeAttr() throws IOException
+    void inputTypeAttr() throws Exception
     {
         inputText.setType("tel");
 
@@ -130,17 +132,17 @@ public class HtmlTextRendererTest extends AbstractFacesTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<input id=\"j_id__v_0\" name=\"j_id__v_0\" type=\"tel\" value=\"\"/>", output);
-        Assertions.assertNotSame("Output", output);
+        assertEquals("<input id=\"j_id__v_0\" name=\"j_id__v_0\" type=\"tel\" value=\"\"/>", output);
+        assertNotSame("Output", output);
     }
 
-    
+
     /**
      * Don't add span over escape
      * @throws IOException
      */
     @Test
-    public void testEscapeNoSpan() throws IOException
+    void escapeNoSpan() throws Exception
     {
         outputText.setValue("Output");
         outputText.setEscape(true);
@@ -151,11 +153,11 @@ public class HtmlTextRendererTest extends AbstractFacesTestCase
 
         String output = writer.getWriter().toString();
 
-        Assertions.assertEquals("Output", output);
+        assertEquals("Output", output);
     }
 
     @Test
-    public void testHtmlPropertyPassThru() throws Exception
+    void htmlPropertyPassThru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
         
@@ -163,12 +165,12 @@ public class HtmlTextRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 inputText, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testWhenSubmittedValueIsNullDefaultShouldDisappearFromRendering() {
+    void whenSubmittedValueIsNullDefaultShouldDisappearFromRendering() {
         //See MYFACES-2161 and MYFACES-1549 for details
         UIViewRoot root = new UIViewRoot();
         UIForm form = new UIForm();
@@ -232,75 +234,60 @@ public class HtmlTextRendererTest extends AbstractFacesTestCase
         // 4) renderer calls getValue(); --> getValue() evaluates the
         // value-binding, as the local-value is 'null', and I get the
         // default-value of the bean shown again
-        Assertions.assertNotSame(expression.getValue(facesContext.getELContext()), inputText.getValue());
-        Assertions.assertNull(inputText.getValue());
+        assertNotSame(expression.getValue(facesContext.getELContext()), inputText.getValue());
+        assertNull(inputText.getValue());
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         inputText.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches("(?s).+id=\".+\".+"));
-            Assertions.assertTrue(output.matches("(?s).+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Tests if a JavaScript user code is correctly escaped.
      * e.g. alert('test') has to become alert(\'test\')
      */
     @Test
-    public void testClientBehaviorUserCodeJavaScriptEscaping()
+    void clientBehaviorUserCodeJavaScriptEscaping()
     {
         inputText.getAttributes().put("onchange", "alert('test')");
         inputText.addClientBehavior("change", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             // onchange="faces.util.chain(document.getElementById(&apos;j_id0&apos;), event,
             //                          &apos;alert(\&apos;test\&apos;)&apos;);"
-            Assertions.assertTrue(output.contains("&apos;alert(\\&apos;test\\&apos;)&apos;"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.contains("&apos;alert(\\&apos;test\\&apos;)&apos;"));
+        });
     }
-    
+
     /**
      * Tests if a JavaScript user code that already contains ' is correctly escaped.
      * e.g. test = 'a\'b'; has to become test = \'a\\\'b\';
      */
     @Test
-    public void testClientBehaviorUserCodeJavaScriptDoubleEscaping()
+    void clientBehaviorUserCodeJavaScriptDoubleEscaping()
     {
         inputText.getAttributes().put("onchange", "var test = 'a\\'b'; alert(test);");
         inputText.addClientBehavior("change", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             // onchange="faces.util.chain(document.getElementById(&apos;j_id0&apos;), event,
             //               &apos;var test = \&apos;a\\\&apos;b\&apos;; alert(test);&apos;);"
-            Assertions.assertTrue(output.contains("&apos;var test = \\&apos;a\\\\\\&apos;b\\&apos;; alert(test);&apos;"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.contains("&apos;var test = \\&apos;a\\\\\\&apos;b\\&apos;; alert(test);&apos;"));
+        });
     }
     
 }

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIParameter;
@@ -28,11 +31,10 @@ import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlFormatRendererTest extends AbstractFacesTestCase
+class HtmlFormatRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer;
     private HtmlOutputFormat outputFormat;
@@ -55,7 +57,7 @@ public class HtmlFormatRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
                 //_UniversalProperties
@@ -72,12 +74,12 @@ public class HtmlFormatRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 outputFormat, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTruNotRendered() throws Exception
+    void htmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
         
@@ -85,17 +87,17 @@ public class HtmlFormatRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 outputFormat, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * If the disable attribute of a child UIParameter is true,
      * he should be ignored.
      * @throws Exception
      */
     @Test
-    public void testDisabledUIParameterNotRendered() throws Exception
+    void disabledUIParameterNotRendered() throws Exception
     {
         UIParameter param1 = new UIParameter();
         param1.setValue("value1");
@@ -109,6 +111,6 @@ public class HtmlFormatRendererTest extends AbstractFacesTestCase
         
         outputFormat.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("prefixvalue2-{1}suffix", output);
+        assertEquals("prefixvalue2-{1}suffix", output);
     }
 }

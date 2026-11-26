@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +39,6 @@ import jakarta.faces.convert.ConverterException;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -86,7 +87,7 @@ public abstract class AbstractMyfaces4585FaceletsIntegrationTestCase extends Abs
     }
 
     @Test
-    public void testTagAttributeConverterMethodNotLost4585() throws Exception
+    public void tagAttributeConverterMethodNotLost4585() throws Exception
     {
         facesContext.getExternalContext().getRequestMap().put("autoCompleteDepartmentConverter",
                 new DepartmentConverter());
@@ -96,9 +97,9 @@ public abstract class AbstractMyfaces4585FaceletsIntegrationTestCase extends Abs
         vdl.buildView(facesContext, root, "myfaces4585_test.xhtml");
         String out = render(root);
 
-        Assertions.assertTrue(out.contains("Development"), () -> out);
-        Assertions.assertTrue(out.contains("Sales"), () -> out);
-        Assertions.assertTrue(out.contains("departmentName"), () -> out);
+        assertTrue(out.contains("Development"), () -> out);
+        assertTrue(out.contains("Sales"), () -> out);
+        assertTrue(out.contains("departmentName"), () -> out);
     }
 
     public static class TestViewBean

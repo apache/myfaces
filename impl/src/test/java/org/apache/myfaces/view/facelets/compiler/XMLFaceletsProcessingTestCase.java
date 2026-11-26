@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.view.facelets.compiler;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIForm;
@@ -32,8 +35,6 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.component.html.HtmlSelectOneMenu;
 
-import org.junit.jupiter.api.Assertions;
-
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.element.FaceletsProcessingImpl;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
@@ -44,7 +45,7 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Test;
 
-public class XMLFaceletsProcessingTestCase extends AbstractFaceletTestCase {
+class XMLFaceletsProcessingTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setupComponents() throws Exception
@@ -91,7 +92,7 @@ public class XMLFaceletsProcessingTestCase extends AbstractFaceletTestCase {
     }
 
     @Test
-    public void testXMLProcessing1() throws Exception
+    void xmlProcessing1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testXMLProcessing1.view.xml");
@@ -106,13 +107,13 @@ public class XMLFaceletsProcessingTestCase extends AbstractFaceletTestCase {
         
         String resp = sw.toString();
         
-        Assertions.assertFalse(resp.contains("<!DOCTYPE"));
-        Assertions.assertFalse(resp.contains("<?xml"));
-        Assertions.assertFalse(resp.contains("<?name"));
-        Assertions.assertFalse(resp.contains("<![CDATA["));
-        Assertions.assertFalse(resp.contains("cdata not consumed"));
-        Assertions.assertTrue(resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
-        Assertions.assertFalse(resp.contains("<!--"));
+        assertFalse(resp.contains("<!DOCTYPE"));
+        assertFalse(resp.contains("<?xml"));
+        assertFalse(resp.contains("<?name"));
+        assertFalse(resp.contains("<![CDATA["));
+        assertFalse(resp.contains("cdata not consumed"));
+        assertTrue(resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
+        assertFalse(resp.contains("<!--"));
         
     }
 }

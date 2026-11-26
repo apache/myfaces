@@ -18,6 +18,7 @@
  */
 package jakarta.faces.event;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import jakarta.el.MethodExpression;
@@ -31,7 +32,6 @@ import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.validator.Validator;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -39,22 +39,22 @@ import org.junit.jupiter.api.Test;
  * {@link MethodExpressionValidator} leave no state in a component whose initial state is marked, and keep their full
  * state whenever the component saves its full state.
  */
-public class MethodExpressionPartialStateHolderTest extends AbstractFacesTestCase
+class MethodExpressionPartialStateHolderTest extends AbstractFacesTestCase
 {
 
     @Test
-    public void testMarkedCommandSavesNoActionListenerState()
+    void markedCommandSavesNoActionListenerState()
     {
         UICommand command = new UICommand();
         command.addActionListener(new MethodExpressionActionListener(mock(MethodExpression.class),
                 mock(MethodExpression.class)));
         command.markInitialState();
 
-        Assertions.assertNull(command.saveState(facesContext));
+        assertNull(command.saveState(facesContext));
     }
 
     @Test
-    public void testMarkedInputSavesNoValueChangeListenerNorValidatorState()
+    void markedInputSavesNoValueChangeListenerNorValidatorState()
     {
         UIInput input = new UIInput();
         input.addValueChangeListener(new MethodExpressionValueChangeListener(mock(MethodExpression.class),
@@ -62,11 +62,11 @@ public class MethodExpressionPartialStateHolderTest extends AbstractFacesTestCas
         input.addValidator(new MethodExpressionValidator(mock(MethodExpression.class)));
         input.markInitialState();
 
-        Assertions.assertNull(input.saveState(facesContext));
+        assertNull(input.saveState(facesContext));
     }
 
     @Test
-    public void testActionListenerAddedAfterMarkingIsRestoredFromFullState()
+    void actionListenerAddedAfterMarkingIsRestoredFromFullState()
     {
         MethodExpression oneArg = mock(MethodExpression.class);
         MethodExpression zeroArg = mock(MethodExpression.class);
@@ -74,20 +74,20 @@ public class MethodExpressionPartialStateHolderTest extends AbstractFacesTestCas
         command.markInitialState();
         command.addActionListener(new MethodExpressionActionListener(oneArg, zeroArg));
         Object state = command.saveState(facesContext);
-        Assertions.assertNotNull(state);
+        assertNotNull(state);
 
         UICommand restored = new UICommand();
         restored.restoreState(facesContext, state);
 
         ActionListener[] listeners = restored.getActionListeners();
-        Assertions.assertEquals(1, listeners.length);
-        MethodExpressionActionListener listener = Assertions.assertInstanceOf(MethodExpressionActionListener.class,
+        assertEquals(1, listeners.length);
+        MethodExpressionActionListener listener = assertInstanceOf(MethodExpressionActionListener.class,
                 listeners[0]);
-        Assertions.assertArrayEquals(new Object[] { oneArg, zeroArg }, (Object[]) listener.saveState(facesContext));
+        assertArrayEquals(new Object[] { oneArg, zeroArg }, (Object[]) listener.saveState(facesContext));
     }
 
     @Test
-    public void testValueChangeListenerAddedAfterMarkingIsRestoredFromFullState()
+    void valueChangeListenerAddedAfterMarkingIsRestoredFromFullState()
     {
         MethodExpression oneArg = mock(MethodExpression.class);
         MethodExpression zeroArg = mock(MethodExpression.class);
@@ -95,20 +95,20 @@ public class MethodExpressionPartialStateHolderTest extends AbstractFacesTestCas
         input.markInitialState();
         input.addValueChangeListener(new MethodExpressionValueChangeListener(oneArg, zeroArg));
         Object state = input.saveState(facesContext);
-        Assertions.assertNotNull(state);
+        assertNotNull(state);
 
         UIInput restored = new UIInput();
         restored.restoreState(facesContext, state);
 
         ValueChangeListener[] listeners = restored.getValueChangeListeners();
-        Assertions.assertEquals(1, listeners.length);
-        MethodExpressionValueChangeListener listener = Assertions.assertInstanceOf(
+        assertEquals(1, listeners.length);
+        MethodExpressionValueChangeListener listener = assertInstanceOf(
                 MethodExpressionValueChangeListener.class, listeners[0]);
-        Assertions.assertArrayEquals(new Object[] { oneArg, zeroArg }, (Object[]) listener.saveState(facesContext));
+        assertArrayEquals(new Object[] { oneArg, zeroArg }, (Object[]) listener.saveState(facesContext));
     }
 
     @Test
-    public void testTransientActionListenerIsNotRestored()
+    void transientActionListenerIsNotRestored()
     {
         UICommand command = new UICommand();
         MethodExpressionActionListener listener = new MethodExpressionActionListener(mock(MethodExpression.class),
@@ -120,11 +120,11 @@ public class MethodExpressionPartialStateHolderTest extends AbstractFacesTestCas
         UICommand restored = new UICommand();
         restored.restoreState(facesContext, state);
 
-        Assertions.assertEquals(0, restored.getActionListeners().length);
+        assertEquals(0, restored.getActionListeners().length);
     }
 
     @Test
-    public void testClearedListenerRoundTripsThroughAttachedState()
+    void clearedListenerRoundTripsThroughAttachedState()
     {
         MethodExpression oneArg = mock(MethodExpression.class);
         MethodExpression zeroArg = mock(MethodExpression.class);
@@ -135,28 +135,28 @@ public class MethodExpressionPartialStateHolderTest extends AbstractFacesTestCas
         Object restored = UIComponentBase.restoreAttachedState(facesContext,
                 UIComponentBase.saveAttachedState(facesContext, listener));
 
-        MethodExpressionActionListener restoredListener = Assertions.assertInstanceOf(
+        MethodExpressionActionListener restoredListener = assertInstanceOf(
                 MethodExpressionActionListener.class, restored);
-        Assertions.assertArrayEquals(new Object[] { oneArg, zeroArg },
+        assertArrayEquals(new Object[] { oneArg, zeroArg },
                 (Object[]) restoredListener.saveState(facesContext));
     }
 
     @Test
-    public void testMarkedValidatorKeepsItsExpressionWhenSiblingStateIsRestored()
+    void markedValidatorKeepsItsExpressionWhenSiblingStateIsRestored()
     {
         MethodExpression expression = mock(MethodExpression.class);
         Object state = buildMarkedInput(expression, "changed").saveState(facesContext);
-        Assertions.assertNotNull(state);
+        assertNotNull(state);
 
         UIInput rebuilt = buildMarkedInput(expression, "built");
         rebuilt.restoreState(facesContext, state);
 
         Validator<?>[] validators = rebuilt.getValidators();
-        MethodExpressionValidator validator = Assertions.assertInstanceOf(MethodExpressionValidator.class,
+        MethodExpressionValidator validator = assertInstanceOf(MethodExpressionValidator.class,
                 validators[0]);
         validator.clearInitialState();
-        Assertions.assertSame(expression, validator.saveState(facesContext));
-        Assertions.assertEquals("changed", ((StatefulValidator) validators[1]).config);
+        assertSame(expression, validator.saveState(facesContext));
+        assertEquals("changed", ((StatefulValidator) validators[1]).config);
     }
 
     private static UIInput buildMarkedInput(MethodExpression expression, String siblingConfig)

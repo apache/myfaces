@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 
 import jakarta.el.ExpressionFactory;
@@ -26,10 +28,9 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentCConIncludeTestCase extends AbstractFaceletTestCase
+class CompositeComponentCConIncludeTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -43,9 +44,9 @@ public class CompositeComponentCConIncludeTestCase extends AbstractFaceletTestCa
     {
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
-    public void testCCOnInclude1() throws Exception
+    void cCOnInclude1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCConInclude1.xhtml");
@@ -59,13 +60,13 @@ public class CompositeComponentCConIncludeTestCase extends AbstractFaceletTestCa
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("value1"));
-        Assertions.assertTrue(sw.toString().contains("value2"));
-        Assertions.assertTrue(sw.toString().contains("value3"));
+        assertTrue(sw.toString().contains("value1"));
+        assertTrue(sw.toString().contains("value2"));
+        assertTrue(sw.toString().contains("value3"));
     }
-    
+
     @Test
-    public void testCCOnInclude2() throws Exception
+    void cCOnInclude2() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCConInclude2.xhtml");
@@ -79,8 +80,8 @@ public class CompositeComponentCConIncludeTestCase extends AbstractFaceletTestCa
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("value1"));
-        Assertions.assertTrue(sw.toString().contains("value2"));
-        Assertions.assertTrue(sw.toString().contains("value3"));
+        assertTrue(sw.toString().contains("value1"));
+        assertTrue(sw.toString().contains("value2"));
+        assertTrue(sw.toString().contains("value3"));
     }
 }

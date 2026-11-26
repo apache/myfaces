@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.Writer;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ServletExternalContextImplTest extends AbstractFacesTestCase
+class ServletExternalContextImplTest extends AbstractFacesTestCase
 {
 
     private ServletExternalContextImpl _testExternalContext;
@@ -57,7 +58,7 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
         
         super.tearDown();
     }
-    
+
     /**
      * Tests if encodeRedirectURL() and encodeBookmarkableURL() correctly
      * evaluate ValueExpressions as parameters values.
@@ -95,7 +96,7 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
     }*/
 
     @Test
-    public void testEncodeRedirectUrlWithEmptyParamInBaseUrl()
+    void encodeRedirectUrlWithEmptyParamInBaseUrl()
     {
         // query parameter p1 has an empty value
         String baseUrl = "/test?p1=&p2=test";
@@ -104,13 +105,13 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
         
         // the URL should not change
-        Assertions.assertTrue(redirectUrl.contains("p1="));
-        Assertions.assertTrue(redirectUrl.contains("p2=test"));
+        assertTrue(redirectUrl.contains("p1="));
+        assertTrue(redirectUrl.contains("p2=test"));
 
     }
 
     @Test
-    public void testEncodedSpaceInExistingQueryParameter()
+    void encodedSpaceInExistingQueryParameter()
     {
         // the base URL with an existing encoded query parameter 
         String baseUrl = "/test?p1=a+b";
@@ -119,12 +120,12 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
         
         // the URL should not change
-        Assertions.assertEquals(baseUrl, redirectUrl);
+        assertEquals(baseUrl, redirectUrl);
 
     }
-    
+
     @Test
-    public void testEncodedAmpersandInExistingQueryParameter()
+    void encodedAmpersandInExistingQueryParameter()
     {
         // the base URL with an existing encoded query parameter 
         String baseUrl = "/test?p1=a%26b";
@@ -133,12 +134,12 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
         
         // the URL should not change
-        Assertions.assertEquals(baseUrl, redirectUrl);
+        assertEquals(baseUrl, redirectUrl);
         
     }
 
     @Test
-    public void testSameParameterNames()
+    void sameParameterNames()
     {
         String baseUrl = "/test?par=test1&par=test2";
 
@@ -146,8 +147,8 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
 
         // the URL should not change
-        Assertions.assertTrue(redirectUrl.contains("par=test1"));
-        Assertions.assertTrue(redirectUrl.contains("par=test2"));
+        assertTrue(redirectUrl.contains("par=test1"));
+        assertTrue(redirectUrl.contains("par=test2"));
 
     }
 
@@ -157,7 +158,7 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
      * discarded, everything written after it must still reach the container writer.
      */
     @Test
-    public void testResponseResetDiscardsBufferedOutputButKeepsWriterUsable() throws IOException
+    void responseResetDiscardsBufferedOutputButKeepsWriterUsable() throws Exception
     {
         Writer writer = _testExternalContext.getResponseOutputWriter();
         writer.write("aborted response");
@@ -166,6 +167,6 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
         writer.write("error page");
         writer.flush();
 
-        Assertions.assertEquals("error page", String.valueOf(((MockPrintWriter) response.getWriter()).content()));
+        assertEquals("error page", String.valueOf(((MockPrintWriter) response.getWriter()).content()));
     }
 }

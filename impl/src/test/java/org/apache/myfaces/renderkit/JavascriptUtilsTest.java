@@ -32,12 +32,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-public class JavascriptUtilsTest {
+class JavascriptUtilsTest {
 
     private MockedStatic<JavascriptUtils> javascriptUtilsMockedStatic;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         javascriptUtilsMockedStatic = mockStatic(JavascriptUtils.class);
 
         javascriptUtilsMockedStatic.when(() -> getValidJavascriptName(anyString(), anyBoolean(), anyBoolean()))
@@ -47,13 +47,13 @@ public class JavascriptUtilsTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         javascriptUtilsMockedStatic.close();
     }
 
     @Test
     @DisplayName("Passes namespaces without namespace encoding when allowNamespaces is true")
-    public void testGetValidJavascriptNameWithNamespaces() {
+    void getValidJavascriptNameWithNamespaces() {
         // WHEN
         String result = getValidJavascriptName("testName.testname2", true, true);
 
@@ -64,7 +64,7 @@ public class JavascriptUtilsTest {
 
     @Test
     @DisplayName("Returns input name without modifications when no namespace is provided")
-    public void testGetValidJavascriptNameWithoutNamespace() {
+    void getValidJavascriptNameWithoutNamespace() {
         // WHEN
         String result = getValidJavascriptName("testName", true, true);
 
@@ -75,7 +75,7 @@ public class JavascriptUtilsTest {
 
     @Test
     @DisplayName("Handles namespaced input correctly without modification when allowNamespaces is false")
-    public void testGetValidJavascriptNameWithNamespacedInput() {
+    void getValidJavascriptNameWithNamespacedInput() {
         // WHEN
         String result = getValidJavascriptName("testName.namespace", false, true);
 

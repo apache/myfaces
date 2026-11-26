@@ -30,7 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @see pom.xml <excludes>
  */
 
-public class StateUtilsAES_CBCTest extends AbstractStateUtilsTest
+class StateUtilsAES_CBCTest extends AbstractStateUtilsTest
 {
     @Override
     @BeforeEach

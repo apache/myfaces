@@ -18,10 +18,11 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * was in its state helper when the full state was saved. This is what UIData and UIRepeat with
  * {@code rowStatePreserved="true"} do when they enter a row without saved state of its own.
  */
-public class UIComponentBaseRestoreEmptyFullStateTest extends AbstractFacesTestCase
+class UIComponentBaseRestoreEmptyFullStateTest extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach
@@ -41,7 +42,7 @@ public class UIComponentBaseRestoreEmptyFullStateTest extends AbstractFacesTestC
     }
 
     @Test
-    public void testFullStateWithEmptyStateHelperClearsLocalValue()
+    void fullStateWithEmptyStateHelperClearsLocalValue()
     {
         UIInput input = new UIInput();
         input.setId("in");
@@ -50,20 +51,20 @@ public class UIComponentBaseRestoreEmptyFullStateTest extends AbstractFacesTestC
 
         // the row before leaves its local value in the component
         input.setValue("typed");
-        Assertions.assertTrue(input.isLocalValueSet());
+        assertTrue(input.isLocalValueSet());
 
         // same sequence as UIData.restoreFullDescendantComponentStates()
         input.clearInitialState();
         input.restoreState(facesContext, fullState);
         input.markInitialState();
 
-        Assertions.assertNull(input.getLocalValue());
-        Assertions.assertFalse(input.isLocalValueSet());
-        Assertions.assertEquals("in", input.getId());
+        assertNull(input.getLocalValue());
+        assertFalse(input.isLocalValueSet());
+        assertEquals("in", input.getId());
     }
 
     @Test
-    public void testFullStateWithEmptyStateHelperClearsAttributes()
+    void fullStateWithEmptyStateHelperClearsAttributes()
     {
         UIOutput output = new UIOutput();
         output.setId("out");
@@ -77,15 +78,15 @@ public class UIComponentBaseRestoreEmptyFullStateTest extends AbstractFacesTestC
         output.restoreState(facesContext, fullState);
         output.markInitialState();
 
-        Assertions.assertNull(output.getAttributes().get("styleClass"));
-        Assertions.assertTrue(output.isRendered());
+        assertNull(output.getAttributes().get("styleClass"));
+        assertTrue(output.isRendered());
     }
 
     /**
      * Control: a full state with something in its state helper already replaces the state helper.
      */
     @Test
-    public void testFullStateWithStateHelperReplacesLocalValue()
+    void fullStateWithStateHelperReplacesLocalValue()
     {
         UIInput input = new UIInput();
         input.setId("in");
@@ -99,16 +100,16 @@ public class UIComponentBaseRestoreEmptyFullStateTest extends AbstractFacesTestC
         input.restoreState(facesContext, fullState);
         input.markInitialState();
 
-        Assertions.assertNull(input.getLocalValue());
-        Assertions.assertFalse(input.isLocalValueSet());
-        Assertions.assertTrue(input.isRequired());
+        assertNull(input.getLocalValue());
+        assertFalse(input.isLocalValueSet());
+        assertTrue(input.isRequired());
     }
 
     /**
      * A null delta keeps its meaning: nothing changed, so the current state stays as it is.
      */
     @Test
-    public void testNullDeltaKeepsLocalValue()
+    void nullDeltaKeepsLocalValue()
     {
         UIInput input = new UIInput();
         input.setId("in");
@@ -119,10 +120,10 @@ public class UIComponentBaseRestoreEmptyFullStateTest extends AbstractFacesTestC
         other.setId("in");
         other.markInitialState();
         Object delta = other.saveState(facesContext);
-        Assertions.assertNull(delta);
+        assertNull(delta);
 
         input.restoreState(facesContext, delta);
-        Assertions.assertEquals("typed", input.getLocalValue());
-        Assertions.assertTrue(input.isLocalValueSet());
+        assertEquals("typed", input.getLocalValue());
+        assertTrue(input.isLocalValueSet());
     }
 }

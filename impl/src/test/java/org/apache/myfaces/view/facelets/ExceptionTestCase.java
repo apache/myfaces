@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -44,7 +46,7 @@ import org.easymock.classextension.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ExceptionTestCase extends AbstractFaceletTestCase
+class ExceptionTestCase extends AbstractFaceletTestCase
 {
     
     @Override
@@ -59,9 +61,9 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         super.setUpFacesContext();
         facesContext.setExceptionHandler(new ExceptionHandlerImpl());
     }
-    
+
     @Test
-    public void testActionException1() throws Exception
+    void actionException1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testActionException1.xhtml");
@@ -69,7 +71,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assertions.assertNotNull(button);
+        assertNotNull(button);
         
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
         EasyMock.expect(bean.doSomeAction()).andThrow(new AbortProcessingException());
@@ -79,15 +81,10 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         request.setAttribute("bean", bean);
                 
         button.processDecodes(facesContext);
-        
-        try
-        {
+
+        Assertions.assertDoesNotThrow(() -> {
             root.processApplication(facesContext);
-        }
-        catch(FacesException e)
-        {
-            Assertions.fail("No exception should be thrown at this point.");
-        }
+        }, "No exception should be thrown at this point.");
         
         int i = 0;
         for (Iterator<ExceptionQueuedEvent> it = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents().iterator(); it.hasNext();)
@@ -101,10 +98,10 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
             }
             else
             {
-                Assertions.fail("Unexpected exception queued");
+                fail("Unexpected exception queued");
             }
         }
-        Assertions.assertEquals(1, i);
+        assertEquals(1, i);
     }
 
     /**
@@ -113,7 +110,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testActionException1_1() throws Exception
+    void actionException11() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testActionException1.xhtml");
@@ -121,7 +118,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assertions.assertNotNull(button);
+        assertNotNull(button);
         
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
         EasyMock.expect(bean.doSomeAction()).andThrow(new RuntimeException());
@@ -143,16 +140,16 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
         ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
          
-        Assertions.assertNotNull(exceptionQueuedEvent.getContext().getException());
+        assertNotNull(exceptionQueuedEvent.getContext().getException());
     }
-    
+
     /**
      * A runtime exception thrown must be
      * 
      * @throws Exception
      */
     @Test
-    public void testActionException1_2() throws Exception
+    void actionException12() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testActionException1.xhtml");
@@ -160,7 +157,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assertions.assertNotNull(button);
+        assertNotNull(button);
         
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
         EasyMock.expect(bean.doSomeAction()).andThrow(new IOException());
@@ -182,11 +179,11 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
         ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
          
-        Assertions.assertNotNull(exceptionQueuedEvent.getContext().getException());
+        assertNotNull(exceptionQueuedEvent.getContext().getException());
     }
 
     @Test
-    public void testActionListenerException1() throws Exception
+    void actionListenerException1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testActionListenerException1.xhtml");
@@ -194,7 +191,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assertions.assertNotNull(button);
+        assertNotNull(button);
         
         //ActionEvent event = new ActionEvent(button);
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
@@ -206,15 +203,10 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         request.setAttribute("bean", bean);
                 
         button.processDecodes(facesContext);
-        
-        try
-        {
+
+        Assertions.assertDoesNotThrow(() -> {
             root.processApplication(facesContext);
-        }
-        catch(FacesException e)
-        {
-            Assertions.fail("No exception should be thrown at this point.");
-        }
+        }, "No exception should be thrown at this point.");
         
         int i = 0;
         for (Iterator<ExceptionQueuedEvent> it = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents().iterator(); it.hasNext();)
@@ -228,10 +220,10 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
             }
             else
             {
-                Assertions.fail("Unexpected exception queued");
+                fail("Unexpected exception queued");
             }
         }
-        Assertions.assertEquals(1, i);
+        assertEquals(1, i);
 
     }
 
@@ -241,7 +233,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testActionListenerException1_1() throws Exception
+    void actionListenerException11() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testActionListenerException1.xhtml");
@@ -249,7 +241,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assertions.assertNotNull(button);
+        assertNotNull(button);
         
         //ActionEvent event = new ActionEvent(button);
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
@@ -284,7 +276,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
             Throwable e = eqe.getContext().getException();
             if (e instanceof AbortProcessingException)
             {
-                Assertions.fail("Unexpected exception queued");
+                fail("Unexpected exception queued");
             }
             else
             {
@@ -292,7 +284,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
                 i++;
             }
         }
-        Assertions.assertEquals(1, i);
+        assertEquals(1, i);
 
     }
     
@@ -304,7 +296,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testValidatorException1() throws Exception
+    void validatorException1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testValidatorException1.xhtml");
@@ -324,21 +316,16 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
                 
                 UIInput input = (UIInput) target;
                 input.setSubmittedValue(submittedValue);
-                try
-                {
+                Assertions.assertDoesNotThrow(() -> {
                     input.processValidators(facesContext);
-                    Assertions.assertTrue(facesContext.isValidationFailed());
-                }
-                catch(FacesException e)
-                {
-                    Assertions.fail("No exception expected");
-                }
+                    assertTrue(facesContext.isValidationFailed());
+                }, "No exception expected");
             }
         });
     }
-    
+
     @Test
-    public void testValidatorException2() throws Exception
+    void validatorException2() throws Exception
     {
         application.addValidator("customValidatorId", CustomValidator.class.getName());
         UIViewRoot root = facesContext.getViewRoot();
@@ -352,23 +339,18 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
                 
                 UIInput input = (UIInput) target;
                 input.setSubmittedValue(submittedValue);
-                try
-                {
+                Assertions.assertDoesNotThrow(() -> {
                     input.processValidators(facesContext);
-                    Assertions.assertTrue(facesContext.isValidationFailed());
-                }
-                catch(FacesException e)
-                {
-                    Assertions.fail("No exception expected");
-                }
+                    assertTrue(facesContext.isValidationFailed());
+                }, "No exception expected");
             }
         });
         
-        Assertions.assertEquals("not valid!", facesContext.getMessageList().get(0).getSummary());
+        assertEquals("not valid!", facesContext.getMessageList().get(0).getSummary());
     }
-    
+
     @Test
-    public void testValueChangeListenerException1() throws Exception
+    void valueChangeListenerException1() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testValueChangeListenerException1.xhtml");
@@ -388,14 +370,9 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
                 
                 UIInput input = (UIInput) target;
                 input.setSubmittedValue(submittedValue);
-                try
-                {
+                Assertions.assertDoesNotThrow(() -> {
                     input.processValidators(facesContext);
-                }
-                catch(FacesException e)
-                {
-                    Assertions.fail("No exception expected");
-                }
+                }, "No exception expected");
             }
         });
         
@@ -421,14 +398,14 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
             }
             else
             {
-                Assertions.fail("Unexpected exception queued");
+                fail("Unexpected exception queued");
             }
         }
-        Assertions.assertEquals(1, i);
+        assertEquals(1, i);
     }
-    
+
     @Test
-    public void testValueChangeListenerException1_1() throws Exception
+    void valueChangeListenerException11() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"testValueChangeListenerException1.xhtml");
@@ -446,14 +423,9 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
                 
                 UIInput input = (UIInput) target;
                 input.setSubmittedValue(submittedValue);
-                try
-                {
+                Assertions.assertDoesNotThrow(() -> {
                     input.processValidators(facesContext);
-                }
-                catch(FacesException e)
-                {
-                    Assertions.fail("No exception expected");
-                }
+                }, "No exception expected");
                 
                 request.setAttribute("bean", bean);                
             }
@@ -476,7 +448,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
             Throwable e = eqe.getContext().getException();
             if (e instanceof AbortProcessingException)
             {
-                Assertions.fail("Unexpected exception queued");
+                fail("Unexpected exception queued");
             }
             else
             {
@@ -484,7 +456,7 @@ public class ExceptionTestCase extends AbstractFaceletTestCase
                 i++;
             }
         }
-        Assertions.assertEquals(1, i);
+        assertEquals(1, i);
     }
     
     public static class CustomValidator implements Validator

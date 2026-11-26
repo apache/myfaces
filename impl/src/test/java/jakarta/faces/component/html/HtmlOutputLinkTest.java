@@ -18,20 +18,21 @@
  */
 package jakarta.faces.component.html;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 
-public class HtmlOutputLinkTest
+class HtmlOutputLinkTest
 {
 
     /**
      * Test method for {@link jakarta.faces.component.UIComponentBase#getRendererType()}.
      */
     @Test
-    public void testRendererType()
+    void rendererType()
     {
-        Assertions.assertEquals("jakarta.faces.Link", new HtmlOutputLink().getRendererType());
+        assertEquals("jakarta.faces.Link", new HtmlOutputLink().getRendererType());
     }
 
 }

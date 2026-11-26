@@ -18,6 +18,8 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -26,7 +28,6 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.event.FacesListener;
 import jakarta.faces.event.ValueChangeListener;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,55 +66,53 @@ public class UIComponentBaseFacesListenerTest extends AbstractUIComponentBaseTes
     }
 
     @Test
-    public void testArgNPE() throws Exception
+    void argNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.getFacesListeners(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.getFacesListeners(null));
     }
 
     @Test
-    public void testEmptyListener() throws Exception
+    void emptyListener() throws Exception
     {
         FacesListener[] listener = _testImpl.getFacesListeners(ActionListener.class);
-        Assertions.assertNotNull(listener);
-        Assertions.assertEquals(0, listener.length);
+        assertNotNull(listener);
+        assertEquals(0, listener.length);
     }
 
     @Test
-    public void testGetFacesListeners()
+    void getFacesListeners()
     {
         _testImpl.addFacesListener(_actionListener);
 
         FacesListener[] listener = _testImpl.getFacesListeners(ValueChangeListener.class);
-        Assertions.assertNotNull(listener);
-        Assertions.assertEquals(0, listener.length);
-        Assertions.assertTrue(ValueChangeListener.class.equals(listener.getClass().getComponentType()));
+        assertNotNull(listener);
+        assertEquals(0, listener.length);
+        assertEquals(ValueChangeListener.class, listener.getClass().getComponentType());
 
         _testImpl.addFacesListener(_valueChangeListener);
 
         listener = _testImpl.getFacesListeners(FacesListener.class);
-        Assertions.assertNotNull(listener);
-        Assertions.assertEquals(2, listener.length);
+        assertNotNull(listener);
+        assertEquals(2, listener.length);
         Collection<FacesListener> col = Arrays.asList(listener);
-        Assertions.assertTrue(col.contains(_actionListener));
-        Assertions.assertTrue(col.contains(_valueChangeListener));
+        assertTrue(col.contains(_actionListener));
+        assertTrue(col.contains(_valueChangeListener));
     }
 
     @Test
-    public void testRemoveFacesListenerArgNPE() throws Exception
+    void removeFacesListenerArgNPE() throws Exception
     {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            _testImpl.removeFacesListener(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+            _testImpl.removeFacesListener(null));
     }
 
     @Test
-    public void testRemoveFacesListener() throws Exception
+    void removeFacesListener() throws Exception
     {
         _testImpl.addFacesListener(_actionListener);
-        Assertions.assertEquals(_actionListener, _testImpl.getFacesListeners(FacesListener.class)[0]);
+        assertEquals(_actionListener, _testImpl.getFacesListeners(FacesListener.class)[0]);
         _testImpl.removeFacesListener(_actionListener);
-        Assertions.assertEquals(0, _testImpl.getFacesListeners(FacesListener.class).length);
+        assertEquals(0, _testImpl.getFacesListeners(FacesListener.class).length);
     }
 }

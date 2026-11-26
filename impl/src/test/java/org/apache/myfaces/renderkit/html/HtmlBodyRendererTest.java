@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.html.HtmlBody;
@@ -31,14 +33,13 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Leonardo Uribe
  */
-public class HtmlBodyRendererTest extends AbstractFacesTestCase
+class HtmlBodyRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer ;
@@ -71,9 +72,9 @@ public class HtmlBodyRendererTest extends AbstractFacesTestCase
         super.tearDown();
         writer = null;
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru2() throws Exception
+    void htmlPropertyPassTru2() throws Exception
     { 
         HtmlRenderedAttr[] attrs = {
                 new HtmlRenderedAttr("xmlns")
@@ -82,19 +83,19 @@ public class HtmlBodyRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 body, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 body, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
 

@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.cdi.bean;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
@@ -26,16 +29,15 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.validator.ValidatorException;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests to ensure that Generics work with CDI Converters and Validators
  */
-public class CDIGenericConverterValidatorTest extends AbstractMyFacesCDIRequestTestCase {
+class CDIGenericConverterValidatorTest extends AbstractMyFacesCDIRequestTestCase {
 
     @Test
-    public void testConverter() throws Exception {
+    void converter() throws Exception {
 
         String expectedValue = "zero";
         String result = "";
@@ -50,13 +52,12 @@ public class CDIGenericConverterValidatorTest extends AbstractMyFacesCDIRequestT
 
         result = converter.getAsString(facesContext, out, bean);
 
-        Assertions.assertTrue(result.equals(expectedValue),
-                "The value output should have matched: " + expectedValue + " but was : " + result);
+        assertEquals(result, expectedValue, "The value output should have matched: " + expectedValue + " but was : " + result);
 
     }
 
     @Test
-    public void testValidator() throws Exception {
+    void validator() throws Exception {
 
         startViewRequest("/CDIGenericValidatorTest.xhtml");
         application.addValidator("customValidator", "org.apache.myfaces.cdi.bean.CustomValidator");
@@ -68,7 +69,7 @@ public class CDIGenericConverterValidatorTest extends AbstractMyFacesCDIRequestT
         //Expects a ValidatorException 
         try {
             out.getValidators()[0].validate(facesContext, out, r);
-            Assertions.fail("ValidatorException was not thrown. Custom Generic validator failed.");
+            fail("ValidatorException was not thrown. Custom Generic validator failed.");
         } catch (ValidatorException e) {
             //Ignored
         }

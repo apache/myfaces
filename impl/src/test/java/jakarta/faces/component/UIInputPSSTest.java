@@ -18,12 +18,13 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.el.ValueExpression;
 import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * The state is saved during Render Response, as it is for the view state, because outside that phase
  * {@link UIComponentBase#saveState} also saves the transient state.
  */
-public class UIInputPSSTest extends AbstractFacesTestCase
+class UIInputPSSTest extends AbstractFacesTestCase
 {
 
     @Override
@@ -50,33 +51,33 @@ public class UIInputPSSTest extends AbstractFacesTestCase
      * of a later request, so that the model value is rendered afterwards.
      */
     @Test
-    public void testLocalValueSetIsSavedWithTheLocalValue()
+    void localValueSetIsSavedWithTheLocalValue()
     {
         UIInput input = createInput();
         input.setValue("stale");
 
         UIInput restored = restore(input.saveState(facesContext));
-        Assertions.assertTrue(restored.isLocalValueSet());
+        assertTrue(restored.isLocalValueSet());
 
         restored.updateModel(facesContext);
-        Assertions.assertFalse(restored.isLocalValueSet());
-        Assertions.assertEquals("stale", facesContext.getExternalContext().getRequestMap().get("value"));
-        Assertions.assertEquals("stale", restored.getValue());
-        Assertions.assertNull(restored.saveState(facesContext));
+        assertFalse(restored.isLocalValueSet());
+        assertEquals("stale", facesContext.getExternalContext().getRequestMap().get("value"));
+        assertEquals("stale", restored.getValue());
+        assertNull(restored.saveState(facesContext));
     }
 
     @Test
-    public void testInvalidIsSaved()
+    void invalidIsSaved()
     {
         UIInput input = createInput();
         input.setValid(false);
 
         UIInput restored = restore(input.saveState(facesContext));
-        Assertions.assertFalse(restored.isValid());
+        assertFalse(restored.isValid());
     }
 
     @Test
-    public void testFlagsBackAtTheirDefaultsAddNothingToTheSavedState()
+    void flagsBackAtTheirDefaultsAddNothingToTheSavedState()
     {
         UIInput input = createInput();
         input.setValid(false);
@@ -84,17 +85,17 @@ public class UIInputPSSTest extends AbstractFacesTestCase
         input.setLocalValueSet(true);
         input.setLocalValueSet(false);
 
-        Assertions.assertNull(input.saveState(facesContext));
+        assertNull(input.saveState(facesContext));
     }
 
     @Test
-    public void testSubmittedValueIsNotSaved()
+    void submittedValueIsNotSaved()
     {
         UIInput input = createInput();
         input.setSubmittedValue("submitted");
 
         UIInput restored = restore(input.saveState(facesContext));
-        Assertions.assertNull(restored.getSubmittedValue());
+        assertNull(restored.getSubmittedValue());
     }
 
     private UIInput createInput()

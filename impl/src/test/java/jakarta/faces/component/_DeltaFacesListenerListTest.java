@@ -18,13 +18,14 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.FacesListener;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class _DeltaFacesListenerListTest extends AbstractComponentTest
+class _DeltaFacesListenerListTest extends AbstractComponentTest
 {
 
     public static class UITestComponent extends UIComponentBase
@@ -179,18 +180,18 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
     }
 
     @Test
-    public void testSimpleAddRemove()
+    void simpleAddRemove()
     {
         UITestComponent a = new UITestComponent();
         FacesListener listener1 = new NoStateFacesListener(); 
         a.addFacesListener(listener1);
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
         a.removeFacesListener(listener1);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));        
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore1()
+    void simpleSaveRestore1()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -198,16 +199,16 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         a.addFacesListener(listener1);
         b.addFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore2()
+    void simpleSaveRestore2()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -217,16 +218,16 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         a.addFacesListener(listener1);
         Object [] savedState1 = (Object[]) a.saveState(facesContext);       
         b.restoreState(facesContext, savedState1);
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore3()
+    void simpleSaveRestore3()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -237,18 +238,18 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         a.markInitialState();
         b.markInitialState();
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
-        Assertions.assertNull(savedState1 == null ? null : savedState1[1]);
+        assertNull(savedState1 == null ? null : savedState1[1]);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore4()
+    void simpleSaveRestore4()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -260,22 +261,22 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         b.markInitialState();
         a.addFacesListener(listener2);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
         a.removeFacesListener(listener2);
         b.removeFacesListener(listener2);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
     }
-    
+
     @Test
-    public void testSimpleSaveRestore5()
+    void simpleSaveRestore5()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -288,29 +289,29 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         b.markInitialState();
         a.addFacesListener(listener2);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
         a.removeFacesListener(listener2);
         b.removeFacesListener(listener2);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
         
         //Save fully
         b.clearInitialState();
         c.restoreState(facesContext, b.saveState(facesContext));
         //c._facesListeners should be empty
-        Assertions.assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener2));
     }
-    
+
     @Test
-    public void testSimpleSaveRestore6()
+    void simpleSaveRestore6()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -325,18 +326,18 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         // This is not null because StateFacesListener is instance of StateHolder 
         // and always needs to be saved and restored!
-        Assertions.assertNotNull(savedState1[0]);
+        assertNotNull(savedState1[0]);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore7()
+    void simpleSaveRestore7()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -351,29 +352,29 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         b.markInitialState();
         a.addFacesListener(listener2);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
         a.removeFacesListener(listener2);
         b.removeFacesListener(listener2);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
         
         //Save fully
         b.clearInitialState();
         c.restoreState(facesContext, b.saveState(facesContext));
         //c._facesListeners should be empty
-        Assertions.assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(c.getFacesListeners(FacesListener.class)).contains(listener2));
     }
-    
+
     @Test
-    public void testSimpleSaveRestore8()
+    void simpleSaveRestore8()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -385,18 +386,18 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         b.markInitialState();
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         // This is null because StateFacesListener is instance of PartialStateHolder 
-        Assertions.assertNull(savedState1 == null ? null : savedState1[1]);
+        assertNull(savedState1 == null ? null : savedState1[1]);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore9()
+    void simpleSaveRestore9()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -412,22 +413,22 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         // This is null because StateFacesListener is instance of PartialStateHolder but a
         // listener was added after markInitialState
-        Assertions.assertNotNull(savedState1[0]);
+        assertNotNull(savedState1[0]);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
         a.removeFacesListener(listener1);
         b.removeFacesListener(listener1);
-        Assertions.assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
-    }    
-    
+        assertFalse(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+    }
+
     @Test
-    public void testSimpleSaveRestoreTransient1()
+    void simpleSaveRestoreTransient1()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -436,12 +437,12 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         listener1.setValue("value");
         a.addFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
     }
-    
+
     @Test
-    public void testSimpleSaveRestoreTransient2()
+    void simpleSaveRestoreTransient2()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -452,12 +453,12 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         listener1.setValue("value");
         a.addFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
     }
-    
+
     @Test
-    public void testSimpleSaveRestoreTransient3()
+    void simpleSaveRestoreTransient3()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -471,12 +472,12 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         listener1.setValue("value");
         a.addFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
     }
-    
+
     @Test
-    public void testSimpleSaveRestoreTransient4()
+    void simpleSaveRestoreTransient4()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -490,12 +491,12 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         //Since listener1 is transient
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         b.restoreState(facesContext, savedState1);  
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
     }
-    
+
     @Test
-    public void testComplexSaveRestore1()
+    void complexSaveRestore1()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -513,11 +514,11 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         //Since listener1 is transient
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         b.restoreState(facesContext, savedState1);  
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener3));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
-        Assertions.assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener3));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener3));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener3));
     }
 }

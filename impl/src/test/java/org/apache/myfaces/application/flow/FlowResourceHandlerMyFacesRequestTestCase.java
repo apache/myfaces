@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
 
     @Override
@@ -45,9 +45,9 @@ public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesCD
         servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/WEB-INF/flow1-flow.xml");
         servletContext.addInitParameter("jakarta.faces.CLIENT_WINDOW_MODE", "url");
     }
- 
+
     @Test
-    public void testClassLoaderResourceLoader()
+    void classLoaderResourceLoader()
     {
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();
@@ -60,9 +60,9 @@ public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesCD
             //System.out.println(path);
         }
     }
-    
+
     @Test
-    public void testExternalContextResourceLoader()
+    void externalContextResourceLoader()
     {
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();        
@@ -75,9 +75,9 @@ public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesCD
             //System.out.println(path);
         }
     }
-    
+
     @Test
-    public void testGetViewResources()
+    void getViewResources()
     {
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();        

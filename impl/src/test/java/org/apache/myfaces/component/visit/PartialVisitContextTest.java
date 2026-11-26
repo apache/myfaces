@@ -28,19 +28,22 @@ import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PartialVisitContextTest extends AbstractFacesConfigurableMockTestCase {
+class PartialVisitContextTest extends AbstractFacesConfigurableMockTestCase {
 
     @Test
-    public void test() {
+    void test() {
 
         PartialVisitContext visitContext = new PartialVisitContext(facesContext,
                 Arrays.asList("form", "form:input", "form"),
@@ -81,9 +84,9 @@ public class PartialVisitContextTest extends AbstractFacesConfigurableMockTestCa
         });
 
         // only the the form is visited and only once, it will itself visit the child input
-        Assertions.assertEquals(1, visitedComponents.size());
-        Assertions.assertTrue(visitedComponents.contains(form));
+        assertEquals(1, visitedComponents.size());
+        assertTrue(visitedComponents.contains(form));
 
-        Assertions.assertTrue(processValidatorsOfInputInvoked.get());
+        assertTrue(processValidatorsOfInputInvoked.get());
     }
 }

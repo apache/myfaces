@@ -16,6 +16,9 @@
 
 package org.apache.myfaces.context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +28,6 @@ import jakarta.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
+class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
 
     @Override
     @BeforeEach
@@ -50,8 +52,8 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
      * Empty String as request param
      * has to result in an empty list
      */
-     @Test
-    public void testRequestParams1() {
+    @Test
+    void requestParams1() {
         String empty = "    \n \t  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, empty);
@@ -61,14 +63,14 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getExecuteIds().isEmpty());
+        assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
      * no request param, has to result in an empty list
      */
     @Test
-    public void testRequestParams2() {
+    void requestParams2() {
         Map<String, String> requestParamMap = new HashMap<String, String>();
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
@@ -76,7 +78,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getExecuteIds().isEmpty());
+        assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
@@ -100,7 +102,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
      * list with one element has to result in a list with one element
      */
     @Test
-    public void testRequestParams5() {
+    void requestParams5() {
         String params = " view1:panel1:_component1  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, params);
@@ -110,8 +112,8 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getExecuteIds().size() == 1);
-        Assertions.assertTrue(pprContext.getExecuteIds().iterator().next().equals("view1:panel1:_component1"));
+        assertEquals(1, pprContext.getExecuteIds().size());
+        assertEquals("view1:panel1:_component1", pprContext.getExecuteIds().iterator().next());
     }
 
     /**
@@ -119,7 +121,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
      * blank chars
      */
     @Test
-    public void testRequestParams6() {
+    void requestParams6() {
         String params = " view1:panel1:_component1 view1:panel1:_component2 \n  component3 component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, params);
@@ -128,8 +130,8 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
         
         PartialViewContext pprContext = context.getPartialViewContext();
-        
-        Assertions.assertTrue(pprContext.getExecuteIds().size() == 4);
+
+        assertEquals(4, pprContext.getExecuteIds().size());
 
         // FIXME: Latest spec uses a Collection so order is not guaranteed
 //        Assertions.assertTrue("Value match", pprContext.getExecuteIds().get(0).equals("view1:panel1:_component1"));
@@ -143,7 +145,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
      * a single, implausibly long execute id must not be expanded.
      */
     @Test
-    public void testOverlongClientIdIsRejected() {
+    void overlongClientIdIsRejected() {
         StringBuilder colons = new StringBuilder();
         for (int i = 0; i < 100000; i++) {
             colons.append(':');
@@ -156,7 +158,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
 
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assertions.assertTrue(pprContext.getExecuteIds().isEmpty());
+        assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
@@ -164,7 +166,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
      * length-bounded too, otherwise it bypasses the execute-id cap.
      */
     @Test
-    public void testOverlongSourceIsRejected() {
+    void overlongSourceIsRejected() {
         StringBuilder colons = new StringBuilder();
         for (int i = 0; i < 100000; i++) {
             colons.append(':');
@@ -179,7 +181,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
         PartialViewContext pprContext = context.getPartialViewContext();
 
         // only the valid execute id survives; the oversized source is dropped
-        Assertions.assertEquals(1, pprContext.getExecuteIds().size());
-        Assertions.assertTrue(pprContext.getExecuteIds().contains("form:input"));
+        assertEquals(1, pprContext.getExecuteIds().size());
+        assertTrue(pprContext.getExecuteIds().contains("form:input"));
     }
 }

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UISelectItem;
@@ -39,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlCheckboxRendererTest extends AbstractFacesTestCase
+class HtmlCheckboxRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlSelectManyCheckbox selectManyCheckbox;
@@ -81,7 +84,7 @@ public class HtmlCheckboxRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testSelectManyHtmlPropertyPassTru() throws Exception 
+    void selectManyHtmlPropertyPassTru() throws Exception 
     {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
@@ -123,12 +126,12 @@ public class HtmlCheckboxRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectManyCheckbox, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testSelectBooleanHtmlPropertyPasstru() throws Exception 
+    void selectBooleanHtmlPropertyPasstru() throws Exception 
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
         
@@ -137,37 +140,32 @@ public class HtmlCheckboxRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectBooleanCheckbox, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     
-    }   
-    
+    }
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameSelectBooleanCheckbox() 
+    void clientBehaviorHolderRendersIdAndNameSelectBooleanCheckbox() 
     {
         selectBooleanCheckbox.addClientBehavior("focus", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             selectBooleanCheckbox.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameSelectManyCheckbox() 
+    void clientBehaviorHolderRendersIdAndNameSelectManyCheckbox() 
     {
         UISelectItem item1 = new UISelectItem();
         item1.setItemLabel("#1");
@@ -178,19 +176,14 @@ public class HtmlCheckboxRendererTest extends AbstractFacesTestCase
         item2.setItemValue("#2");
         
         selectManyCheckbox.addClientBehavior("focus", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             selectManyCheckbox.getChildren().add(item1);
             selectManyCheckbox.getChildren().add(item2);
             selectManyCheckbox.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

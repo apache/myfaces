@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIColumn;
@@ -39,7 +41,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlGridRendererTest extends AbstractFacesTestCase
+class HtmlGridRendererTest extends AbstractFacesTestCase
 {
     private static final String LINE_SEPARATOR = System.getProperty(
             "line.separator", "\r\n");
@@ -83,7 +85,7 @@ public class HtmlGridRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testRenderTable() throws Exception
+    void renderTable() throws Exception
     {
         UIColumn col1 = new UIColumn();
         HtmlOutputText col1Text = new HtmlOutputText();
@@ -104,54 +106,49 @@ public class HtmlGridRendererTest extends AbstractFacesTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<table><tbody>"+
+        assertEquals("<table><tbody>"+
                 "<tr><td>col1Text</td></tr>"+
                 "<tr><td>col2Text</td></tr>"+
                 "</tbody>"+"</table>", output);
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception 
+    void htmlPropertyPassTru() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGrid, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTruNotRendered() throws Exception 
+    void htmlPropertyPassTruNotRendered() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGrid, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         panelGrid.addClientBehavior("click", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             panelGrid.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

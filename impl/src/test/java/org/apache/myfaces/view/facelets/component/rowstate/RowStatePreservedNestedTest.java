@@ -18,10 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.component.rowstate;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * nested component for the next row must not change that map in place, otherwise the per-row state of the row before
  * is lost. This only shows from the second request with validation errors on.
  */
-public class RowStatePreservedNestedTest extends AbstractMyFacesCDIRequestTestCase
+class RowStatePreservedNestedTest extends AbstractMyFacesCDIRequestTestCase
 {
     private static final List<String> ROWS = List.of(
             "outer:0:inner:0:in", "outer:0:inner:1:in", "outer:1:inner:0:in", "outer:1:inner:1:in",
@@ -45,7 +46,7 @@ public class RowStatePreservedNestedTest extends AbstractMyFacesCDIRequestTestCa
     }
 
     @Test
-    public void testNestedTypedValuesSurviveRepeatedValidationFailures() throws Exception
+    void nestedTypedValuesSurviveRepeatedValidationFailures() throws Exception
     {
         startViewRequest("/rowStatePreservedNested.xhtml");
         processLifecycleExecuteAndRender();
@@ -59,7 +60,7 @@ public class RowStatePreservedNestedTest extends AbstractMyFacesCDIRequestTestCa
             client.getParameters().put("mainForm:required", "");
             client.submit("mainForm:submit");
             processLifecycleExecuteAndRender();
-            Assertions.assertTrue(facesContext.isValidationFailed());
+            assertTrue(facesContext.isValidationFailed());
 
             String content = new String(((MockPrintWriter) response.getWriter()).content());
             for (String row : ROWS)
@@ -73,9 +74,9 @@ public class RowStatePreservedNestedTest extends AbstractMyFacesCDIRequestTestCa
     private static void assertRenderedValue(String content, String clientId, String expected, int round)
     {
         int start = content.indexOf("id=\"" + clientId + "\"");
-        Assertions.assertTrue(start >= 0, clientId + " not rendered in: " + content);
+        assertTrue(start >= 0, clientId + " not rendered in: " + content);
         String input = content.substring(start, content.indexOf('>', start));
-        Assertions.assertTrue(input.contains("value=\"" + expected + "\""),
+        assertTrue(input.contains("value=\"" + expected + "\""),
                 "request " + round + ": " + clientId + " should render " + expected + " but was: " + input);
     }
 

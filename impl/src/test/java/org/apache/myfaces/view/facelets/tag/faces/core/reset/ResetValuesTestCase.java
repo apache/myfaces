@@ -18,9 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.faces.core.reset;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
+class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -38,7 +39,7 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
     }
 
     @Test
-    public void testResetValuesActionListenerHandler2() throws Exception
+    void resetValuesActionListenerHandler2() throws Exception
     {
         startViewRequest("/resetValuesActionListener_2.xhtml");
 
@@ -84,13 +85,13 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         UIInput field1_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
-        Assertions.assertEquals("Hello", field1_2.getValue());
-        Assertions.assertEquals(1, field2_2.getValue());
-        Assertions.assertNull(field1_2.getSubmittedValue());
-        Assertions.assertNull(field2_2.getSubmittedValue());
+        assertEquals("Hello", field1_2.getValue());
+        assertEquals(1, field2_2.getValue());
+        assertNull(field1_2.getSubmittedValue());
+        assertNull(field2_2.getSubmittedValue());
         
-        Assertions.assertEquals("Hello", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(1), bean.getField2());
+        assertEquals("Hello", bean.getField1());
+        assertEquals(Integer.valueOf(1), bean.getField2());
 
         //Now let's try the normal way with no resetValues
         client.inputText(field1_2, "xxx");
@@ -112,17 +113,17 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         
         // The values in the model are kept but the submitted values are there
         // and the renderer takes them.
-        Assertions.assertEquals("Hello", field1_3.getValue());
+        assertEquals("Hello", field1_3.getValue());
         // the second field doesn't have validation error!, but the local value
         // is set with 2, but the model still is 1 because update model phase
         // was not executed.
-        Assertions.assertEquals(2, field2_3.getValue());
-        Assertions.assertTrue(field2_3.isLocalValueSet());
-        Assertions.assertEquals("xxx", field1_3.getSubmittedValue());
-        Assertions.assertNull(field2_3.getSubmittedValue());
+        assertEquals(2, field2_3.getValue());
+        assertTrue(field2_3.isLocalValueSet());
+        assertEquals("xxx", field1_3.getSubmittedValue());
+        assertNull(field2_3.getSubmittedValue());
         
-        Assertions.assertEquals("Hello", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(1), bean.getField2());
+        assertEquals("Hello", bean.getField1());
+        assertEquals(Integer.valueOf(1), bean.getField2());
         
         // Now let's try a valid one, in this case the model is updated
         client.inputText(field1_3, "xxxx");
@@ -142,17 +143,17 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         UIInput field1_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
-        Assertions.assertEquals("xxxx", field1_4.getValue());
-        Assertions.assertEquals(3, field2_4.getValue());
-        Assertions.assertNull(field1_4.getSubmittedValue());
-        Assertions.assertNull(field2_4.getSubmittedValue());
+        assertEquals("xxxx", field1_4.getValue());
+        assertEquals(3, field2_4.getValue());
+        assertNull(field1_4.getSubmittedValue());
+        assertNull(field2_4.getSubmittedValue());
         
-        Assertions.assertEquals("xxxx", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(3), bean.getField2());
+        assertEquals("xxxx", bean.getField1());
+        assertEquals(Integer.valueOf(3), bean.getField2());
     }
 
     @Test
-    public void testResetValuesActionListenerHandler3() throws Exception
+    void resetValuesActionListenerHandler3() throws Exception
     {
         startViewRequest("/resetValuesActionListener_3.xhtml");
 
@@ -186,13 +187,13 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
 
-        Assertions.assertEquals("Hello", field1.getValue());
-        Assertions.assertEquals(1, field2.getValue());
+        assertEquals("Hello", field1.getValue());
+        assertEquals(1, field2.getValue());
 
     }
 
     @Test
-    public void testResetValuesActionListenerHandler4() throws Exception
+    void resetValuesActionListenerHandler4() throws Exception
     {
         startViewRequest("/resetValuesActionListener_4.xhtml");
 
@@ -237,13 +238,13 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         UIInput field1_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
 
-        Assertions.assertEquals("Hello", field1_2.getValue());
-        Assertions.assertEquals(1, field2_2.getValue());
-        Assertions.assertNull(field1_2.getSubmittedValue());
-        Assertions.assertNull(field2_2.getSubmittedValue());
+        assertEquals("Hello", field1_2.getValue());
+        assertEquals(1, field2_2.getValue());
+        assertNull(field1_2.getSubmittedValue());
+        assertNull(field2_2.getSubmittedValue());
 
-        Assertions.assertEquals("Hello", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(1), bean.getField2());
+        assertEquals("Hello", bean.getField1());
+        assertEquals(Integer.valueOf(1), bean.getField2());
 
         //Now let's try the normal way with no resetValues
         client.inputText(field1_2, "xxx");
@@ -264,17 +265,17 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
 
         // The values in the model are kept but the submitted values are there
         // and the renderer takes them.
-        Assertions.assertEquals("Hello", field1_3.getValue());
+        assertEquals("Hello", field1_3.getValue());
         // the second field doesn't have validation error!, but the local value
         // is set with 2, but the model still is 1 because update model phase
         // was not executed.
-        Assertions.assertEquals(2, field2_3.getValue());
-        Assertions.assertTrue(field2_3.isLocalValueSet());
-        Assertions.assertEquals("xxx", field1_3.getSubmittedValue());
-        Assertions.assertNull(field2_3.getSubmittedValue());
+        assertEquals(2, field2_3.getValue());
+        assertTrue(field2_3.isLocalValueSet());
+        assertEquals("xxx", field1_3.getSubmittedValue());
+        assertNull(field2_3.getSubmittedValue());
 
-        Assertions.assertEquals("Hello", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(1), bean.getField2());
+        assertEquals("Hello", bean.getField1());
+        assertEquals(Integer.valueOf(1), bean.getField2());
 
         // Now let's try a valid one, in this case the model is updated
         client.inputText(field1_3, "xxxx");
@@ -293,17 +294,17 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         UIInput field1_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
 
-        Assertions.assertEquals("xxxx", field1_4.getValue());
-        Assertions.assertEquals(3, field2_4.getValue());
-        Assertions.assertNull(field1_4.getSubmittedValue());
-        Assertions.assertNull(field2_4.getSubmittedValue());
+        assertEquals("xxxx", field1_4.getValue());
+        assertEquals(3, field2_4.getValue());
+        assertNull(field1_4.getSubmittedValue());
+        assertNull(field2_4.getSubmittedValue());
 
-        Assertions.assertEquals("xxxx", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(3), bean.getField2());
+        assertEquals("xxxx", bean.getField1());
+        assertEquals(Integer.valueOf(3), bean.getField2());
     }
 
     @Test
-    public void testResetValuesActionListenerHandler5() throws Exception
+    void resetValuesActionListenerHandler5() throws Exception
     {
         startViewRequest("/resetValuesActionListener_5.xhtml");
 
@@ -348,13 +349,13 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         UIInput field1_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
 
-        Assertions.assertEquals("Hello", field1_2.getValue());
-        Assertions.assertEquals(1, field2_2.getValue());
-        Assertions.assertNull(field1_2.getSubmittedValue());
-        Assertions.assertNull(field2_2.getSubmittedValue());
+        assertEquals("Hello", field1_2.getValue());
+        assertEquals(1, field2_2.getValue());
+        assertNull(field1_2.getSubmittedValue());
+        assertNull(field2_2.getSubmittedValue());
 
-        Assertions.assertEquals("Hello", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(1), bean.getField2());
+        assertEquals("Hello", bean.getField1());
+        assertEquals(Integer.valueOf(1), bean.getField2());
 
         //Now let's try the normal way with no resetValues
         client.inputText(field1_2, "xxx");
@@ -375,17 +376,17 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
 
         // The values in the model are kept but the submitted values are there
         // and the renderer takes them.
-        Assertions.assertEquals("Hello", field1_3.getValue());
+        assertEquals("Hello", field1_3.getValue());
         // the second field doesn't have validation error!, but the local value
         // is set with 2, but the model still is 1 because update model phase
         // was not executed.
-        Assertions.assertEquals(2, field2_3.getValue());
-        Assertions.assertTrue(field2_3.isLocalValueSet());
-        Assertions.assertEquals("xxx", field1_3.getSubmittedValue());
-        Assertions.assertNull(field2_3.getSubmittedValue());
+        assertEquals(2, field2_3.getValue());
+        assertTrue(field2_3.isLocalValueSet());
+        assertEquals("xxx", field1_3.getSubmittedValue());
+        assertNull(field2_3.getSubmittedValue());
 
-        Assertions.assertEquals("Hello", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(1), bean.getField2());
+        assertEquals("Hello", bean.getField1());
+        assertEquals(Integer.valueOf(1), bean.getField2());
 
         // Now let's try a valid one, in this case the model is updated
         client.inputText(field1_3, "xxxx");
@@ -404,12 +405,12 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         UIInput field1_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
 
-        Assertions.assertEquals("xxxx", field1_4.getValue());
-        Assertions.assertEquals(3, field2_4.getValue());
-        Assertions.assertNull(field1_4.getSubmittedValue());
-        Assertions.assertNull(field2_4.getSubmittedValue());
+        assertEquals("xxxx", field1_4.getValue());
+        assertEquals(3, field2_4.getValue());
+        assertNull(field1_4.getSubmittedValue());
+        assertNull(field2_4.getSubmittedValue());
 
-        Assertions.assertEquals("xxxx", bean.getField1());
-        Assertions.assertEquals(Integer.valueOf(3), bean.getField2());
+        assertEquals("xxxx", bean.getField1());
+        assertEquals(Integer.valueOf(3), bean.getField2());
     }
 }

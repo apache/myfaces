@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlTableRendererTest extends AbstractFacesTestCase
+class HtmlTableRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlDataTable dataTable;
@@ -83,57 +85,52 @@ public class HtmlTableRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 dataTable, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTruNotRendered() throws Exception
+    void htmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 dataTable, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         dataTable.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             dataTable.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches("(?s).+id=\".+\".+"));
-            Assertions.assertTrue(output.matches("(?s).+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Check table renderer behavior when DataModel returns -1 from getRowCount(). It should
      * render the same as if that value is provided. Note t:dataTable newspaper mode requires
      * row count to calculate newspaperRows and newspaperColumns. 
      */
     @Test
-    public void testNoRowCountRender()
+    void noRowCountRender()
     {
         List<Person> list = new ArrayList<Person>();
         list.add(new Person("John"  , "Smith"));
@@ -162,42 +159,30 @@ public class HtmlTableRendererTest extends AbstractFacesTestCase
 
         dataTable.setValue(new UnknownRowCountDemoDataModel<Person>(list));
 
-        String output1 = null;
-        try 
-        {
+        String output1 = Assertions.assertDoesNotThrow(() -> {
             dataTable.encodeAll(facesContext);
-            output1 = ((StringWriter) writer.getWriter()).getBuffer().toString();
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            return ((StringWriter) writer.getWriter()).getBuffer().toString();
+        });
         
         dataTable.setValue(new ListDataModel<Person>(list));
         ((StringWriter) writer.getWriter()).getBuffer().setLength(0);
         
-        String output2 = null;
-        try 
-        {
+        String output2 = Assertions.assertDoesNotThrow(() -> {
             dataTable.encodeAll(facesContext);
-            output2 = ((StringWriter) writer.getWriter()).getBuffer().toString();
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            return ((StringWriter) writer.getWriter()).getBuffer().toString();
+        });
         
-        Assertions.assertTrue(output2.contains("John"));
-        Assertions.assertTrue(output2.contains("Smith"));
-        Assertions.assertTrue(output2.contains("class1"));
-        Assertions.assertTrue(output2.contains("class2"));
+        assertTrue(output2.contains("John"));
+        assertTrue(output2.contains("Smith"));
+        assertTrue(output2.contains("class1"));
+        assertTrue(output2.contains("class2"));
         
-        Assertions.assertTrue(output1.contains("John"));
-        Assertions.assertTrue(output1.contains("Smith"));
-        Assertions.assertTrue(output1.contains("class1"));
-        Assertions.assertTrue(output1.contains("class2"));
+        assertTrue(output1.contains("John"));
+        assertTrue(output1.contains("Smith"));
+        assertTrue(output1.contains("class1"));
+        assertTrue(output1.contains("class2"));
         
-        Assertions.assertEquals(output2, output1);
+        assertEquals(output2, output1);
     }
 
     public class Person

@@ -18,7 +18,8 @@
  */
 package jakarta.faces.component;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * Time: 01:19:19
  * To change this template use File | Settings | File Templates.
  */
-public class UIComponentFindComponentTest extends AbstractComponentTest
+class UIComponentFindComponentTest extends AbstractComponentTest
 {
     protected UIComponentBase _testImpl;
     
@@ -43,13 +44,13 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
     }
 
     @Test
-    public void testWithNullExpression() throws Exception
+    void withNullExpression() throws Exception
     {
         try
         {
             _testImpl.findComponent(null);
-            Assertions.assertNull(_testImpl.findComponent(""));
-            Assertions.fail();
+            assertNull(_testImpl.findComponent(""));
+            fail();
         }
         catch(NullPointerException e)
         {
@@ -57,18 +58,18 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         }
         catch(Exception e)
         {
-            Assertions.fail();
+            fail();
         }
     }
 
     @Test
-    public void testWithEmptyExpression() throws Exception
+    void withEmptyExpression() throws Exception
     {
-        Assertions.assertNull(_testImpl.findComponent(""));
+        assertNull(_testImpl.findComponent(""));
     }
 
     @Test
-    public void testRootExpression() throws Exception
+    void rootExpression() throws Exception
     {
         String expression = ":parent";
         UIComponent root = new UIViewRoot();
@@ -80,11 +81,11 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         parent.getChildren().add(_testImpl);        
         _testImpl.setId("testimpl");
 
-        Assertions.assertEquals(parent, _testImpl.findComponent(expression));
+        assertEquals(parent, _testImpl.findComponent(expression));
     }
 
     @Test
-    public void testRelativeExpression() throws Exception
+    void relativeExpression() throws Exception
     {
         String expression = "testimpl";
         
@@ -97,11 +98,11 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         parent.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
         
-        Assertions.assertEquals(_testImpl, _testImpl.findComponent(expression));
+        assertEquals(_testImpl, _testImpl.findComponent(expression));
     }
 
     @Test
-    public void testComplexRelativeExpression() throws Exception
+    void complexRelativeExpression() throws Exception
     {
         String expression = "child1_1:testimpl";
         
@@ -114,11 +115,11 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         child1_1.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
 
-        Assertions.assertEquals(_testImpl, namingContainer.findComponent(expression));
+        assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
     @Test
-    public void testOverriddenFindComponent() {
+    void overriddenFindComponent() {
         UIViewRoot viewRoot = new UIViewRoot();
         UIData uiData = new UIData()
         {
@@ -157,16 +158,16 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         uiData.getChildren().add(column);
         column.getChildren().add(command);
 
-        Assertions.assertNull(viewRoot.findComponent(":xx"));
-        Assertions.assertEquals(uiData, viewRoot.findComponent(":data"));
-        Assertions.assertEquals(column, viewRoot.findComponent(":data:column"));
-        Assertions.assertEquals(command, viewRoot.findComponent(":data:command"));
-        Assertions.assertEquals(command, viewRoot.findComponent("data:1:command"));
-        Assertions.assertEquals(command, viewRoot.findComponent(":data:1:command"));
+        assertNull(viewRoot.findComponent(":xx"));
+        assertEquals(uiData, viewRoot.findComponent(":data"));
+        assertEquals(column, viewRoot.findComponent(":data:column"));
+        assertEquals(command, viewRoot.findComponent(":data:command"));
+        assertEquals(command, viewRoot.findComponent("data:1:command"));
+        assertEquals(command, viewRoot.findComponent(":data:1:command"));
     }
 
     @Test
-    public void testXXFindComponent() {
+    void xXFindComponent() {
         UIViewRoot viewRoot = new UIViewRoot();
         UIData uiData = new UIData();
         uiData.setId("x");
@@ -178,14 +179,14 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         uiData.getChildren().add(column);
         column.getChildren().add(command);
 
-        Assertions.assertNull(viewRoot.findComponent(":xx"));
-        Assertions.assertNotNull(viewRoot.findComponent(":x"));
-        Assertions.assertNotNull(viewRoot.findComponent(":x:column"));
-        Assertions.assertNotNull(viewRoot.findComponent(":x:x"));
+        assertNull(viewRoot.findComponent(":xx"));
+        assertNotNull(viewRoot.findComponent(":x"));
+        assertNotNull(viewRoot.findComponent(":x:column"));
+        assertNotNull(viewRoot.findComponent(":x:x"));
     }
 
     @Test
-    public void testWithRelativeExpressionNamingContainer() throws Exception
+    void withRelativeExpressionNamingContainer() throws Exception
     {
         String expression = "testimpl";
         
@@ -198,7 +199,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         parent.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
 
-        Assertions.assertEquals(_testImpl, namingContainer.findComponent(expression));
+        assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
 }

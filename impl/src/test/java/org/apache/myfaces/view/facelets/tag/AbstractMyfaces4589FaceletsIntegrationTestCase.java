@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
@@ -26,7 +28,6 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -74,7 +75,7 @@ public abstract class AbstractMyfaces4589FaceletsIntegrationTestCase extends Abs
      * Asserts request beans {@code color} / {@code icon} are not shadowed inside nested composites (MYFACES-4589).
      */
     @Test
-    public void testExternalReproducerTagAttributeShadowing4589() throws Exception
+    public void externalReproducerTagAttributeShadowing4589() throws Exception
     {
         facesContext.getExternalContext().getRequestMap().put("color", new ColorBean());
         facesContext.getExternalContext().getRequestMap().put("icon", new IconBean());
@@ -84,10 +85,10 @@ public abstract class AbstractMyfaces4589FaceletsIntegrationTestCase extends Abs
         vdl.buildView(facesContext, root, "myfaces4589_test.xhtml");
         String out = render(root);
 
-        Assertions.assertTrue(out.contains("color-blue-panel"), () -> out);
-        Assertions.assertTrue(out.contains("pi pi-at pi-spin"), () -> out);
-        Assertions.assertTrue(out.contains("color-blue"), () -> out);
-        Assertions.assertTrue(out.contains("Development"), () -> out);
+        assertTrue(out.contains("color-blue-panel"), () -> out);
+        assertTrue(out.contains("pi pi-at pi-spin"), () -> out);
+        assertTrue(out.contains("color-blue"), () -> out);
+        assertTrue(out.contains("Development"), () -> out);
     }
 
     public static class ColorBean

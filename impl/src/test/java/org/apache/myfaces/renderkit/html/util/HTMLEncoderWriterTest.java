@@ -15,8 +15,10 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.CharArrayWriter;
-import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
@@ -29,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * <code>HTMLEncoderTest</code> tests
  * <code>org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder</code>.
  */
-public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
+class HTMLEncoderWriterTest extends AbstractFacesTestCase {
 
     private String stringNoSpecialChars = "Hello, this is MyFaces speaking!";
     private String stringNoSpecialCharsEncoded = "Hello, this is MyFaces speaking!";
@@ -66,213 +68,187 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
      * {@link org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder#encode(String)}.
      */
     @Test
-    public void testEncodeStringNoSpecialChars() throws Exception {
+    void encodeStringNoSpecialChars() throws Exception {
         HTMLEncoder.encode(sw, stringNoSpecialChars);
-        Assertions.assertEquals(stringNoSpecialCharsEncoded, sw.toString());
+        assertEquals(stringNoSpecialCharsEncoded, sw.toString());
     }
 
     @Test
-    public void testEncodeStringSpecialChars1() throws Exception {
+    void encodeStringSpecialChars1() throws Exception {
         HTMLEncoder.encode(sw, stringSpecialChars1);
-        Assertions.assertEquals(stringSpecialChars1Encoded, sw.toString());
+        assertEquals(stringSpecialChars1Encoded, sw.toString());
     }
 
     @Test
-    public void testEncodeStringSpecialChars2() throws Exception {
+    void encodeStringSpecialChars2() throws Exception {
         HTMLEncoder.encode(sw, stringSpecialChars2);
-        Assertions.assertEquals(stringSpecialChars2Encoded, sw.toString());
+        assertEquals(stringSpecialChars2Encoded, sw.toString());
     }
 
     @Test
-    public void testEncodeStringLineBreak1() throws Exception {
+    void encodeStringLineBreak1() throws Exception {
         HTMLEncoder.encode(sw, stringLineBreak, true);
-        Assertions.assertEquals(stringLineBreakEncoded1, sw.toString());
+        assertEquals(stringLineBreakEncoded1, sw.toString());
     }
 
     @Test
-    public void testEncodeStringLineBreak2() throws Exception {
+    void encodeStringLineBreak2() throws Exception {
         HTMLEncoder.encode(sw, stringLineBreak, false);
-        Assertions.assertEquals(stringLineBreakEncoded2, sw.toString());
+        assertEquals(stringLineBreakEncoded2, sw.toString());
     }
 
     @Test
-    public void testEncodeStringEmpty() throws Exception {
+    void encodeStringEmpty() throws Exception {
         HTMLEncoder.encode(sw, "");
-        Assertions.assertEquals("", sw.toString());
+        assertEquals("", sw.toString());
     }
 
     @Test
-    public void testEncodeStringNull() throws Exception {
+    void encodeStringNull() throws Exception {
         HTMLEncoder.encode(sw, null);
-        Assertions.assertEquals("", sw.toString());
+        assertEquals("", sw.toString());
     }
 
     @Test
-    public void testEncodeArrayNoSpecialChars() throws Exception {
-        try {
+    void encodeArrayNoSpecialChars() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringNoSpecialChars.toCharArray();
             HTMLEncoder.encode(source, 0, source.length, writer);
             assertCharArrayEquals(stringNoSpecialCharsEncoded.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayNoSpecialCharsPartial() throws Exception {
-        try {
+    void encodeArrayNoSpecialCharsPartial() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringNoSpecialChars.toCharArray();
             HTMLEncoder.encode(source, 3, source.length - 5, writer);
             assertCharArrayEquals(stringNoSpecialCharsEncodedPartial.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArraySpecialChars1() throws Exception {
-        try {
+    void encodeArraySpecialChars1() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringSpecialChars1.toCharArray();
             HTMLEncoder.encode(source, 0, source.length, writer);
             assertCharArrayEquals(stringSpecialChars1Encoded.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArraySpecialChars2() throws Exception {
-        try {
+    void encodeArraySpecialChars2() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringSpecialChars2.toCharArray();
             HTMLEncoder.encode(source, 0, source.length, writer);
             assertCharArrayEquals(stringSpecialChars2Encoded.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayEmpty() throws Exception {
-        try {
+    void encodeArrayEmpty() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             HTMLEncoder.encode(new char[]{}, 0, 1, writer);
             assertCharArrayEquals(new char[]{}, writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayNull() throws Exception {
-        try {
+    void encodeArrayNull() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             HTMLEncoder.encode(null, 0, 0, writer);
             assertCharArrayEquals(new char[]{}, writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayWrongIndex1() throws Exception {
-        try {
+    void encodeArrayWrongIndex1() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringSpecialChars2.toCharArray();
             HTMLEncoder.encode(source, 0, source.length - 100, writer);
             assertCharArrayEquals(new char[]{}, writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayWrongIndex2() throws Exception {
-        try {
+    void encodeArrayWrongIndex2() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringSpecialChars2.toCharArray();
             HTMLEncoder.encode(source, -100, source.length, writer);
             assertCharArrayEquals(stringSpecialChars2Encoded.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayWrongIndex3() throws Exception {
-        try {
+    void encodeArrayWrongIndex3() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringSpecialChars2.toCharArray();
             HTMLEncoder.encode(source, 100000, source.length, writer);
             assertCharArrayEquals(new char[]{}, writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayLineBreak1() throws Exception {
-        try {
+    void encodeArrayLineBreak1() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringLineBreak.toCharArray();
             HTMLEncoder.encode(source, 0, source.length, true, writer);
             assertCharArrayEquals(stringLineBreakEncoded1.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayLineBreak2() throws Exception {
-        try {
+    void encodeArrayLineBreak2() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringLineBreak.toCharArray();
             HTMLEncoder.encode(source, 0, source.length, false, writer);
             assertCharArrayEquals(stringLineBreakEncoded2.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayLineBreak2WrongIndex() throws Exception {
-        try {
+    void encodeArrayLineBreak2WrongIndex() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringLineBreak.toCharArray();
             HTMLEncoder.encode(source, 0, source.length + 5, false, writer);
             assertCharArrayEquals(stringLineBreakEncoded2.toCharArray(), writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testEncodeArrayLineBreakPartial() throws Exception {
-        try {
+    void encodeArrayLineBreakPartial() throws Exception {
+        Assertions.assertDoesNotThrow(() -> {
             CharArrayWriter writer = new CharArrayWriter();
             char[] source = stringLineBreak.toCharArray();
             HTMLEncoder.encode(source, 4, source.length - 5, writer);
             char[] expected = stringLineBreakEncoded2Partial.toCharArray();
             assertCharArrayEquals(expected, writer.toCharArray());
-        } catch (IOException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     @Test
-    public void testSimpleWriteURIAttribute() throws Exception {
+    void simpleWriteURIAttribute() throws Exception {
         String cad1 = "http://myfaces.apache.org/hello.jsf?key1=val&key2=val2#id";
         String cad2 = "http://myfaces.apache.org/hello.jsf?key1=val&amp;key2=val2#id";
         HTMLEncoder.encodeURIAttribute(sw, cad1, "UTF-8");
         String cad3 = sw.toString();
-        Assertions.assertEquals(cad2, cad3);
+        assertEquals(cad2, cad3);
     }
 
     @Test
-    public void testUsAsciiEscapedCharactersBeforeQuery() throws Exception {
+    void usAsciiEscapedCharactersBeforeQuery() throws Exception {
         // Escape
         // - From %00 to %20, 
         // - <"> %22, "%" %25
@@ -284,19 +260,19 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
         String cad2 = "?key=%22%25%3C%3E%5C%60%7B%7C%7D%5E%0A%20";
         HTMLEncoder.encodeURIAttribute(sw, cad1, "UTF-8");
         String cad3 = sw.toString();
-        Assertions.assertEquals(cad2, cad3);
+        assertEquals(cad2, cad3);
 
         String cad4 = "\"%<>\\`{|}^\n ";
         String cad5 = "%22%25%3C%3E%5C%60%7B%7C%7D%5E%0A%20";
         sw = new StringWriter();
         HTMLEncoder.encodeURIAttribute(sw, cad4, "UTF-8");
         String cad6 = sw.toString();
-        Assertions.assertEquals(cad5, cad6);
+        assertEquals(cad5, cad6);
 
     }
 
     @Test
-    public void testWriteNonUsAsciiOnURIAttribute() throws Exception {
+    void writeNonUsAsciiOnURIAttribute() throws Exception {
         // Character ü in ISO-8859-1 is %FC but on UTF-8 is %C3%BC. In this case,
         // it should encode as %C3%BC
         byte[] array = new byte[]{(byte) 0xFC};
@@ -304,12 +280,12 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
         String cad2 = "%C3%BC";//"http://myfaces.apache.org/he%FCll%20o.jsf?key=val#id";
         HTMLEncoder.encodeURIAttribute(sw, cad1, "UTF-8");
         String cad3 = sw.toString();
-        Assertions.assertEquals(cad2, cad3);
+        assertEquals(cad2, cad3);
 
     }
 
     @Test
-    public void testReservedCharactersOnURIAttribute() throws Exception {
+    void reservedCharactersOnURIAttribute() throws Exception {
         //Reserved
         // Reserved characters (should not be percent-encoded)
         // reserved    = gen-delims / sub-delims
@@ -321,17 +297,17 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
         String cad1 = "?key=:/[]@!$'()*+,;="; //Omit &
         HTMLEncoder.encodeURIAttribute(sw, cad1, "UTF-8");
         String cad2 = sw.toString();
-        Assertions.assertEquals(cad1, cad2);
+        assertEquals(cad1, cad2);
 
         String cad7 = ":/[]@!$&'()*+,;=";
         sw = new StringWriter(40);
         HTMLEncoder.encodeURIAttribute(sw, cad7, "UTF-8");
         String cad8 = sw.toString();
-        Assertions.assertEquals(cad7, cad8);
+        assertEquals(cad7, cad8);
     }
 
     @Test
-    public void testNonEncodedCharactersOnURIAttribute() throws Exception {
+    void nonEncodedCharactersOnURIAttribute() throws Exception {
         // "... for consistency, percent-encoded octets in the ranges of ALPHA
         // (%41-%5A and %61-%7A), DIGIT (%30-%39), hyphen (%2D), period (%2E),
         // underscore (%5F), or tilde (%7E) should not be created by URI
@@ -339,23 +315,23 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
         String cad1 = "?key=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
         HTMLEncoder.encodeURIAttribute(sw, cad1, "UTF-8");
         String cad2 = sw.toString();
-        Assertions.assertEquals(cad1, cad2);
+        assertEquals(cad1, cad2);
 
         String cad3 = "#somefile?key=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
         sw = new StringWriter(40);
         HTMLEncoder.encodeURIAttribute(sw, cad3, "UTF-8");
         String cad4 = sw.toString();
-        Assertions.assertEquals(cad3, cad4);
+        assertEquals(cad3, cad4);
 
         String cad5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
         sw = new StringWriter(40);
         HTMLEncoder.encodeURIAttribute(sw, cad5, "UTF-8");
         String cad6 = sw.toString();
-        Assertions.assertEquals(cad5, cad6);
+        assertEquals(cad5, cad6);
     }
 
     @Test
-    public void testWriteURIAttribute() throws Exception {
+    void writeURIAttribute() throws Exception {
         //Note char 256 or 0x100 should not be passed or percent encoded, because it is not
         //valid for URIs.
         byte[] array11 = new byte[]{(byte) 0xC2, (byte) 0xA1, (byte) 0xC2, (byte) 0xA2,
@@ -370,7 +346,7 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
                 + "%C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80";
         HTMLEncoder.encodeURIAttribute(sw, cad11, "UTF-8");
         String cad13 = sw.toString();
-        Assertions.assertEquals(cad12, cad13);
+        assertEquals(cad12, cad13);
 
         String cad1 = "?key=" + new String(array11, "UTF-8") + ((char) (0xFF)) + ((char) (0x100));
         String cad2 = "?key=%C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD"
@@ -378,7 +354,7 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
         sw = new StringWriter(40);
         HTMLEncoder.encodeURIAttribute(sw, cad1, "UTF-8");
         String cad3 = sw.toString();
-        Assertions.assertEquals(cad2, cad3);
+        assertEquals(cad2, cad3);
 
         //String cad14 = "http://myfaces.apache.org/page.jsf?key="+((char)0xFF)+((char)0x100);
         //String cad15 = HTMLEncoder.encodeURIAttribute(cad14,false);
@@ -387,10 +363,10 @@ public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
 
     private void assertCharArrayEquals(char[] expected, char[] actual) {
         if ((expected == null ^ actual == null) || expected.length != actual.length) {
-            Assertions.fail();
+            fail();
         }
         for (int i = 0; i < expected.length; i++) {
-            Assertions.assertEquals(expected[i], actual[i]);
+            assertEquals(expected[i], actual[i]);
         }
     }
 }

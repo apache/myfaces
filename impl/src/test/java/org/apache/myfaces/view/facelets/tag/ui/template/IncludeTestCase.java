@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui.template;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 import jakarta.faces.application.ViewHandler;
 
@@ -25,10 +27,9 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class IncludeTestCase extends AbstractFaceletTestCase
+class IncludeTestCase extends AbstractFaceletTestCase
 {
     
     @Override
@@ -37,9 +38,9 @@ public class IncludeTestCase extends AbstractFaceletTestCase
         super.setUpServletObjects();
         servletContext.addInitParameter(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, "true");
     }
-    
+
     @Test
-    public void testIncludeIsolation1() throws Exception {
+    void includeIsolation1() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "includeIsolation1.xhtml");
         
@@ -51,7 +52,7 @@ public class IncludeTestCase extends AbstractFaceletTestCase
         
         String response = sw.toString();
         
-        Assertions.assertTrue(response.contains("Do you see me?"));
+        assertTrue(response.contains("Do you see me?"));
     }
 
 }

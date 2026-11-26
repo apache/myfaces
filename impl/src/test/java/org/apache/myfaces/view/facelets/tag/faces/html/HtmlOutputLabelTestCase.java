@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.view.facelets.tag.faces.html;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIComponent;
@@ -27,24 +29,23 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class HtmlOutputLabelTestCase extends AbstractFaceletTestCase
+class HtmlOutputLabelTestCase extends AbstractFaceletTestCase
 {
 
     @Test
-    public void testOutputLabelEscape() throws Exception
+    void outputLabelEscape() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testOutputLabelEscape.xhtml");
 
         UIComponent panelGroup = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup);
+        assertNotNull(panelGroup);
         UIOutput label = (UIOutput) panelGroup.findComponent("testLabel");
-        Assertions.assertNotNull(label);
+        assertNotNull(label);
         UIOutput text = (UIOutput) panelGroup.findComponent("testOut");
-        Assertions.assertNotNull(text);
+        assertNotNull(text);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);

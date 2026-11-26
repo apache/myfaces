@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlRadioRendererTest extends AbstractFacesTestCase
+class HtmlRadioRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlSelectOneRadio selectOneRadio;
@@ -75,9 +78,9 @@ public class HtmlRadioRendererTest extends AbstractFacesTestCase
         selectOneRadio = null;
         writer = null;
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
@@ -123,15 +126,15 @@ public class HtmlRadioRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectOneRadio, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         UISelectItem item1 = new UISelectItem();
         item1.setItemLabel("#1");
@@ -142,19 +145,14 @@ public class HtmlRadioRendererTest extends AbstractFacesTestCase
         item2.setItemValue("#2");
         
         selectOneRadio.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             selectOneRadio.getChildren().add(item1);
             selectOneRadio.getChildren().add(item2);
             selectOneRadio.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

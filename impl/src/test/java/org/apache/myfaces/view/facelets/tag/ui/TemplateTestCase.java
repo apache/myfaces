@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class TemplateTestCase extends AbstractFaceletTestCase
+class TemplateTestCase extends AbstractFaceletTestCase
 {
     private FastWriter _writer;
 
@@ -66,7 +67,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testInsertWithoutNameComposition() throws Exception
+    void insertWithoutNameComposition() throws Exception
     {
         _testInsertWithoutName("s_page_composition.xhtml");
     }
@@ -77,7 +78,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testInsertWithoutNameDecorate() throws Exception
+    void insertWithoutNameDecorate() throws Exception
     {
         _testInsertWithoutName("s_page_decorate.xhtml");
     }
@@ -92,8 +93,8 @@ public class TemplateTestCase extends AbstractFaceletTestCase
         final String output = _writer.toString();
 
         // assertions
-        Assertions.assertTrue(output.contains("<span id=\"body\">BODY</span>"));
-        Assertions.assertTrue(output.contains("<span id=\"popupSpan\"><p>[POPUPCONTENT]</p></span>"));
+        assertTrue(output.contains("<span id=\"body\">BODY</span>"));
+        assertTrue(output.contains("<span id=\"popupSpan\"><p>[POPUPCONTENT]</p></span>"));
     }
 
     /**
@@ -102,7 +103,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testInsertWithDefinedNameDecorate() throws Exception
+    void insertWithDefinedNameDecorate() throws Exception
     {
         _testInsertWithDefinedName("decorate_with_template_and_define.xhtml");
     }
@@ -113,7 +114,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testInsertWithDefinedNameComposition() throws Exception
+    void insertWithDefinedNameComposition() throws Exception
     {
         _testInsertWithDefinedName("composition_with_template_and_define.xhtml");
     }
@@ -128,7 +129,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
         final String output = _writer.toString();
 
         // assertions
-        Assertions.assertTrue(output.contains("<span>defined content</span>"));
+        assertTrue(output.contains("<span>defined content</span>"));
     }
 
     /**
@@ -138,7 +139,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testInsertWithoutDefinedNameDecorate() throws Exception
+    void insertWithoutDefinedNameDecorate() throws Exception
     {
         _testInsertWithoutDefinedName("decorate_with_template.xhtml");
     }
@@ -150,7 +151,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void testInsertWithoutDefinedNameComposition() throws Exception
+    void insertWithoutDefinedNameComposition() throws Exception
     {
         _testInsertWithoutDefinedName("composition_with_template.xhtml");
     }
@@ -165,7 +166,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
         final String output = _writer.toString();
 
         // assertions
-        Assertions.assertTrue(output
+        assertTrue(output
                 .contains("<span>default ui:insert content</span>"));
     }
 
@@ -177,7 +178,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void _testMultilevelTemplating() throws Exception
+    void _testMultilevelTemplating() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,
@@ -189,7 +190,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
         output = output.replaceAll("(?s)<!--.*?-->", ""); // remove license headers for clarity
 
         // assertions
-        Assertions.assertTrue(output.contains("<body>inner content</body>"));
+        assertTrue(output.contains("<body>inner content</body>"));
     }
 
     /**
@@ -201,7 +202,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
      * @throws Exception
      */
     @Test
-    public void _testMultilevelTemplatingInnerFallback() throws Exception
+    void _testMultilevelTemplatingInnerFallback() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,
@@ -213,7 +214,7 @@ public class TemplateTestCase extends AbstractFaceletTestCase
         output = output.replaceAll("(?s)<!--.*?-->", ""); // remove license headers for clarity
 
         // assertions
-        Assertions.assertTrue(output
+        assertTrue(output
                 .contains("<body>inner fallback content</body>"));
     }
 

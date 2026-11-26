@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+
 import java.io.IOException;
 
 import jakarta.el.ValueExpression;
@@ -28,7 +31,6 @@ import jakarta.faces.el.CompositeComponentExpressionHolder;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.el.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class CompositeComponentBeanValidationTest extends AbstractFaceletTestCase
+class CompositeComponentBeanValidationTest extends AbstractFaceletTestCase
 {
 
     /**
@@ -51,7 +53,7 @@ public class CompositeComponentBeanValidationTest extends AbstractFaceletTestCas
      * @throws IOException
      */
     @Test
-    public void testCompositeComponentExpressionHolder() throws IOException
+    void compositeComponentExpressionHolder() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testSimpleEditableValueHolder.xhtml");
@@ -62,16 +64,16 @@ public class CompositeComponentBeanValidationTest extends AbstractFaceletTestCas
         // "resolve" #{cc.attrs}
         CompositeComponentELResolver resolver = new CompositeComponentELResolver(MyfacesConfig.getCurrentInstance());
         Object attrs = resolver.getValue(facesContext.getELContext(), compositeComponent, "attrs");
-        
+
         // the resolved value has to be a CompositeComponentExpressionHolder
-        Assertions.assertTrue(attrs instanceof CompositeComponentExpressionHolder);
+        assertInstanceOf(CompositeComponentExpressionHolder.class, attrs);
         
         // get the actual ValueExpression which is needed by the BeanValidator
         ValueExpression valueExpression 
                 = ((CompositeComponentExpressionHolder) attrs).getExpression("input");
-        
+
         // the expression String from the VE has to be #{myBean.input}
-        Assertions.assertTrue("#{myBean.input}".equals(valueExpression.getExpressionString()));
+        assertEquals("#{myBean.input}", valueExpression.getExpressionString());
     }
     
 }

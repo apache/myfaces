@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.config.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 
 import org.apache.myfaces.config.element.Application;
@@ -24,7 +26,6 @@ import org.apache.myfaces.config.element.FacesConfigNameSlot;
 import org.apache.myfaces.config.element.LocaleConfig;
 import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,69 +33,69 @@ import org.junit.jupiter.api.Test;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesConfigUnmarshallerImplTest
+class FacesConfigUnmarshallerImplTest
 {
     private FacesConfigUnmarshallerImpl _impl;
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
         _impl = new FacesConfigUnmarshallerImpl(null);
     }
 
     @Test
-    public void testEmptyConfig() throws Exception
+    void emptyConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "empty-config.xml"), "empty-config.xml");
-        Assertions.assertNotNull(cfg);
-        Assertions.assertTrue(cfg.getApplications().isEmpty());
-        Assertions.assertTrue(cfg.getComponents().isEmpty());
-        Assertions.assertTrue(cfg.getConverters().isEmpty());
-        Assertions.assertTrue(cfg.getFactories().isEmpty());
-        Assertions.assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
-        Assertions.assertTrue(cfg.getNavigationRules().isEmpty());
-        Assertions.assertTrue(cfg.getRenderKits().isEmpty());
-        Assertions.assertTrue(cfg.getValidators().isEmpty());
+        assertNotNull(cfg);
+        assertTrue(cfg.getApplications().isEmpty());
+        assertTrue(cfg.getComponents().isEmpty());
+        assertTrue(cfg.getConverters().isEmpty());
+        assertTrue(cfg.getFactories().isEmpty());
+        assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
+        assertTrue(cfg.getNavigationRules().isEmpty());
+        assertTrue(cfg.getRenderKits().isEmpty());
+        assertTrue(cfg.getValidators().isEmpty());
     }
 
     @Test
-    public void testApplicationConfig() throws Exception
+    void applicationConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "application-config.xml"), "application-config.xml");
-        Assertions.assertNotNull(cfg);
-        Assertions.assertEquals(1, cfg.getApplications().size());
+        assertNotNull(cfg);
+        assertEquals(1, cfg.getApplications().size());
         Application app = cfg.getApplications().get(0);
-        Assertions.assertEquals(2, app.getActionListener().size());
-        Assertions.assertEquals("action-listener1", app.getActionListener().get(0));
-        Assertions.assertEquals("action-listener2", app.getActionListener().get(1));
-        Assertions.assertEquals(1, app.getDefaultRenderkitId().size());
-        Assertions.assertEquals("default-render-kit-id", app.getDefaultRenderkitId()
+        assertEquals(2, app.getActionListener().size());
+        assertEquals("action-listener1", app.getActionListener().get(0));
+        assertEquals("action-listener2", app.getActionListener().get(1));
+        assertEquals(1, app.getDefaultRenderkitId().size());
+        assertEquals("default-render-kit-id", app.getDefaultRenderkitId()
                 .get(0));
         assertLocaleConfig(app.getLocaleConfig());
-        Assertions.assertEquals(1, app.getMessageBundle().size());
-        Assertions.assertEquals("message-bundle", app.getMessageBundle().get(0));
-        Assertions.assertEquals(1, app.getNavigationHandler().size());
-        Assertions.assertEquals("navigation-handler", app.getNavigationHandler().get(0));
-        Assertions.assertEquals(1, app.getPropertyResolver().size());
-        Assertions.assertEquals("property-resolver", app.getPropertyResolver().get(0));
+        assertEquals(1, app.getMessageBundle().size());
+        assertEquals("message-bundle", app.getMessageBundle().get(0));
+        assertEquals(1, app.getNavigationHandler().size());
+        assertEquals("navigation-handler", app.getNavigationHandler().get(0));
+        assertEquals(1, app.getPropertyResolver().size());
+        assertEquals("property-resolver", app.getPropertyResolver().get(0));
 
-        Assertions.assertEquals(1, app.getStateManager().size());
-        Assertions.assertEquals("state-manager", app.getStateManager().get(0));
+        assertEquals(1, app.getStateManager().size());
+        assertEquals("state-manager", app.getStateManager().get(0));
 
-        Assertions.assertEquals(1, app.getVariableResolver().size());
-        Assertions.assertEquals("variable-resolver", app.getVariableResolver().get(0));
+        assertEquals(1, app.getVariableResolver().size());
+        assertEquals("variable-resolver", app.getVariableResolver().get(0));
 
-        Assertions.assertEquals(1, app.getViewHandler().size());
-        Assertions.assertEquals("view-handler", app.getViewHandler().get(0));
+        assertEquals(1, app.getViewHandler().size());
+        assertEquals("view-handler", app.getViewHandler().get(0));
 
-        Assertions.assertEquals(1, app.getElResolver().size());
-        Assertions.assertEquals("el-resolver", app.getElResolver().get(0));
+        assertEquals(1, app.getElResolver().size());
+        assertEquals("el-resolver", app.getElResolver().get(0));
 
-        Assertions.assertEquals(1, app.getResourceBundle().size());
-        Assertions.assertEquals("base-name", app.getResourceBundle().get(0).getBaseName());
-        Assertions.assertEquals("var", app.getResourceBundle().get(0).getVar());
+        assertEquals(1, app.getResourceBundle().size());
+        assertEquals("base-name", app.getResourceBundle().get(0).getBaseName());
+        assertEquals("var", app.getResourceBundle().get(0).getVar());
     }
 
     /**
@@ -102,68 +103,68 @@ public class FacesConfigUnmarshallerImplTest
      */
     private void assertLocaleConfig(List<LocaleConfig> localeConfig)
     {
-        Assertions.assertEquals(1, localeConfig.size());
+        assertEquals(1, localeConfig.size());
         LocaleConfig cfg = localeConfig.get(0);
-        Assertions.assertEquals("aa", cfg.getDefaultLocale());
-        Assertions.assertEquals(2, cfg.getSupportedLocales().size());
-        Assertions.assertEquals("aa", cfg.getSupportedLocales().get(0));
-        Assertions.assertEquals("bb", cfg.getSupportedLocales().get(1));
+        assertEquals("aa", cfg.getDefaultLocale());
+        assertEquals(2, cfg.getSupportedLocales().size());
+        assertEquals("aa", cfg.getSupportedLocales().get(0));
+        assertEquals("bb", cfg.getSupportedLocales().get(1));
     }
-    
+
     @Test
-    public void testAbsoluteOrderingConfig() throws Exception
+    void absoluteOrderingConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "absolute-ordering-config.xml"), "absolute-ordering-config.xml");
-        Assertions.assertNotNull(cfg);
-        Assertions.assertEquals("true", cfg.getMetadataComplete());
-        Assertions.assertEquals("a",cfg.getName());
+        assertNotNull(cfg);
+        assertEquals("true", cfg.getMetadataComplete());
+        assertEquals("a",cfg.getName());
 
         List<OrderSlot> orderList = cfg.getAbsoluteOrdering().getOrderList();
         
-        Assertions.assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
-        Assertions.assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
-        Assertions.assertEquals(ConfigOthersSlotImpl.class, orderList.get(2).getClass());
-        Assertions.assertEquals("d", ((FacesConfigNameSlot) orderList.get(3)).getName());
+        assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
+        assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
+        assertEquals(ConfigOthersSlotImpl.class, orderList.get(2).getClass());
+        assertEquals("d", ((FacesConfigNameSlot) orderList.get(3)).getName());
         
-        Assertions.assertTrue(cfg.getApplications().isEmpty());
-        Assertions.assertTrue(cfg.getComponents().isEmpty());
-        Assertions.assertTrue(cfg.getConverters().isEmpty());
-        Assertions.assertTrue(cfg.getFactories().isEmpty());
-        Assertions.assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
-        Assertions.assertTrue(cfg.getNavigationRules().isEmpty());
-        Assertions.assertTrue(cfg.getRenderKits().isEmpty());
-        Assertions.assertTrue(cfg.getValidators().isEmpty());
+        assertTrue(cfg.getApplications().isEmpty());
+        assertTrue(cfg.getComponents().isEmpty());
+        assertTrue(cfg.getConverters().isEmpty());
+        assertTrue(cfg.getFactories().isEmpty());
+        assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
+        assertTrue(cfg.getNavigationRules().isEmpty());
+        assertTrue(cfg.getRenderKits().isEmpty());
+        assertTrue(cfg.getValidators().isEmpty());
     }
-    
+
     @Test
-    public void testOrderingConfig() throws Exception
+    void orderingConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "ordering-config.xml"), "ordering-config.xml");
-        Assertions.assertNotNull(cfg);
-        Assertions.assertEquals("a",cfg.getName());
+        assertNotNull(cfg);
+        assertEquals("a",cfg.getName());
 
         List<OrderSlot> orderList = cfg.getOrdering().getBeforeList();        
-        Assertions.assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
-        Assertions.assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
-        Assertions.assertEquals(org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl.class, orderList.get(2).getClass());
+        assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
+        assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
+        assertEquals(org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl.class, orderList.get(2).getClass());
         
         orderList = cfg.getOrdering().getAfterList();        
-        Assertions.assertEquals("d", ((FacesConfigNameSlot) orderList.get(0)).getName());
+        assertEquals("d", ((FacesConfigNameSlot) orderList.get(0)).getName());
         
-        Assertions.assertTrue(cfg.getApplications().isEmpty());
-        Assertions.assertTrue(cfg.getComponents().isEmpty());
-        Assertions.assertTrue(cfg.getConverters().isEmpty());
-        Assertions.assertTrue(cfg.getFactories().isEmpty());
-        Assertions.assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
-        Assertions.assertTrue(cfg.getNavigationRules().isEmpty());
-        Assertions.assertTrue(cfg.getRenderKits().isEmpty());
-        Assertions.assertTrue(cfg.getValidators().isEmpty());
+        assertTrue(cfg.getApplications().isEmpty());
+        assertTrue(cfg.getComponents().isEmpty());
+        assertTrue(cfg.getConverters().isEmpty());
+        assertTrue(cfg.getFactories().isEmpty());
+        assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
+        assertTrue(cfg.getNavigationRules().isEmpty());
+        assertTrue(cfg.getRenderKits().isEmpty());
+        assertTrue(cfg.getValidators().isEmpty());
     }
-    
+
     @Test
-    public void testFacesFlowConfig() throws Exception
+    void facesFlowConfig() throws Exception
     {/*
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "faces-flow.xml"), "faces-flow.xml");
@@ -231,54 +232,54 @@ public class FacesConfigUnmarshallerImplTest
         Assertions.assertEquals("name1", facesFlowParameter.getName());
         Assertions.assertEquals("value1", facesFlowParameter.getValue());*/
     }
-    
+
     @Test
-    public void testCsrf() throws Exception
+    void csrf() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "csrf-and-contracts.xml"), "csrf-and-contracts.xml");
         
-        Assertions.assertNotNull(cfg);
-        Assertions.assertEquals(2, cfg.getProtectedViewsUrlPatternList().size());
-        Assertions.assertEquals("/files/*.xhtml", cfg.getProtectedViewsUrlPatternList().get(0));
-        Assertions.assertEquals("/files2/*.xhtml", cfg.getProtectedViewsUrlPatternList().get(1));
+        assertNotNull(cfg);
+        assertEquals(2, cfg.getProtectedViewsUrlPatternList().size());
+        assertEquals("/files/*.xhtml", cfg.getProtectedViewsUrlPatternList().get(0));
+        assertEquals("/files2/*.xhtml", cfg.getProtectedViewsUrlPatternList().get(1));
         
         
     }
-    
+
     @Test
-    public void testContracts() throws Exception
+    void contracts() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "csrf-and-contracts.xml"), "csrf-and-contracts.xml");
         
-        Assertions.assertNotNull(cfg);
+        assertNotNull(cfg);
 
         Application app = cfg.getApplications().get(0);
-        Assertions.assertNotNull(app);
-        Assertions.assertEquals(1, app.getResourceLibraryContractMappings().size());
+        assertNotNull(app);
+        assertEquals(1, app.getResourceLibraryContractMappings().size());
         
         ContractMapping mapping = app.getResourceLibraryContractMappings().get(0);
-        Assertions.assertEquals("/files/*.xhtml", mapping.getUrlPatternList().get(0));
-        Assertions.assertEquals("contractA contractB", mapping.getContractList().get(0));
+        assertEquals("/files/*.xhtml", mapping.getUrlPatternList().get(0));
+        assertEquals("contractA contractB", mapping.getContractList().get(0));
     }
-    
+
     @Test
-    public void testContracts2() throws Exception
+    void contracts2() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "contracts2.xml"), "contracts2.xml");
         
-        Assertions.assertNotNull(cfg);
+        assertNotNull(cfg);
 
         Application app = cfg.getApplications().get(0);
-        Assertions.assertNotNull(app);
-        Assertions.assertEquals(1, app.getResourceLibraryContractMappings().size());
+        assertNotNull(app);
+        assertEquals(1, app.getResourceLibraryContractMappings().size());
         
         ContractMapping mapping = app.getResourceLibraryContractMappings().get(0);
-        Assertions.assertTrue(mapping.getUrlPatternList().contains("/files/*.xhtml"));
-        Assertions.assertTrue(mapping.getUrlPatternList().contains("/files2/*.xhtml"));
-        Assertions.assertTrue(mapping.getContractList().contains("contractA"));
-        Assertions.assertTrue(mapping.getContractList().contains("contractB"));
+        assertTrue(mapping.getUrlPatternList().contains("/files/*.xhtml"));
+        assertTrue(mapping.getUrlPatternList().contains("/files2/*.xhtml"));
+        assertTrue(mapping.getContractList().contains("contractA"));
+        assertTrue(mapping.getContractList().contains("contractB"));
     }    
 }
