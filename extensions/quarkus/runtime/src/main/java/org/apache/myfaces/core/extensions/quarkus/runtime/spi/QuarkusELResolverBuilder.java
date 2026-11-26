@@ -27,7 +27,7 @@ import org.apache.myfaces.el.DefaultELResolverBuilder;
 
 /**
  * Custom {@link org.apache.myfaces.el.ELResolverBuilder} which only works with EL3.x+
- * and replaces the {@link jakarta.enterprise.inject.spi.BeanManager#getELResolver()}
+ * and replaces the {@link jakarta.enterprise.inject.spi.el.ELAwareBeanManager#getELResolver()}
  * with our own {@link QuarkusCdiELResolver}
  */
 public class QuarkusELResolverBuilder extends DefaultELResolverBuilder
